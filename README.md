@@ -62,7 +62,7 @@ Although not required, please could you register with the metric² mailing list 
 
 ## Contributors
 ### Third party libraries
-* see [LIBRARIES](https://github.com/paschmann/metric2/libraries.md) file
+* see [LIBRARIES](https://github.com/paschmann/metric2/blob/master/libraries.md) file
 
 # License
 
