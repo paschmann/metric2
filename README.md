@@ -4,7 +4,7 @@ metric² is a self-service BI tool using responsive web based dashboards to disp
 
 ### Features
 
-
+Check out the metric2 Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
 
 ### Screenshots
 ![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
@@ -66,7 +66,6 @@ Although not required, please could you register with the metric2 mailing list h
 
 # License
 
-|                      |                                          |
 |:---------------------|:-----------------------------------------|
 | **Author:**          | Paul Aschmann (<paschmann@li-labs.com>)
 | **Copyright:**       | Copyright (c) 2010-2014 Lithium Labs, LLC
