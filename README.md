@@ -4,7 +4,7 @@ metric² is a self-service BI tool using responsive web based dashboards to disp
 
 ### Features
 
-Check out the metric2 Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
+Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
 
 ### Screenshots
 ![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
@@ -38,11 +38,11 @@ XS Engine running (HTTP Server built into SAP HANA)
 Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2.
 
 ####Section 3 – Sample data creation (optional)
-Once you have completed sections 1 & 2, you can choose to run some scripts which will populate your metric2 system with sample/demo data. Select which sample data set you would like, and execute the sql file included.
+Once you have completed sections 1 & 2, you can choose to run some scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like, and execute the sql file included.
 
 
 ## Registration
-Although not required, please could you register with the metric2 mailing list here: 
+Although not required, please could you register with the metric² mailing list here: 
 ![Mailing List](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93 "metric2 mailing list")
 
 
