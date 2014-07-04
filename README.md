@@ -1,17 +1,29 @@
 #metric²
 
-metric² is a self-service BI tool using responsive web based dashboards to display health and performance KPI's of your SAP HANA Database, Platform or Applications.
+metric² is a self-service BI tool using responsive web based dashboards to display health and performance KPI's of your SAP HANA Database, Platform or Applications. Dashboards are built from a set of customizable widgets.
 
-### Screenshot
-![Screenshot 1](http://url/screenshot-software.png "screenshot software")
+### Features
 
-![Screenshot 2](http://url/screenshot-software.png "screenshot software")
+
+
+### Screenshots
+![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
+
+![Screenshot2.png](http://metric2.com/img/Screenshot2.png)
 
 ## Download
 * [Version 2.0](https://github.com/paschmann/metric2/archive/master.zip)
-* [Version 1.0](http://www.metric2.com/downloads/metric2currentrelease.zip)
+* [Version 1.0](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) (requires signup and is the HANA Delivery unit file)
 
 ## Installation
+
+####Prerequisites
+
+SAP HANA SPS6+ (SAP In-memory DB)
+
+XS Engine running (HTTP Server built into SAP HANA)
+
+
 ####Section 1 - File download and install to HANA
 
 #####**Delivery Unit** (SAP HANA Package)
@@ -40,7 +52,8 @@ Although not required, please could you register with the metric2 mailing list h
 * Github release
 
 ####Version 1.0
-Initial software developed
+* Initial software developed
+* Uses SAPUI5 as a UI frameowrk
 
 ## Contact
 * Homepage: http://www.metric2.com
@@ -49,7 +62,24 @@ Initial software developed
 
 ## Contributors
 ### Third party libraries
-* see [LIBRARIES](https://github.com/username/sw-name/blob/master/LIBRARIES.md) files
+* see [LIBRARIES](https://github.com/paschmann/metric2/libraries.md) file
 
-## License 
-* see [LICENSE](https://github.com/username/sw-name/blob/master/LICENSE.md) file
+# License
+
+|                      |                                          |
+|:---------------------|:-----------------------------------------|
+| **Author:**          | Paul Aschmann (<paschmann@li-labs.com>)
+| **Copyright:**       | Copyright (c) 2010-2014 Lithium Labs, LLC
+| **License:**         | Apache License, Version 2.0
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
