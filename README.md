@@ -66,6 +66,7 @@ Although not required, please could you register with the metric2 mailing list h
 
 # License
 
+|                      |                                          |                   
 |:---------------------|:-----------------------------------------|
 | **Author:**          | Paul Aschmann (<paschmann@li-labs.com>)
 | **Copyright:**       | Copyright (c) 2010-2014 Lithium Labs, LLC
