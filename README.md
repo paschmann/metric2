@@ -6,6 +6,10 @@ metric² is a self-service BI tool using responsive web based dashboards to disp
 
 Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
 
+### Code
+
+The code is written in Javascript, HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
+
 ### Screenshots
 ![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
 
