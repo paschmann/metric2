@@ -1,3 +1,17 @@
+
+// --------------------------------------- Widgets UI ----------------------------------------------------- //
+
+function widgetTextAndFooter(objWidgets){
+    var strHTML = "<div class='t1-widget-text-big'>" + objWidgets[ 'Large Text Value' ]  + "</div>";
+    strHTML += "<div class='t1-widget-footer'>";
+    strHTML += "<div class='t1-widget-percent-medium-grey'>" + objWidgets[ 'Footer Text Value' ] + "</div>";
+	strHTML += "</div>";
+    
+    var divid = 0;
+    $('#t1-widget-container' + objWidgets.dwid).html(strHTML);
+}
+
+
 function widgetStockPrice(Ticker){
         var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%3D%22' + Ticker + '%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
         $.getJSON(url, function(data) {           

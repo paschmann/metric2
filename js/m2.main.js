@@ -223,7 +223,6 @@ function loadDashboards(objDashboards){
 	var len = objDashboards.length;
 	
 	$("#dashboards").html('');
-	//$("#dashboardmenu").html('');
 	$( "ul:eq( 1 )" ).empty();
 	
 	$( "ul:eq( 1 )" ).append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
@@ -231,14 +230,14 @@ function loadDashboards(objDashboards){
 	if (len > 0){
         for (var i = 0;i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
-			$( "ul:eq( 1 )" ).append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
 			$("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
 			$("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html($(this).html());
                 return false;
             });
-		
+            
+            $( "ul:eq( 1 )" ).append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html("<a href='#'>" + $(this).attr('title') + "</a>");
@@ -246,6 +245,11 @@ function loadDashboards(objDashboards){
                 return false;
             });
         }
+    }
+    
+    if (intCurrentDashboardID == 1){
+        getContent($("#dashboards li:first").data("id"));
+        $('#dashboardname').html($("#dashboards li:first").html());
     }
 }
     
@@ -282,7 +286,18 @@ function clearTimers(){
     }
 }
 
-		
+
+function loadWidgetContent(objWidgets){
+    var len = objWidgets.length
+    if (len > 0){
+        for (var i = 0;i < len; ++i) {
+            window[objWidgets[i].codetype](objWidgets[i]);
+
+            //var divid = '#t1-widget-container' + objWidgets[i].dwid;
+            //$(divid).html(objWidgets[i].dwid);
+        }
+    }
+}
 		
 
 
@@ -291,7 +306,7 @@ function clearTimers(){
 function getDataSet(options) {
     $("#loadspinner").css('display','block');
     var html = '';
-    var jURL = 'getDataSet.xsjs';
+    var jURL = 'lib/getDataSet.xsjs';
     
     jQuery.ajax({
         url:jURL,
@@ -329,7 +344,11 @@ function getDataSet(options) {
 				loadGridster();
 				loadDynamicJScript('script', '');
 				dashboardActive(true);
+				getDataSet({ strService: 'WidgetContents', strDashboardID: options.strDashboardID });
+			} else if (options.strService == 'WidgetContents') {
+                loadWidgetContent(JSON.parse(data));
             } else if (options.strService == 'RefreshWidget') {
+                //Would need to update if using new html service
 				var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 document.getElementById(elemID).innerHTML = data;
 				loadDynamicJScript('script', elemID);
