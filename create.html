@@ -18,31 +18,7 @@
         <script src="js/vendor/bootstrap.min.js"></script>
 		<script src="js/vendor/jquery.bootstrap-growl.min.js"></script>
 		<script src="js/vendor/jquery.cookie.js"></script>
-        
-        <script type="text/javascript">
-        var CSRFToken = '';
-        $(document).ready(function () {
-            $("form").submit(function (e) {
-                $.ajax({
-                    url: "getDataSet.xsjs?service=CreateUser&email=" + $('#email').val() + "&password=" + $('#password').val() + "&name=" + $('#name').val() + "&lname=" + $('#lname').val() + "&company=" + $('#company').val(),
-                    type: "POST",
-                    success: function(data, textStatus, XMLHttpRequest) {
-                    	if (data == '-1'){
-                    	    $('#msg').html('Account already exists');
-                    	} else if (data == '0') {
-                    	    $('#msg').html('Error creating the account');
-                    	} else if (data == '1') {
-                    	    $('#msg').html('Account created, please login');
-                    	}
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                        $('#msg').html('Status: ' + textStatus + " Error: " + errorThrown);
-                    } 
-                });
-                return false;
-            });
-        });
-        </script>
+        <script src="js/m2.account.js"></script>
     </head>
     
     <body class="full-lg" style="background-color: #E5E9EC;">
@@ -51,7 +27,7 @@
             <div class="col-sm-6 col-md-4 col-md-offset-4">
                 <div id="formvals" class="account-wall">
                     <img style="margin: 0 auto 0px; display: block;" src="img/login_logo.png" alt="">
-                    <form class="form-signin" style="padding: 20px;">
+                    <form id="createform" class="form-signin" style="padding: 20px;">
                         <div id="msg" class="msg"></div>
                         <input type="text" id="email" class="form-control" placeholder="Email" value="paul@paups.com" required autofocus style="margin-bottom:  10px;">
                         <input type="text" id="name" class="form-control" placeholder="First Name" value="Paul" required style="margin-bottom:  10px;">

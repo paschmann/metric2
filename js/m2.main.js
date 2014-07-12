@@ -223,7 +223,6 @@ function loadDashboards(objDashboards){
 	var len = objDashboards.length;
 	
 	$("#dashboards").html('');
-	//$("#dashboardmenu").html('');
 	$( "ul:eq( 1 )" ).empty();
 	
 	$( "ul:eq( 1 )" ).append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
@@ -231,14 +230,14 @@ function loadDashboards(objDashboards){
 	if (len > 0){
         for (var i = 0;i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
-			$( "ul:eq( 1 )" ).append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
 			$("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
 			$("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html($(this).html());
                 return false;
             });
-		
+            
+            $( "ul:eq( 1 )" ).append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html("<a href='#'>" + $(this).attr('title') + "</a>");
@@ -246,6 +245,11 @@ function loadDashboards(objDashboards){
                 return false;
             });
         }
+    }
+    
+    if (intCurrentDashboardID == 1){
+        getContent($("#dashboards li:first").data("id"));
+        $('#dashboardname').html($("#dashboards li:first").html());
     }
 }
     
@@ -282,7 +286,30 @@ function clearTimers(){
     }
 }
 
-		
+
+function loadWidgetContent(objWidgets){
+    var len = objWidgets.length;
+    var ob;
+    $.ajaxSetup({
+        cache: false
+    });
+    if (len > 0){
+        for (var i = 0;i < len; ++i) {
+            ob = objWidgets[i];
+            var url = 'js/widgets/' + ob.codetype + '.js';
+            $("<link/>", {
+                rel: "stylesheet",
+                type: "text/css",
+                href: "js/widgets/" + ob.codetype + ".css"
+            }).appendTo("head");
+            
+            $.getScript( url, function() {
+                    window[ob.codetype](ob);
+                    timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: ob.dwid});}, ob.refresh));
+            });
+        }
+    }
+}
 		
 
 
@@ -291,7 +318,7 @@ function clearTimers(){
 function getDataSet(options) {
     $("#loadspinner").css('display','block');
     var html = '';
-    var jURL = 'getDataSet.xsjs';
+    var jURL = 'lib/getDataSet.xsjs';
     
     jQuery.ajax({
         url:jURL,
@@ -329,10 +356,17 @@ function getDataSet(options) {
 				loadGridster();
 				loadDynamicJScript('script', '');
 				dashboardActive(true);
+				//Change: 001
+			    //getDataSet({ strService: 'WidgetContents', strDashboardID: options.strDashboardID });
+			} else if (options.strService == 'WidgetContents') {
+                loadWidgetContent(JSON.parse(data));
             } else if (options.strService == 'RefreshWidget') {
-				var elemID = "t1-widget-container" + options.strDashboardWidgetID;
+                var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 document.getElementById(elemID).innerHTML = data;
 				loadDynamicJScript('script', elemID);
+				//Change: 001
+				//ob = JSON.parse(data);
+				//window[ob.codetype](ob)
 			} else if (options.strService == 'EditWidgetDialog') {
                 dialogConstructor("Edit Widget", true, true, data, 1, true);
             } else if (options.strService == 'NewWidgetDialog') {

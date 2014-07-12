@@ -1,0 +1,5 @@
+service {
+
+       "lilabs/metric2/api" as "API";
+
+}
