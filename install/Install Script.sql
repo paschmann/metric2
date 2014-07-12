@@ -35,7 +35,7 @@ CREATE ROW TABLE "METRIC2"."M2_PAL_TS_FIXEDVALS"  ( "ID" INT CS_INT ) ;
 CREATE ROW TABLE "METRIC2"."M2_USER_CONNECTIONS"  ( "CONNECTION_ID" INT CS_INT NOT NULL, "USER_ID" INT CS_INT, "NAME" VARCHAR(40) CS_STRING, "STRING" VARCHAR(200) CS_STRING, PRIMARY KEY ( "CONNECTION_ID" ) ) ;
 CREATE ROW TABLE "METRIC2"."M2_USERS"  ( "USER_ID" INT CS_INT NOT NULL, "NAME" VARCHAR(100) CS_STRING, "LNAME" VARCHAR(100) CS_STRING, "ACCT_TYPE" INT CS_INT, "EMAIL" VARCHAR(100) CS_STRING NOT NULL, "PASSWORD" VARCHAR(100) CS_STRING, "EMAIL_DOMAIN" VARCHAR(100) CS_STRING, "DT_ADDED" LONGDATE CS_LONGDATE, "USER_TOKEN" VARCHAR(100) CS_STRING, PRIMARY KEY ( "USER_ID", "EMAIL" ) ) ;
 CREATE ROW TABLE "METRIC2"."M2_WIDGET"  ( "WIDGET_ID" INT CS_INT, "NAME" VARCHAR(100) CS_STRING, "ICON_URL" VARCHAR(200) CS_STRING, "TYPE" VARCHAR(40) CS_STRING, "CODE" VARCHAR(100) CS_STRING, "CODE_TYPE" VARCHAR(100) CS_STRING, "DESCRIPTION" VARCHAR(200) CS_STRING, "WIDGET_GROUP" INT CS_INT, "HIST_ENABLED" INT CS_INT DEFAULT 0, "DEF_HEIGHT" INT CS_INT, "DEF_WIDTH" INT CS_INT ) ;
-CREATE ROW TABLE "METRIC2"."M2_WIDGET_PARAM"  ( "PARAM_ID" INT CS_INT, "WIDGET_ID" INT CS_INT, "NAME" VARCHAR(100) CS_STRING, "TYPE" VARCHAR(100) CS_STRING, "VALUE_DEFAULT" VARCHAR(1000) CS_STRING, "INDEX_NO" INT CS_INT, "REQUIRED" INT CS_INT, "PLACEHOLDER" VARCHAR(100) CS_STRING, "DISPLAY_NAME" VARCHAR(100) CS_STRING, "VISIBLE" VARCHAR(10) CS_STRING, "OPTION_GROUP" INT CS_INT ) ;
+CREATE ROW TABLE "METRIC2"."M2_WIDGET_PARAM"  ( "PARAM_ID" INT CS_INT, "WIDGET_ID" INT CS_INT, "NAME" VARCHAR(100) CS_STRING, "TYPE" VARCHAR(100) CS_STRING, "VALUE_DEFAULT" VARCHAR(1000) CS_STRING, "INDEX_NO" INT CS_INT, "REQUIRED" INT CS_INT, "PLACEHOLDER" VARCHAR(100) CS_STRING, "DISPLAY_NAME" VARCHAR(100) CS_STRING, "VISIBLE" VARCHAR(10) CS_STRING, "OPTION_GROUP" INT CS_INT, "HIST_ENABLED" INT CS_INT DEFAULT 0) ;
 CREATE ROW TABLE "METRIC2"."M2_WIDGET_PARAM_OPTIONS"  ( "OPTION_ID" INT CS_INT NOT NULL, "VALUE" VARCHAR(200) CS_STRING, "DISPLAY_VALUE" VARCHAR(200) CS_STRING, "OPTION_GROUP" INT CS_INT, PRIMARY KEY ( "OPTION_ID" ) ) ;
 
 -- Col Tables
@@ -87,38 +87,38 @@ CREATE PROCEDURE METRIC2.M2_P_HISTGENERATOR(dwp_id INT, min_Val INT, max_val INT
 -- Data Inserts
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (1,'Text and Footer','1.png','Static','widgetTextAndFooter','Javascript','Display Plain Text',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (2,'List','2.png','Query','widgetList','Javascript','A Table of List data',2,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (5,'Icon and Text','5.png','Query','widgetIcon','Javascript','Displays an Icon of your choice and a custom SQL data point followed by Text',2,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (11,'Blocked Transaction List','11.png','Query','widgetBlockedTransactionsList','Javascript','A list of transactions currently being blocked',1,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (15,'Date and Time','15.png','Static','widgetDateTime','Javascript','A Date and Time Widget',1,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (17,'Weather','17.png','Service','widgetWeather','Javascript','A weathet display',7,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (29,'Sensor (API)','29.png','WebService','widgetSensorAPI','Javascript','Displays a physical tempreture from a sensor',6,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (3,'Number and Text','3.png','Query','widgetNumberAndText','Javascript','A Large number with text below it',2,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (6,'Number and Changed Value','6.png','Query','widgetNumberChange','Javascript','Displays a large number value with amount changed since last update',2,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (8,'Current Connections','8.png','Query','widgetNumberChange','Javascript','Displays the current connections to your Database',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (10,'Block Transactions','10.png','Query','widgetBlockedTransactions','Javascript','A count of currently blocked transactions',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (13,'Memory Used','13.png','Query','widgetUsedMemoryPie','Javascript','A pie chart showing the used and avilable memory',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (16,'Connection History','16.png','Query','widgetConnectionHistory','Javascript','A historical chart showing the recent connection count',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (26,'Ping','26.png','Query','widgetPing','Javascript','Ping a host IP Address',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (32,'User Alert Ticker','32.png','Query','widgetUserAlerts','Javascript','Displays a list of recently executed user alerts',1,0,1,2);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (28,'System Alert Ticker','28.png','Query','widgetSystemAlerts','Javascript','Displays the system alerts in a ticker format',1,0,1,3);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (4,'All Services Started','4.png','Query','widgetAllServicesStarted','Javascript','Displays whether the HANA Services have been started or not',1,0,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (5,'Icon and Text','5.png','Query','widgetIcon','Javascript','Displays an Icon of your choice and a custom SQL data point followed by Text',2,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (6,'Number and Changed Value','6.png','Query','widgetNumberChange','Javascript','Displays a large number value with amount changed since last update',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (7,'Instance Details','7.png','Query','widgetInstanceDetails','Javascript','Displays the Instance ID and Number of the Connection',1,0,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (8,'Current Connections','8.png','Query','widgetNumberChange','Javascript','Displays the current connections to your Database',1,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (9,'CPU Usage History','9.png','Query','widgetHistoryChart','Javascript','A history of CPU usage on the HANA Database Instance',1,1,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (10,'Block Transactions','10.png','Query','widgetBlockedTransactions','Javascript','A count of currently blocked transactions',1,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (11,'Blocked Transaction List','11.png','Query','widgetBlockedTransactionsList','Javascript','A list of transactions currently being blocked',1,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (12,'Component Overview','12.png','Query','widgetComponentOverview','Javascript','A summary of the status of each core system component',1,0,1,3);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (13,'Memory Used','13.png','Query','widgetUsedMemoryPie','Javascript','A pie chart showing the used and available memory',1,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (14,'Resident Memory Usage History','14.png','Query','widgetMemoryUsedHistory','Javascript','A line chart showing the memory usage history',1,1,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (15,'Date and Time','15.png','Static','widgetDateTime','Javascript','A Date and Time Widget',1,0,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (16,'Connection History','16.png','Query','widgetConnectionHistory','Javascript','A historical chart showing the recent connection count',1,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (17,'Weather','17.png','Service','widgetWeather','Javascript','A weather display',7,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (18,'Disk Usage','18.png','Query','widgetBullet','Javascript','A bullet chart showing data, trace and log disk usage, volume size and disk size',1,0,2,2);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (21,'System Overview','21.png','Query','widgetSystemOverview','Javascript','A summary of mportant system metrics',1,0,1,4);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (21,'System Overview','21.png','Query','widgetSystemOverview','Javascript','A summary of important system metrics',1,0,1,4);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (22,'System Type','22.png','Query','widgetIconDistributed','Javascript','A icon showing the system type',1,0,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (23,'Recent Unsuccessful Connections','23.png','Query','widgetRecentUnConnections','Javascript','A recent (12 hours) count of unsuccessful connection attempts',1,1,1,1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (24,'DB Memory Overview','24.png','Query','widgetDBMemoryOverview','Javascript','A summary of Database Memory details',1,0,1,2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (25,'Resident Memory Overview','25.png','Query','widgetResMemoryOverview','Javascript','A summary of Resident Memory details',1,0,1,2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (26,'Ping','26.png','Query','widgetPing','Javascript','Ping a host IP Address',1,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (27,'System Connections','27.png','Query','widgetFunnel','Javascript','Displays the 3 groups of connection types',1,0,1,2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (28,'System Alert Ticker','28.png','Query','widgetSystemAlerts','Javascript','Displays the system alerts in a ticker format',1,0,1,3);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (29,'Sensor (API)','29.png','WebService','widgetSensorAPI','Javascript','Displays a physical temperature from a sensor',6,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (30,'Stock Price','30.png','Service','widgetStockPrice','Javascript','Stock Price',7,1,1,1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (31,'Twitter','31.png','Service','widgetTwitter','Javascript','Displays a twitter feed from a designated user',7,0,3,2);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (9,'CPU Usage History','9.png','Query','widgetHistoryChart','Javascript','A history of CPU usage on the HANA Database Instance',1,1,1,1);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (14,'Resident Memory Usage History','14.png','Query','widgetMemoryUsedHistory','Javascript','A line chart showing the memory usage history',1,1,1,1);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (23,'Recent Unsuccessful Connections','23.png','Query','widgetRecentUnConnections','Javascript','A recent (12 hours) count of unsuccessful connection attempts',1,1,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (32,'User Alert Ticker','32.png','Query','widgetUserAlerts','Javascript','Displays a list of recently executed user alerts',1,0,1,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (33,'Sensor (Poll)','33.png','Service','widgetSensorPoll','Javascript','Displays a value from a Sensor using poll (HTTP GET)',6,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (34,'Number and History','34.png','Query','widgetHistorySmall','Javascript','Displays a value, icon and small history chart below the number',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (35,'Row and Column Table Size','35.png','Query','widgetTableSizes','Javascript','Displays the size of the row and columns in memory',1,0,1,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (36,'JSON Web Service','36.png','Service','widgetJSONService','Javascript','Client side call to a web service, and displays the value',2,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (25,'Resident Memory Overview','25.png','Query','widgetResMemoryOverview','Javascript','A summary of Resident Memory details',1,0,1,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (37,'JSON Web Service Table','37.png','Service','widgetJSONServiceTable','Javascript','Client side call to a web service, and displays the response as a table',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (38,'Connection List','38.png','Query','widgetConnectionList','Javascript','Displays a list of running connections including IP, host, schema, and status',1,0,1,3);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (39,'Map','39.png','Query','widgetDataMap','Javascript','Displays a map and queries your DB for a latitude, longditude, name and value',2,0,2,2);
@@ -126,103 +126,165 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (40,'Progress Bar','40.png','Query','wi
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (41,'RSS Feed','41.png','Service','widgetRSSFeed','Javascript','Displays posts from a specified RSS Feed',2,0,null,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (42,'Image Box','42.png','Static','widgetImageBox','Javascript','Displays a Image using the supplied URL',2,0,null,null);
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (4,1,'Large Text Value','Static','',100,null,'Any form of Static Text','Main Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (5,1,'Footer Text Value','Static','',200,null,'Any form of Static Text','Footer Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (7,4,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE',200,1,'SQL Statement for the value of the services','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (8,4,'SQL2','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_ALLSTARTED',300,1,'SQL Statement for Status','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (9,5,'ICONURL','URL','',100,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (10,5,'SQL1','SQL','SELECT 1 FROM DUMMY',200,1,'SQL Statement for your data point','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (11,5,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (13,6,'SQL1','SQL','SELECT 283 FROM DUMMY',200,1,'SQL Statement for your data point','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (17,2,'SQL1','SQL','SELECT * FROM SYS.M_SYSTEM_OVERVIEW',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (19,3,'SQL1','SQL','SELECT 7 FROM DUMMY',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (20,3,'TEXT1','Static','',300,0,'Any form of Static Text','Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (22,7,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCEID',200,0,'SQL Statement for the Instance ID to be returned','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (23,7,'SQL2','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCENUMBER',300,0,'SQL Statement for the Instance number to be returned','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (27,8,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement for the number of connections to be returned','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (38,10,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_BLOCKEDTRANS',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (30,8,'DECPLACE','Static','0',400,1,'Datatype of changed value (decimal places)','Decimal Places','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (31,6,'DECPLACE','Static','0',400,1,'Datatype of changed value (decimal places)','Decimal Places','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (33,9,'SQL1','SQL','SELECT CPU FROM METRIC2.M2_WIDGET_DB_CPU',200,0,'SQL Statement to fetch the current CPU value','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (35,9,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (41,11,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_BLOCKEDTRANSLIST',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (63,16,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement to retrieve current connections','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (44,12,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_SYSOVERVIEW',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (64,16,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (70,17,'ZIPCODE','Static',' ',100,0,'Required, ZIP Code for weather feed','ZIP Code','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (76,21,'SQL1','SQL','SELECT SM FROM METRIC2.M2_WIDGET_TOTAL_CPU',200,0,'SQL Statement to retrieve CPU Usage','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (77,21,'SQL2','SQL','SELECT SM FROM METRIC2.M2_WIDGET_SYS_MEM',300,0,'SQL Statement to retrieve physical memory','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (83,18,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_DATADISK',200,0,'SQL Query for DATA disk details','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (54,13,'SQL1','SQL','SELECT RND FROM METRIC2.M2_WIDGET_FREEPHYSMEM',200,0,'SQL Statement to retrieve physical memory','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (79,21,'SQL3','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE',400,0,'SQL Statement to check if all services are started','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (56,13,'SQL2','SQL','SELECT * FROM METRIC2.M2_WIDGET_PHYSICALMEM',300,0,'SQL Statement to retrieve free physical memory','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (58,14,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_PHYSICALMEM',200,0,'SQL Statement to retrieve physical memory','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (59,14,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (80,21,'SQL4','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_DISTRIBUTED_VALUE',500,0,'SQL Statement to check if the system is distributed','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (82,22,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_DISTRIBUTED_VALUE',200,0,'SQL Statement to check if the system is distributed','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (85,18,'SQL2','SQL','SELECT * FROM METRIC2.M2_WIDGET_LOGDISK',300,0,'SQL Query for LOG disk details','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (97,26,'IP','Static','192.168.0.1',100,1,'IP or DNS Name of reachable server','IP/DNS Name','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (87,18,'SQL3','SQL','SELECT * FROM METRIC2.M2_WIDGET_TRACEDISK',400,0,'SQL Query for TRACE disk details','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (89,23,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_INVALID_CONS',200,0,'SQL Query for unsuccessful connection attempts','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (93,24,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_DBMEM',200,0,'SQL Query for memory details','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (95,25,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_RESIDENTMEM',200,0,'SQL Query for memory details','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,29,'VALUE','Static','SELECT * FROM METRIC2.M2_WIDGET_USERALERTS',400,1,'Value to be displayed','','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (106,29,'TEXT1','Static','Temperature',200,0,'Text: The text displayed below the returned temperature','Display Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (102,27,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_CONNECTIONS',200,0,'SQL Query for Connection counts','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (104,28,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_SYSALERTS',200,0,'SQL Query for current Alerts','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (112,31,'HANDLE','Static',' ',100,0,'Required, a twitter handle for the user','@Twitter','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (113,31,'NUMTWEETS','Static','5',200,0,'The number of tweets to display','Tweet Count','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (115,31,'WIDID','Static','',300,0,'Required: Twitter widget ID (can be created here: https://twitter.com/settings/widgets)','Widget ID','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,32,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_USERALERTS',200,0,'SQL Query for current user Alerts','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (125,34,'SQL1','SQL','',200,0,'SQL Statement for the value to be hisplayed and stored','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (122,30,'TICKER','Static','',100,1,'Stock Ticker','Ticker','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (126,34,'RECLIMIT','Static','30',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (135,36,'URL','Static','http://ip.jsontest.com/',100,1,'Url of reachable web service','URL','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,1,'Optional: Full URL Path to your icon (200px x 100px)','URL Link','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (130,34,'LINECOL','Static','#CCCCCC',600,0,'HTML Color: Color of the sparkline','Sparkline Color','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (134,35,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_ROWCOLSIZES',200,0,'SQL Query for col and row sizes in mem','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (137,36,'OBJKEY','Static','ip',200,1,'The object key to display','Object Key','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (138,36,'TEXT1','Static','',300,1,'Text: The text displayed below the returned','Text','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (36,9,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (65,16,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (60,14,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (139,37,'URL','Static','https://api.github.com/users/paschmann',100,1,'Url of reachable web service','URL','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (14,6,'UOM1','OPTION','Gb',300,0,'Optional, Unit of measure for the changed value','Text','true',2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (26,8,'UOM1','Static','Users',300,0,'Optional, Unit of measure for the changed value','Text','true',2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (109,29,'UOM1','OPTION',' ',300,0,'Optional, Unit of measure for the sensor value','UOM','true',2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (131,34,'UOM1','OPTION',' ',250,0,'Optional, Unit of measure for the value','UOM','true',2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (140,38,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (141,38,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_CONNLIST',200,0,'SQL Query for connection list','SQL Query','false',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (6,4,'Server Connection','OPTION','Local Server',100,0,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (12,6,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (21,7,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (16,2,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (18,3,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (24,8,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (37,10,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (32,9,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (39,11,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (62,16,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (43,12,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (45,13,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (71,18,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (75,21,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (57,14,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (81,22,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (91,24,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (88,23,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (94,25,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (100,27,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (103,28,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (132,35,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (124,34,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (143,39,'SQL1','SQL','SELECT MET236.12135MET2 as Lat, MET2-115.17021MET2 as Long, MET2Las VegasMET2 as Label, MET210MET2 as Value FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (144,40,'Server Connection','Connection','Local Server',100,1,'Local Server','Server Connection','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (145,40,'SQL1','SQL','SELECT 92 as percent, MET2Sales IncreaseMET2 as Label FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (146,40,'ICONURL','URL','',300,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (147,41,'URL','Static','',100,1,'http://rss.cnn.com/rss/edition.rss','Feed URL','true', null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (148,41,'FEEDCOUNT','Static','',200,1,'4','Feed Count','true', null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (149,42,'URL','Static','http://scn.sap.com/resources/sbs_static/2406/developer-center-picture-5-transp.png',100,1,'Url of Image including HTTP','URL','true',null);
+-- Widget Params
+-- widgetTextAndFooter
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (4,1,'Large Text Value','Static','',100,null,'Any form of Static Text','Main Text','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (5,1,'Footer Text Value','Static','',200,null,'Any form of Static Text','Footer Text','true',null,0);
+
+-- widgetList 
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (17,2,'SQL1','SQL','SELECT * FROM SYS.M_SYSTEM_OVERVIEW',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (16,2,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+-- widgetNumberAndText
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (19,3,'SQL1','SQL','SELECT 7 FROM DUMMY',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null, 1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (20,3,'TEXT1','Static','',300,0,'Any form of Static Text','Text','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (18,3,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+-- widgetAllServicesStarted
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (7,4,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE',200,1,'SQL Statement for the value of the services','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (8,4,'SQL2','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_ALLSTARTED',300,1,'SQL Statement for Status','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (6,4,'Server Connection','OPTION','Local Server',100,0,'Local Server','Server Connection','true',3,0);
+
+-- widgetIcon
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (9,5,'ICONURL','URL','',100,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (10,5,'SQL1','SQL','SELECT 1 FROM DUMMY',200,1,'SQL Statement for your data point','SQL Query','true',null, 1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (11,5,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0);
+
+-- widgetNumberChange
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (13,6,'SQL1','SQL','SELECT 283 FROM DUMMY',200,1,'SQL Statement for your data point','SQL Query','true',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (31,6,'DECPLACE','Static','0',400,1,'Datatype of changed value (decimal places)','Decimal Places','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (14,6,'UOM1','OPTION','Gb',300,0,'Optional, Unit of measure for the changed value','Text','true',2,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (12,6,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+-- widgetInstanceDetails
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (22,7,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCEID',200,0,'SQL Statement for the Instance ID to be returned','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (23,7,'SQL2','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCENUMBER',300,0,'SQL Statement for the Instance number to be returned','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (21,7,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+-- widgetNumberChange
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (27,8,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement for the number of connections to be returned','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (30,8,'DECPLACE','Static','0',400,1,'Datatype of changed value (decimal places)','Decimal Places','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (26,8,'UOM1','Static','Users',300,0,'Optional, Unit of measure for the changed value','Text','true',2,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (24,8,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+--widgetHistoryChart
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (33,9,'SQL1','SQL','SELECT CPU FROM METRIC2.M2_WIDGET_DB_CPU',200,0,'SQL Statement to fetch the current CPU value','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (35,9,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (36,9,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (32,9,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+--widgetBlockedTransactions
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (38,10,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_BLOCKEDTRANS',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (37,10,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+--widgetBlockedTransactionsList
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (41,11,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_BLOCKEDTRANSLIST',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (39,11,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (44,12,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_SYSOVERVIEW',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (43,12,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+--widgetUsedMemoryPie
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (54,13,'SQL1','SQL','SELECT RND FROM METRIC2.M2_WIDGET_FREEPHYSMEM',200,0,'SQL Statement to retrieve physical memory','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (56,13,'SQL2','SQL','SELECT * FROM METRIC2.M2_WIDGET_PHYSICALMEM',300,0,'SQL Statement to retrieve free physical memory','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (45,13,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (58,14,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_PHYSICALMEM',200,0,'SQL Statement to retrieve physical memory','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (59,14,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (60,14,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (57,14,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (63,16,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement to retrieve current connections','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (64,16,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (65,16,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (62,16,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (70,17,'ZIPCODE','Static',' ',100,0,'Required, ZIP Code for weather feed','ZIP Code','true',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (83,18,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_DATADISK',200,0,'SQL Query for DATA disk details','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (85,18,'SQL2','SQL','SELECT * FROM METRIC2.M2_WIDGET_LOGDISK',300,0,'SQL Query for LOG disk details','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (87,18,'SQL3','SQL','SELECT * FROM METRIC2.M2_WIDGET_TRACEDISK',400,0,'SQL Query for TRACE disk details','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (71,18,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (76,21,'SQL1','SQL','SELECT SM FROM METRIC2.M2_WIDGET_TOTAL_CPU',200,0,'SQL Statement to retrieve CPU Usage','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (77,21,'SQL2','SQL','SELECT SM FROM METRIC2.M2_WIDGET_SYS_MEM',300,0,'SQL Statement to retrieve physical memory','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (79,21,'SQL3','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE',400,0,'SQL Statement to check if all services are started','SQL Query','false',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (80,21,'SQL4','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_DISTRIBUTED_VALUE',500,0,'SQL Statement to check if the system is distributed','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (75,21,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (82,22,'SQL1','SQL','SELECT VALUE FROM METRIC2.M2_WIDGET_DISTRIBUTED_VALUE',200,0,'SQL Statement to check if the system is distributed','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (81,22,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (89,23,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_INVALID_CONS',200,0,'SQL Query for unsuccessful connection attempts','SQL Query','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (88,23,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (93,24,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_DBMEM',200,0,'SQL Query for memory details','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (91,24,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (95,25,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_RESIDENTMEM',200,0,'SQL Query for memory details','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (94,25,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (97,26,'IP','Static','192.168.0.1',100,1,'IP or DNS Name of reachable server','IP/DNS Name','true',null,1);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (102,27,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_CONNECTIONS',200,0,'SQL Query for Connection counts','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (100,27,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (104,28,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_SYSALERTS',200,0,'SQL Query for current Alerts','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (103,28,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,29,'VALUE','Static','SELECT * FROM METRIC2.M2_WIDGET_USERALERTS',400,1,'Value to be displayed','','false',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (106,29,'TEXT1','Static','Temperature',200,0,'Text: The text displayed below the returned temperature','Display Text','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (109,29,'UOM1','OPTION',' ',300,0,'Optional, Unit of measure for the sensor value','UOM','true',2,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (122,30,'TICKER','Static','',100,1,'Stock Ticker','Ticker','true',null,1);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (112,31,'HANDLE','Static',' ',100,0,'Required, a twitter handle for the user','@Twitter','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (113,31,'NUMTWEETS','Static','5',200,0,'The number of tweets to display','Tweet Count','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (115,31,'WIDID','Static','',300,0,'Required: Twitter widget ID (can be created here: https://twitter.com/settings/widgets)','Widget ID','true',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,32,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_USERALERTS',200,0,'SQL Query for current user Alerts','SQL Query','false',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (125,34,'SQL1','SQL','',200,0,'SQL Statement for the value to be hisplayed and stored','SQL Query','true',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (124,34,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (126,34,'RECLIMIT','Static','30',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,1,'Optional: Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (130,34,'LINECOL','Static','#CCCCCC',600,0,'HTML Color: Color of the sparkline','Sparkline Color','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (131,34,'UOM1','OPTION',' ',250,0,'Optional, Unit of measure for the value','UOM','true',2,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (134,35,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_ROWCOLSIZES',200,0,'SQL Query for col and row sizes in mem','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (132,35,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (135,36,'URL','Static','http://ip.jsontest.com/',100,1,'Url of reachable web service','URL','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (137,36,'OBJKEY','Static','ip',200,1,'The object key to display','Object Key','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (138,36,'TEXT1','Static','',300,1,'Text: The text displayed below the returned','Text','true',null,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (139,37,'URL','Static','https://api.github.com/users/paschmann',100,1,'Url of reachable web service','URL','true',null,0);
+
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (140,38,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (141,38,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_CONNLIST',200,0,'SQL Query for connection list','SQL Query','false',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (143,39,'SQL1','SQL','SELECT MET236.12135MET2 as Lat, MET2-115.17021MET2 as Long, MET2Las VegasMET2 as Label, MET210MET2 as Value FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (144,40,'Server Connection','Connection','Local Server',100,1,'Local Server','Server Connection','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (145,40,'SQL1','SQL','SELECT 92 as percent, MET2Sales IncreaseMET2 as Label FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (146,40,'ICONURL','URL','',300,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (147,41,'URL','Static','',100,1,'http://rss.cnn.com/rss/edition.rss','Feed URL','true', null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (148,41,'FEEDCOUNT','Static','',200,1,'4','Feed Count','true', null,0);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (149,42,'URL','Static','http://scn.sap.com/resources/sbs_static/2406/developer-center-picture-5-transp.png',100,1,'Url of Image including HTTP','URL','true',null,0);
+
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);

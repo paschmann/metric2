@@ -288,13 +288,25 @@ function clearTimers(){
 
 
 function loadWidgetContent(objWidgets){
-    var len = objWidgets.length
+    var len = objWidgets.length;
+    var ob;
+    $.ajaxSetup({
+        cache: false
+    });
     if (len > 0){
         for (var i = 0;i < len; ++i) {
-            window[objWidgets[i].codetype](objWidgets[i]);
-
-            //var divid = '#t1-widget-container' + objWidgets[i].dwid;
-            //$(divid).html(objWidgets[i].dwid);
+            ob = objWidgets[i];
+            var url = 'js/widgets/' + ob.codetype + '.js';
+            $("<link/>", {
+                rel: "stylesheet",
+                type: "text/css",
+                href: "js/widgets/" + ob.codetype + ".css"
+            }).appendTo("head");
+            
+            $.getScript( url, function() {
+                    window[ob.codetype](ob);
+                    timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: ob.dwid});}, ob.refresh));
+            });
         }
     }
 }
@@ -344,14 +356,17 @@ function getDataSet(options) {
 				loadGridster();
 				loadDynamicJScript('script', '');
 				dashboardActive(true);
-				getDataSet({ strService: 'WidgetContents', strDashboardID: options.strDashboardID });
+				//Change: 001
+			    //getDataSet({ strService: 'WidgetContents', strDashboardID: options.strDashboardID });
 			} else if (options.strService == 'WidgetContents') {
                 loadWidgetContent(JSON.parse(data));
             } else if (options.strService == 'RefreshWidget') {
-                //Would need to update if using new html service
-				var elemID = "t1-widget-container" + options.strDashboardWidgetID;
+                var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 document.getElementById(elemID).innerHTML = data;
 				loadDynamicJScript('script', elemID);
+				//Change: 001
+				//ob = JSON.parse(data);
+				//window[ob.codetype](ob)
 			} else if (options.strService == 'EditWidgetDialog') {
                 dialogConstructor("Edit Widget", true, true, data, 1, true);
             } else if (options.strService == 'NewWidgetDialog') {

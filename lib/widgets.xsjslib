@@ -22,7 +22,8 @@ function showWidgets(){
                     strContent += "</div>";
                     strContent += "<section class='t1-widget-section'>";
                         strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'>";
-                            //strContent += showWidgetContents(intDashboardWidgetID, rs.getString(9));
+                            //Change: 001
+                            strContent += showWidgetContents(intDashboardWidgetID, rs.getString(9));
                         strContent += "</div>";
                     strContent += "</section>";
                 strContent += "</li>";
@@ -39,39 +40,68 @@ function getListOfWidgets(dashboardid){
 	return sqlLib.executeRecordSetObj("SELECT title FROM METRIC2.m2_DASHBOARD_WIDGET WHERE dashboard_id = " + dashboardid);
 }
 
+//Experimental
+function showWidgetDiv(intDashboardWidgetID){
+        var data = {};
+        var codetype = getWidgetCodeType(intDashboardWidgetID);
+        var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.widget_id = DWP.widget_id  WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
+        data['dwid'] = intDashboardWidgetID;
+	    data['codetype'] = codetype;
+    	data['refresh'] = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
+    	    
+        while (rs.next()){
+            data['paramid'] = rs.getString(2);
+            var paramname = rs.getString(1);
+            var datapoint = '';
+            if (rs.getString(1).indexOf('SQL') >= 0){
+                datapoint = sqlLib.executeRecordSetObj(getWidgetParamValueFromParamName(paramname, intDashboardWidgetID));
+            } else {
+                datapoint = getWidgetParamValueFromParamNameObj(paramname, intDashboardWidgetID);
+            }
+            data[paramname] = datapoint;
+            if (rs.getString(3) == '1'){
+               insertWidgetHistory(intDashboardWidgetID, paramname, datapoint);
+            }
+    	}
+    	rs.close();
+    	
+    	//data['alert'] = alertLib.checkWidgetAlert(dashboardwidgetid, datapoint);
+    	
+    	return data;
+}
 
-//function showWidgetContents(intDashboardWidgetID, codetype){
-function showWidgetContents(){
-	// if codetype is blank, this is a refresh, and needs to get from db
-    //if (codetype === ''){
-	//	codetype = getWidgetCodeType(intDashboardWidgetID);
-	//}
-	
+//Experimental
+function showWidgetContentsExp(){
 	try{
+	    var strContent = '';
+	    //Change: 001 
+	    
 	    var dataArray = new Array();
     
-	    var strContent = '';
 	    var rs2 = sqlLib.executeReader("SELECT title, width, dashboard_widget_id, type, height, code_type, col_pos, row_pos, code, hist_enabled from metric2.m2_dashboard_widget dw INNER JOIN metric2.m2_widget w ON w.widget_id = dw.widget_id where dashboard_id = " + dashboardid + " order by dashboard_widget_id");
         while (rs2.next()){
-            var codetype = getWidgetCodeType(rs2.getString(3));
-            var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.widget_id = DWP.widget_id  WHERE DWP.dashboard_widget_id =" + rs2.getString(3));
-	        var data = {};
-    	    data['dwid'] = rs2.getString(3);
-    	    data['codetype'] = codetype;
-            while (rs.next()){
-                data['paramid'] = rs.getString(2);
-                if (rs.getString(1).indexOf('SQL') >= 0){
-    			    data[rs.getString(1)] = sqlLib.executeRecordSetObj(getWidgetParamValueFromParamName(rs.getString(1), rs2.getString(3)));
-                } else {
-                    data[rs.getString(1)] = getWidgetParamValueFromParamNameObj(rs.getString(1), rs2.getString(3));
-                }
-    		}
-    		rs.close();
-    		
+            var data = showWidgetDiv(rs2.getString(3));  		
     		dataArray.push(data);
         }
-        strContent = JSON.stringify(dataArray)
-        /*
+        //alertLib.checkWidgetAlert(dashboardwidgetid, datapoint); need a way to process on client side
+        strContent = JSON.stringify(dataArray);
+	} catch (err) {
+        // If any widget throws an error, simply display the loading icon
+        strContent += err; // Useful for debugging
+        //strContent += "<img style='margin-top: 50px;' src='img/loading.gif' />";
+	}
+	return strContent;
+}
+
+
+function showWidgetContents(intDashboardWidgetID, codetype){
+	try{
+	    var strContent = '';
+	    // if codetype is blank, this is a refresh, and needs to get from db
+        if (codetype === ''){
+	    	codetype = getWidgetCodeType(intDashboardWidgetID);
+	    }
+	
 		switch (codetype) {
         case 'widgetTextAndFooter':
             strContent += widgetLib.widgetTextAndFooter(intDashboardWidgetID);
@@ -196,8 +226,8 @@ function showWidgetContents(){
 			strContent += "<script type='text/javascript' id='timercode" + intDashboardWidgetID + "' name='script'>";
 			strContent += "timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: '" + intDashboardWidgetID + "'});}, " + refreshrate + "));";
 			strContent += "</script>"; 
-		}*/
-		
+		}
+
 	} catch (err) {
         // If any widget throws an error, simply display the loading icon
         strContent += err; // Useful for debugging
@@ -250,7 +280,7 @@ function updateWigetValue(){
 
 // --------------------------------------- Widget UI's ----------------------------------------------------- //
 
-function widgetTextAndFooter(intDashboardWidgetID){
+function widgetTextAndFooter(dashboardwidgetid){
     var strHTML = "<div class='t1-widget-text-big'>" + getWidgetParamValueFromParamName('Large Text Value', dashboardwidgetid)  + "</div>";
     strHTML += "<div class='t1-widget-footer'>";
     strHTML += "<div class='t1-widget-percent-medium-grey'>" + getWidgetParamValueFromParamName('Footer Text Value', dashboardwidgetid) + "</div>";

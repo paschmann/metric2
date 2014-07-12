@@ -245,7 +245,9 @@ function alertHistoryTable(displaytype) {
 
 function saveDialog(strFunction) {
     var refreshrate = 0;
+    var strSQL = '';
     if (strFunction == 'New Widget') {
+        var paramCount = 0;
         refreshrate = document.getElementById('refreshrate').value;
         if (refreshrate === '') refreshrate = 0;
         
@@ -253,7 +255,7 @@ function saveDialog(strFunction) {
             strService: "Insert",
             strSQL: "Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + intCurrentDashboardID + ", " + document.getElementById('widgetid').value + ",'" + document.getElementById('widgettitle').value + "'," + document.getElementById('widgetwidth').value + "," + document.getElementById('widgetheight').value + ",1,1," + refreshrate + ")"
         })
-        
+        paramCount = $("[id^=pid_]").size();
         setTimeout(function() {
             //Once we have inserted the widget, then loop and do each param, give HANA time to insert to avoid issue
             $("[id^=pid_]").each(function() {
@@ -262,10 +264,18 @@ function saveDialog(strFunction) {
                 val = encodeURIComponent(val);
                 getDataSet({
                     strService: "Insert",
-                    strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + document.getElementById('widgetid').value + ", current_utcdate)"
+                    strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + document.getElementById('widgetid').value + ", current_utcdate);",
+                    strReload: "dashboard"
                 })
             });
-        }, 500);
+            /*
+            getDataSet({
+                strService: "Insert",
+                strSQL : strSQL
+            })
+            */
+        }, 1000);
+        
         getContent(intCurrentDashboardID);
     } else if (strFunction == 'Edit Widget') {
         refreshrate = document.getElementById('refreshrate').value;
