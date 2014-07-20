@@ -188,9 +188,6 @@ function executeInputQuery(SQL){
 			rs = pstmt.executeUpdate();
 			conn.commit();
 		}
-		
-		//rs.close();
-		//$.response.setBody(SQL);
 		return rs;
 	} catch (err) {
 		return err;

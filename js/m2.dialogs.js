@@ -16,6 +16,7 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
 
     $('#modal-header').html(strDialogTitle);
     $('#dialogHTML1').html(strData);
+    $('#dialogMsg1').html('');
             
     switch (intSize){
         case 1:
@@ -39,7 +40,8 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
     }
             
     if (boolDisplay){
-        $('#myModal').appendTo("body").modal('show');   
+        $('#myModal').appendTo("body").modal('show');
+        $('#dialogMsg1').html('');
     }
 }
 
@@ -243,92 +245,109 @@ function alertHistoryTable(displaytype) {
     }
 }
 
+function checkParamValidation(){
+    var ret = "false";
+    //Check no alter, update or delete statements in the parameters to avoid hacks
+    $("[id^=pid_]").each(function() {
+        var val = this.value.toUpperCase();
+        if (val.indexOf("DELETE") > -1 || val.indexOf("ALTER") > -1 || val.indexOf("UPDATE") > -1){
+            ret = "<div class='alert alert-danger'><strong>Error: </strong>Cannot use DELETE, ALTER or UPDATE statements in SQL Queries</div>";
+        }
+    });
+    return ret;
+}
+
 function saveDialog(strFunction) {
     var refreshrate = 0;
     var strSQL = '';
-    if (strFunction == 'New Widget') {
-        var paramCount = 0;
-        refreshrate = document.getElementById('refreshrate').value;
-        if (refreshrate === '') refreshrate = 0;
-        
-        getDataSet({
-            strService: "Insert",
-            strSQL: "Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + intCurrentDashboardID + ", " + document.getElementById('widgetid').value + ",'" + document.getElementById('widgettitle').value + "'," + document.getElementById('widgetwidth').value + "," + document.getElementById('widgetheight').value + ",1,1," + refreshrate + ")"
-        })
-        paramCount = $("[id^=pid_]").size();
-        setTimeout(function() {
-            //Once we have inserted the widget, then loop and do each param, give HANA time to insert to avoid issue
+    var checkParams = checkParamValidation();
+    if (checkParams == "false"){
+        if (strFunction == 'New Widget') {
+            var paramCount = 0;
+            refreshrate = document.getElementById('refreshrate').value;
+            if (refreshrate === '') refreshrate = 0;
+            
+            getDataSet({
+                strService: "Insert",
+                strSQL: "Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + intCurrentDashboardID + ", " + document.getElementById('widgetid').value + ",'" + document.getElementById('widgettitle').value + "'," + document.getElementById('widgetwidth').value + "," + document.getElementById('widgetheight').value + ",1,1," + refreshrate + ")"
+            })
+            paramCount = $("[id^=pid_]").size();
+            setTimeout(function() {
+                //Once we have inserted the widget, then loop and do each param, give HANA time to insert to avoid issue
+                $("[id^=pid_]").each(function() {
+                    var val = replaceAll("'", "MET2", this.value);
+                    val = replaceAll("%", "MET3", val);
+                    val = encodeURIComponent(val);
+                    getDataSet({
+                        strService: "Insert",
+                        strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + document.getElementById('widgetid').value + ", current_utcdate);",
+                        strReload: "dashboard"
+                    })
+                });
+                /*
+                getDataSet({
+                    strService: "Insert",
+                    strSQL : strSQL
+                })
+                */
+            }, 1000);
+            
+            getContent(intCurrentDashboardID);
+        } else if (strFunction == 'Edit Widget') {
+            refreshrate = document.getElementById('refreshrate').value;
+            var updateStatements = '';
+            if (refreshrate === '') refreshrate = 0;
+    
             $("[id^=pid_]").each(function() {
                 var val = replaceAll("'", "MET2", this.value);
                 val = replaceAll("%", "MET3", val);
                 val = encodeURIComponent(val);
-                getDataSet({
-                    strService: "Insert",
-                    strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + document.getElementById('widgetid').value + ", current_utcdate);",
-                    strReload: "dashboard"
-                })
+                updateStatements += "UPDATE metric2.m2_dashboard_widget_params SET value = '" + val + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value + " AND param_id =" + this.id.substring(4) + ";";
             });
-            /*
+            
             getDataSet({
-                strService: "Insert",
-                strSQL : strSQL
+                strService: "Update",
+                strSQL: updateStatements
             })
-            */
-        }, 1000);
-        
-        getContent(intCurrentDashboardID);
-    } else if (strFunction == 'Edit Widget') {
-        refreshrate = document.getElementById('refreshrate').value;
-        var updateStatements = '';
-        if (refreshrate === '') refreshrate = 0;
-
-        $("[id^=pid_]").each(function() {
-            var val = replaceAll("'", "MET2", this.value);
-            val = replaceAll("%", "MET3", val);
-            val = encodeURIComponent(val);
-            updateStatements += "UPDATE metric2.m2_dashboard_widget_params SET value = '" + val + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value + " AND param_id =" + this.id.substring(4) + ";";
-        });
-        
-        getDataSet({
-            strService: "Update",
-            strSQL: updateStatements
-        })
-        
-        getDataSet({
-            strService: "Update",
-            strSQL: "UPDATE metric2.m2_dashboard_widget SET width =" + document.getElementById('widgetwidth').value + ", height =" + document.getElementById('widgetheight').value + ", refresh_rate = " + refreshrate + ", title = '" + document.getElementById('widgettitle').value + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value,
-            strReload: "dashboard"
-        })
-    } else if (strFunction == 'Add Dashboard') {
-        getDataSet({
-            strService: "CreateDashboard",
-            strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + document.getElementById('dashboardtitle').value + "', '',999)",
-            strReload: "dashboards", 
-            strMisc: document.getElementById('dashboardtitle').value
-        })
-    } else if (strFunction == 'Edit Dashboard') {
-        getDataSet({
-            strService: "UpdateDashboard",
-            strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
-            strReload: "dashboards"
-        })
-        $('#dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
-    } else if (strFunction == 'Add Alert') {
-        getDataSet({
-            strService: "CreateAlert",
-            strSQL: "Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + document.getElementById('widgetid').value + ", '" + document.getElementById('condition').value + "', '" + document.getElementById('operator').value + "','" + document.getElementById('value').value + "', '" + document.getElementById('notify').value + "', current_timestamp, 999)",
-            strReload: "alerts"
-        })
-    } else if (strFunction == 'Edit Alert') {
-        getDataSet({
-            strService: "Update",
-            strSQL: "Update metric2.m2_alert SET cond = '" + document.getElementById('condition').value + "', operator = '" + document.getElementById('operator').value + "', value = '" + document.getElementById('value').value + "', notify = '" + document.getElementById('notify').value + "' WHERE alert_id = " + document.getElementById('alertid').value,
-            strReload: "alerts"
-        })
+            
+            getDataSet({
+                strService: "Update",
+                strSQL: "UPDATE metric2.m2_dashboard_widget SET width =" + document.getElementById('widgetwidth').value + ", height =" + document.getElementById('widgetheight').value + ", refresh_rate = " + refreshrate + ", title = '" + document.getElementById('widgettitle').value + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value,
+                strReload: "dashboard"
+            })
+        } else if (strFunction == 'Add Dashboard') {
+            getDataSet({
+                strService: "CreateDashboard",
+                strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + document.getElementById('dashboardtitle').value + "', '',999)",
+                strReload: "dashboards", 
+                strMisc: document.getElementById('dashboardtitle').value
+            })
+        } else if (strFunction == 'Edit Dashboard') {
+            getDataSet({
+                strService: "UpdateDashboard",
+                strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
+                strReload: "dashboards"
+            })
+            $('#dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
+        } else if (strFunction == 'Add Alert') {
+            getDataSet({
+                strService: "CreateAlert",
+                strSQL: "Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + document.getElementById('widgetid').value + ", '" + document.getElementById('condition').value + "', '" + document.getElementById('operator').value + "','" + document.getElementById('value').value + "', '" + document.getElementById('notify').value + "', current_timestamp, 999)",
+                strReload: "alerts"
+            })
+        } else if (strFunction == 'Edit Alert') {
+            getDataSet({
+                strService: "Update",
+                strSQL: "Update metric2.m2_alert SET cond = '" + document.getElementById('condition').value + "', operator = '" + document.getElementById('operator').value + "', value = '" + document.getElementById('value').value + "', notify = '" + document.getElementById('notify').value + "' WHERE alert_id = " + document.getElementById('alertid').value,
+                strReload: "alerts"
+            })
+        } else {
+            console.log("No Function Defined Yet");
+        }
+        $('#myModal').modal('hide');
     } else {
-        console.log("No Function Defined Yet");
-    }
-    $('#myModal').modal('hide');
+        $('#dialogMsg1').html(checkParams);
+    };
 }
 
 function deleteDialog(strFunction) {

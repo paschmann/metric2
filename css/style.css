@@ -559,6 +559,10 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
     padding: 15px;
 }
 
+.alert{
+    margin: 20px;
+}
+
 
 /* Alert History page */
 .bs-docs-sidenav {

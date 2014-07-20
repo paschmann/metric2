@@ -75,8 +75,9 @@ function configureClickEvents(){
         deleteDialog($('#modal-header').html());
     });
                 
-    $('#btnModalSave').click(function(){
+    $('#btnModalSave').click(function(e){
         saveDialog($('#modal-header').html());
+        e.stopImmediatePropagation();
     });
                 
     $('body').on("click",".toggle-menu",function( e ) {
