@@ -1,0 +1,7 @@
+import data
+into table "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS"
+from 'data'
+    record delimited by '\n'
+    field delimited by ','
+    optionally enclosed by '"'
+error log 'data.err'
