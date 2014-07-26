@@ -2,7 +2,7 @@
 
 
 function getListOfDashboards(userid){
-	return sqlLib.executeRecordSetObj("SELECT title FROM METRIC2.m2_DASHBOARD WHERE user_id = " + userid);
+	return sqlLib.executeRecordSetObj("SELECT title FROM METRIC2.m2_DASHBOARD WHERE user_id = " + userid + " order by dashboard_id");
 }
 
 function createDashboard(sql){
