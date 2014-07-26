@@ -107,8 +107,8 @@ function widgetRSSFeed(feedcount, url, elemID){
 }
 
 function widgetDataMap(elemID, dataSet, radius){
-		var objDataSet = JSON.parse(dataSet);
-	  var R = Raphael("map", 400, 300),
+	var objDataSet = JSON.parse(dataSet);
+	var R = Raphael("map", 400, 300),
       attr = {
       "fill": "#d3d3d3",
       "stroke": "#fff",
