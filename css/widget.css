@@ -4,6 +4,10 @@ table{
 	width: 100%;
 }
 
+#map{
+    margin-top: 50px;
+}
+
 .w-misc-table{
 	margin-top: 20px;
 }
@@ -310,6 +314,7 @@ t1-widget-header-div{
   width: 100%;
   margin: 0px auto;
   text-align: center;
+  margin-top: 20px;
 }
 
 #weather h2 {
