@@ -43,7 +43,17 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
         $('#myModal').appendTo("body").modal('show');
         $('#dialogMsg1').html('');
     }
+    
+    $('#myModal').on('shown.bs.modal', function (e) {
+        if (strDialogTitle == "Widget History"){
+            chart.update();
+        }
+    });
+        
 }
+
+
+
 
 
 
@@ -151,21 +161,18 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
             "key": "Value",
             "color": "#5A92F9"
         }];
-        var chart = nv.models.lineChart();
-
+        
         chart.xAxis.axisLabel("Date & Time").tickFormat(function(d) {
-            return d3.time.format("%H:%M:%S")(new Date(d))
+            return d3.time.format("%m/%d %H:%M")(new Date(d))
         });
-        //chart.yAxis.axisLabel("Amount").tickFormat(d3.format(","));
-
+        
         $("#dialogHTML1 svg").remove();
         d3.select("#dialogHTML1").append("svg")
             .datum(data)
             .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;<img src='img/cal-icon.png' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' />&nbsp;<img src='img/cal-icon.png' /></td><td style='width: 1px; vertical-align: middle;'><img src='img/refresh-icon.png' onClick='showHist(" + dashboardwidgetid + ");' /></td><td style='text-align: center; width: 300px;'><img src='img/rowcount-icon.png' /> " + arrData.length + "</td><td style='text-align: right;'><img src='img/forecast-icon-small.png' onClick='showPred(" + dashboardwidgetid + ");' />&nbsp;Forecast</td></tr></table>");
+        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span>&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span></td><td style='width: 1px; vertical-align: middle;'><span style='font-size: 20px;' class='glyphicon glyphicon-retweet' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><span style='font-size: 20px;' class='glyphicon glyphicon-road' onClick='showPred(" + dashboardwidgetid + ");' /></span>&nbsp;Forecast</td></tr></table>");
         return chart;
     });
-
 }
 
 function widgetForecastChart(strData, dashboardwidgetid) {
@@ -190,12 +197,12 @@ function widgetForecastChart(strData, dashboardwidgetid) {
     nv.addGraph(function() {
         var data = [{
             "values": vals,
-            "key": "Value",
+            "key": "Forecasted Value",
             "color": "#5A92F9"
         }];
         
         chart.xAxis.axisLabel("Date & Time").tickFormat(function(d) {
-            return d3.time.format("%H:%M:%S")(new Date(d));
+            return d3.time.format("%m/%d %H:%M")(new Date(d))
         });
         
         $("#dialogHTML1 svg").remove();
@@ -205,7 +212,6 @@ function widgetForecastChart(strData, dashboardwidgetid) {
         $("#dialogHTML1").prepend("<table style='text-align: left;' class='w-histchart-table'><tr><td></td><td style='text-align: right;'><img src='img/history-icon-small.png'  onClick='showHist(" + dashboardwidgetid + ");'>&nbsp;History</td></tr></table>");
         return chart;
     });
-
 }
 
 
