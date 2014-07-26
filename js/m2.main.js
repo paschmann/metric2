@@ -375,10 +375,7 @@ function getDataSet(options) {
             } else if (options.strService == 'WidgetHistoryDialog') {
                 dialogConstructor("Widget History", false, false, data, 2, false);
 				widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
-				$('#myModal')
-                    .on('shown.bs.modal', function() {
-                        setTimeout(chart.update(), 5000);
-                    }).appendTo("body").modal('show');
+				$('#myModal').appendTo("body").modal('show');
 			} else if (options.strService == 'WidgetForecastDialog') {
                 dialogConstructor("Widget Forecast (Avg/h)", false, false, data, 2, true);
 				widgetForecastChart(data, options.strDashboardWidgetID);
