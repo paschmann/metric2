@@ -58,7 +58,7 @@ function showWidgetForecastDialog(dashboardwidgetid, reclimit, forecasttype){
 	} else {
 		sqlLib.executeUpdate("CALL _SYS_AFL.PAL_TS_S (M2_V_PAL_TS_DATA, M2_PAL_TS_PARAMS, M2_PAL_TS_RESULTS) WITH OVERVIEW");
 	}
-	var strHTML = sqlLib.executeRecordSetObj("SELECT * FROM METRIC2.M2_V_PAL_RESULTS");
+	var strHTML = sqlLib.executeRecordSetObj("SELECT ID, VALUE FROM METRIC2.M2_V_PAL_RESULTS");
     return strHTML;
 }
 
