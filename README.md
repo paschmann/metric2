@@ -32,7 +32,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 #####**Delivery Unit** (SAP HANA Package)
 
-- Download the delivery unit package here and upload using the SAP HANA Web Admin Tool: Lifecycle Manager 
+- Download the delivery unit package [here](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager 
 
 #####**Github** Install Directions
 
