@@ -8,7 +8,7 @@ Check out the metric² Website here [www.metric2.com](http://www.metric2.com "ww
 
 ### Code
 
-The code is written in Javascript, HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
+The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
 
 ### Screenshots
 ![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
