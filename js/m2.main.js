@@ -319,7 +319,7 @@ function loadWidgetContent(objWidgets){
 function getDataSet(options) {
     $("#loadspinner").css('display','block');
     var html = '';
-    var jURL = 'lib/getDataSet.xsjs';
+    var jURL = 'lib/api.xsjs';
     
     jQuery.ajax({
         url:jURL,
