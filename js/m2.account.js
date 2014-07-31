@@ -3,7 +3,7 @@ $(document).ready(function () {
     
             $("#loginform").submit(function (e) {
                 $.ajax({
-                	url: "lib/getDataSet.xsjs",
+                	url: "lib/api.xsjs",
                 	type: "POST",
                 	data: {
                 	    service: "DoLogin",
@@ -28,7 +28,7 @@ $(document).ready(function () {
         
         $("#createform").submit(function (e) {
                 $.ajax({
-                    url: "lib/getDataSet.xsjs",
+                    url: "lib/api.xsjs",
                     type: "POST",
                     data:{
                         service: "CreateUser",
