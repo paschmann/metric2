@@ -1,10 +1,6 @@
 <html>
     <head>
-    <script id="sap-ui-bootstrap"
-    			src="../../sap/ui5/1/resources/sap-ui-core.js"
-                data-sap-ui-theme="sap_goldreflection"
-				data-sap-ui-libs="sap.ui.commons,sap.ui.ux3,sap.ui.demokit,sap.viz,sap.ui.table,sap.service.visualization">
-		</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     
     <script type='text/javascript'>
         var QueryString = function () {
@@ -38,7 +34,7 @@
 		getDataPoint(QueryString.id, QueryString.request);
 		
         function getDataPoint(id, request){
-        	var jURL = 'getDataSet.xsjs?service=' + request + '&dashboardwidgetparamid=' + id + '&dashboardid=' + id + '&userid=' + id;
+        	var jURL = 'api.xsjs?service=' + request + '&dashboardwidgetparamid=' + id + '&dashboardid=' + id + '&userid=' + id;
                 $.ajax({
 					dataType: "json",
 					url: url,

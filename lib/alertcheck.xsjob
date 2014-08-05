@@ -1,0 +1,10 @@
+{
+    "description": "Check alert values",
+    "action": "lilabs.metric2.lib:alerts.xsjslib::checkAlertJob",
+    "schedules": [
+        {
+            "description": "Check alert values",
+            "xscron": "* * * * * * 59"
+        }
+    ]
+}

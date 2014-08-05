@@ -195,7 +195,8 @@ function showWidgetDialog(){
 	rs.close();
 	
 	if (getWidgetTypeFromWidgetID(widgetid) == 'WebService'){
-		var serviceurl = 'saveDataPoint.html?pid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&value=12345';
+		//var serviceurl = 'lib/saveDataPoint.html?pid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&value=12345';
+		var serviceurl = 'lib/getDataSet.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&datapoint=0';
 		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
 	}
     output += "</form>";

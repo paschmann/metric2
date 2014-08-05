@@ -83,26 +83,29 @@ function executeRecordSet(strSQL){
 		var intCount = 0;
 		var htmlTable = '';
 		
-		htmlTable += '<table class=\'w-recordset-table\'><tr>';
-		
-		//Get the table data + header
-		for (var i = 1; i <= rsm.getColumnCount(); i++){
-			htmlTable += '<th align=\'left\'>' + rsm.getColumnName(i) + '</th>';
+		if (!rs.next()) {
+    		htmlTable += '<table class=\'w-recordset-table\'><tr>';
+    		
+    		//Get the table data + header
+    		for (var i = 1; i <= rsm.getColumnCount(); i++){
+    			htmlTable += '<th align=\'left\'>' + rsm.getColumnName(i) + '</th>';
+    		}
+    		
+    		htmlTable += '</tr>';
+    		while (rs.next()) {
+    			htmlTable += '<tr>';
+    			for (var i = 1; i <= rsm.getColumnCount(); i++){
+    				htmlTable += '<td align=\'left\'>';
+    				htmlTable += rs.getString(i);
+    				htmlTable += '</td>';
+    			}
+    			htmlTable += '</tr>';
+    		}
+    		htmlTable += '</table>';
+    		
+    		rs.close();
 		}
 		
-		htmlTable += '</tr>';
-		while (rs.next()) {
-			htmlTable += '<tr>';
-			for (var i = 1; i <= rsm.getColumnCount(); i++){
-				htmlTable += '<td align=\'left\'>';
-				htmlTable += rs.getString(i);
-				htmlTable += '</td>';
-			}
-			htmlTable += '</tr>';
-		}
-		htmlTable += '</table>';
-		
-		rs.close();
 		pstmt.close();
 		conn.close();
 		
@@ -114,23 +117,32 @@ function executeRecordSet(strSQL){
 } 
 
 
-function executeRecordSetObjCALL(strSQL){
+function executeRecordSetObjCALL(strSQL, strSP){
+//Not sure if this is being used any longer  
+
 	try {
 		var conn = $.db.getConnection(strDashboardUser);
-		var pstmt = conn.prepareCall(strSQL);
-		var rs = pstmt.getRecordSet();
+		
+		if (strSP == true){
+		    var pstmt = conn.prepareCall(strSQL);
+		    var rs = pstmt.getRecordSet();
+	    } else {
+	        var rs = pstmt.executeQuery();
+		}
 		var rsm = rs.getMetaData();
 		var strObj = '';
 		
-		while (rs.next()) {
-			strObj += '{';
-			for (var i = 1; i <= rsm.getColumnCount(); i++){
-				strObj += '"' + rsm.getColumnLabel(i) + '":"' + rs.getString(i) + '",';
-			}
-			strObj = strObj.substring(0, strObj.length - 1);
-			strObj += '},'
+		if (!rs.next()) {
+    		while (rs.next()) {
+    			strObj += '{';
+    			for (var i = 1; i <= rsm.getColumnCount(); i++){
+    				strObj += '"' + rsm.getColumnLabel(i) + '":"' + rs.getString(i) + '",';
+    			}
+    			strObj = strObj.substring(0, strObj.length - 1);
+    			strObj += '},'
+    		}
+		    rs.close();
 		}
-		rs.close();
 		pstmt.close();
 		conn.close();
 		
@@ -150,13 +162,13 @@ function executeRecordSetObj(strSQL){
 		var strObj = '';
 		
 		while (rs.next()) {
-			strObj += '{';
-			for (var i = 1; i <= rsm.getColumnCount(); i++){
-				strObj += '"' + rsm.getColumnLabel(i) + '":"' + rs.getString(i) + '",';
-			}
-			strObj = strObj.substring(0, strObj.length - 1);
-			strObj += '},'
-		}
+    			strObj += '{';
+    			for (var i = 1; i <= rsm.getColumnCount(); i++){
+    				strObj += '"' + rsm.getColumnLabel(i) + '":"' + rs.getString(i) + '",';
+    			}
+    			strObj = strObj.substring(0, strObj.length - 1);
+    			strObj += '},'
+    		}
 		rs.close();
 		pstmt.close();
 		conn.close();

@@ -185,7 +185,7 @@ function loadInstanceData(arrData){
 	osversion = osversion.replace('SUSE Linux Enterprise Server', 'SLES');
 						
 	$("#serverinfo").append('<li><div class="pull-right">' + arrData[0]['VALUE'] + '</div><label>Instance ID</label></li>');
-	$('#instanceid').html(arrData[0]['VALUE']);
+	$('#instanceid').html('on ' + arrData[0]['VALUE']);
 	$("#serverinfo").append('<li><div class="pull-right">' + arrData[1]['VALUE'] + '</div><label>Instance No</label></li>');
 	$("#serverinfo").append('<li>&nbsp;</li>');
 	$("#serverinfo").append('<li><div class="pull-right">' + dbversion + '</div><label>DB Version</label></li>');
@@ -214,7 +214,7 @@ function loadUserData(arrData){
     $gravatarEmail = arrData[0]['EMAIL'];
 	configureGravatar();
 	$('#usersname em').html(arrData[0]['NAME'] + ' ' + arrData[0]['LNAME']);
-	$('#gravUsersname').html(arrData[0]['EMAIL_DOMAIN']);
+	$('#gravUsersname').html(arrData[0]['NAME'] + ' ' + arrData[0]['LNAME']);
 }
 
 
@@ -319,7 +319,7 @@ function loadWidgetContent(objWidgets){
 function getDataSet(options) {
     $("#loadspinner").css('display','block');
     var html = '';
-    var jURL = 'lib/getDataSet.xsjs';
+    var jURL = 'lib/api.xsjs';
     
     jQuery.ajax({
         url:jURL,
@@ -354,6 +354,11 @@ function getDataSet(options) {
                 //addNotification('Positions updated', 0);
             } else if (options.strService == 'Widgets') {
                 document.getElementById("grid").innerHTML = data;
+                /*
+                var objData = jQuery.parseJSON(data);
+				document.getElementById("grid").innerHTML = objData.html;
+				loadWidgetContent(JSON.parse(objData.widgets));
+                */
 				loadGridster();
 				loadDynamicJScript('script', '');
 				dashboardActive(true);
@@ -369,11 +374,12 @@ function getDataSet(options) {
 				//ob = JSON.parse(data);
 				//window[ob.codetype](ob)
 			} else if (options.strService == 'EditWidgetDialog') {
+			    //dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay)
                 dialogConstructor("Edit Widget", true, true, data, 1, true);
             } else if (options.strService == 'NewWidgetDialog') {
                 dialogConstructor("New Widget", false, true, data, 3, true);
             } else if (options.strService == 'WidgetHistoryDialog') {
-                dialogConstructor("Widget History", false, false, data, 2, false);
+                dialogConstructor("Widget History", true, false, data, 2, false);
 				widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
 				$('#myModal').appendTo("body").modal('show');
 			} else if (options.strService == 'WidgetForecastDialog') {
@@ -382,6 +388,7 @@ function getDataSet(options) {
             } else if (options.strService == 'AlertHistoryDialog') {
                 dialogConstructor("Alert History", false, false, data, 2, true);
                 strHistoryTable = data; //Save for later
+                alertHistoryTable(1);
 			} else if (options.strService == 'DeleteWidget') {
                 addNotification('Metric Deleted', 3);
             } else if (options.strService == 'AddDashboardDialog') {

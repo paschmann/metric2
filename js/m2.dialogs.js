@@ -146,7 +146,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
 
     var vals = [];
     for (var i = 0; i < arrData.length; ++i) {
-        var date = new Date(arrData[i].YEAR, arrData[i].MONTH, arrData[i].DAY, arrData[i].HOUR, arrData[i].MIN, arrData[i].SECS, 1);
+        var date = new Date(arrData[i].YEAR, arrData[i].MONTH - 1, arrData[i].DAY, arrData[i].HOUR, arrData[i].MIN, arrData[i].SECS, 1);
         vals.push({
             x: date,
             y: arrData[i].VALUE
@@ -163,7 +163,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
         }];
         
         chart.xAxis.axisLabel("Date & Time").tickFormat(function(d) {
-            return d3.time.format("%m/%d %H:%M")(new Date(d))
+            return d3.time.format("%m/%d %H:%M")(new Date(d));
         });
         
         $("#dialogHTML1 svg").remove();
@@ -171,6 +171,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
             .datum(data)
             .call(chart.forceY([minval, maxval]));
         $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span>&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span></td><td style='width: 1px; vertical-align: middle;'><span style='font-size: 20px;' class='glyphicon glyphicon-retweet' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><span style='font-size: 20px;' class='glyphicon glyphicon-road' onClick='showPred(" + dashboardwidgetid + ");' /></span>&nbsp;Forecast</td></tr></table>");
+        $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
         return chart;
     });
 }
@@ -243,7 +244,7 @@ function alertHistoryTable(displaytype) {
                 }
             }
         });
-    } else if (displaytype == 3) {
+    } else {
         $('#table2 td').graphup({
             painter: 'bars',
             barsAlign: 'hcenter'
@@ -378,5 +379,12 @@ function deleteDialog(strFunction) {
             strService: 'DeleteAlert',
             strAlertID: alertID
         });
+    }  else if (strFunction == 'Widget History') {
+       var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
+       getDataSet({
+            strService: 'CallSP', 
+            strSQL: "CALL METRIC2.M2_P_DELETE_WIDGET_HISTORY(" + dashboardwidgetid + ")"
+        });
+        saveFeedEvent("History deleted", 3);
     }
 }

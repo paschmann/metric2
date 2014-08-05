@@ -1,4 +1,3 @@
-
 // --------------------------------------- Alerts ----------------------------------------------------- //
 
 function createAlert(sql){
@@ -51,7 +50,7 @@ function showAlerts(){
         strHTML += "<div class='col-md-10'>"
         strHTML += "<div id='alerttable'>";
         strHTML += "<h1>User Alerts</h1>";
-        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Widget Name</th><th>Status</th><th>Operator</th><th>Value</th><th>Notify</th><th>Exception Count</th><th>Modify</th><th>Clear</th></tr></thead><tbody>";
+        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Widget Name</th><th>Status</th><th>Operator</th><th>Value</th><th>Notify</th><th>Alert Count</th><th>Modify</th><th>Clear</th></tr></thead><tbody>";
 
         var rs3 = sqlLib.executeReader("SELECT metric2.m2_dashboard_widget.title, cond, operator, value, notify, last_executed, metric2.m2_dashboard.title, alert_id, status FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
         while (rs3.next()){
@@ -156,6 +155,66 @@ function checkWidgetAlert(dashboardwidgetid, value){
 		return err + " " + SQL;
 	}
 }
+
+
+function checkAlertJob(){
+    try {
+		var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title, m2_dashboard_widget.dashboard_widget_id FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1");
+		var strContent = '';
+        
+		while (rs.next()) {
+			var alertid = rs.getString(2);
+			var response = '';
+			var doInsert = 0;
+            var intCheckValue = rs.getInteger(3);
+            var strOperator = rs.getString(2);
+            var dashboardWidgetID = rs.getString(7);
+            var value = sqlLib.executeScalar(getWidgetParamValueFromParamName('SQL1', dashboardWidgetID));
+            
+            //strContent += dashboardWidgetID + ' Value: ' + value + ' Operator:' + strOperator + ' Check Value:' + intCheckValue + '<br />';
+            
+			if (alertid !== ''){
+				if (strOperator == '='){
+					if (value == intCheckValue) {
+						strContent += response;
+						doInsert = 1;
+					}
+				} else if (strOperator == '>'){
+					if (value > intCheckValue) {
+						strContent += response;	
+						doInsert = 1;
+					}
+				} else if (strOperator == '<'){
+					if (value < intCheckValue) {
+						strContent += response;
+						doInsert = 1;
+					}
+				} else if (strOperator == '<='){
+					if (value <= intCheckValue) {
+						strContent += response;
+						doInsert = 1;
+					}
+				} else if (strOperator == '>='){
+					if (value >= intCheckValue) {
+						strContent += response;
+						doInsert = 1;
+					}
+				}
+								
+				if (doInsert == 1){
+					var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + rs.getString(7) + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", 'XSJOB', " + value + ")";
+					sqlLib.executeQuery(SQL);
+				}
+			}
+		}
+		rs.close();
+		return strContent;
+	} catch (err) {
+		return err + " " + SQL;
+	}
+}
+
+
 
 
 // --------------------------------------- End Alerts ----------------------------------------------------- //

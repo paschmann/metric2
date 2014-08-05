@@ -1,7 +1,7 @@
 
 // --------------------------------------- Widgets UI ----------------------------------------------------- //
 
-
+/*
 function widgetStockPrice(Ticker){
         var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%3D%22' + Ticker + '%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
         $.getJSON(url, function(data) {           
@@ -27,6 +27,7 @@ function widgetStockPrice(Ticker){
 			  $('#stock').html(html);
         });
 }
+*/
 
 function make_base_auth(user, password) {
 	  var tok = user + ':' + password;
