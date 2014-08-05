@@ -49,6 +49,11 @@ Once you have completed sections 1 & 2, you can choose to run some scripts which
 Although not required, please could you register with the metric² mailing list here: 
 ![Mailing List](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93 "metric2 mailing list")
 
+## Contact
+* Homepage: http://www.metric2.com
+* e-mail: info@metric2.com
+* Twitter: [@metricsquared](https://twitter.com/metricsquared/ "metricsquared on twitter")
+
 
 ## Version History
 ####Version 2.0
@@ -59,10 +64,6 @@ Although not required, please could you register with the metric² mailing list 
 * Initial software developed
 * Uses SAPUI5 as a UI frameowrk
 
-## Contact
-* Homepage: http://www.metric2.com
-* e-mail: info@metric2.com
-* Twitter: [@metricsquared](https://twitter.com/metricsquared/ "metricsquared on twitter")
 
 ## Contributors
 ### Third party libraries
