@@ -4,11 +4,11 @@ metric² is a self-service BI tool using responsive web based dashboards to disp
 
 ### Features
 
-Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
+Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com") and you can test drive the demo version here [metric² demo](http://metric2.com/#screenshots "http://metric2.com/#screenshots")
 
 ### Code
 
-The code is written in Javascript, HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
+The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
 
 ### Screenshots
 ![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
@@ -32,7 +32,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 #####**Delivery Unit** (SAP HANA Package)
 
-- Download the delivery unit package here and upload using the SAP HANA Web Admin Tool: Lifecycle Manager 
+- Download the delivery unit package [here](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager 
 
 #####**Github** Install Directions
 
@@ -49,6 +49,11 @@ Once you have completed sections 1 & 2, you can choose to run some scripts which
 Although not required, please could you register with the metric² mailing list here: 
 ![Mailing List](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93 "metric2 mailing list")
 
+## Contact
+* Homepage: http://www.metric2.com
+* e-mail: info@metric2.com
+* Twitter: [@metricsquared](https://twitter.com/metricsquared/ "metricsquared on twitter")
+
 
 ## Version History
 ####Version 2.0
@@ -59,10 +64,6 @@ Although not required, please could you register with the metric² mailing list 
 * Initial software developed
 * Uses SAPUI5 as a UI frameowrk
 
-## Contact
-* Homepage: http://www.metric2.com
-* e-mail: info@metric2.com
-* Twitter: [@metricsquared](https://twitter.com/metricsquared/ "metricsquared on twitter")
 
 ## Contributors
 ### Third party libraries
