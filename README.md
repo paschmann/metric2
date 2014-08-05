@@ -4,7 +4,7 @@ metric² is a self-service BI tool using responsive web based dashboards to disp
 
 ### Features
 
-Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com")
+Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com") and you can test drive the demo version here [metric² demo](http://metric2.com/#screenshots "http://metric2.com/#screenshots")
 
 ### Code
 
