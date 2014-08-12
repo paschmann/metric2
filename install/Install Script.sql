@@ -141,8 +141,8 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (42,'Image Box','42.png','Static','widg
 
 -- Widget Params
 -- widgetTextAndFooter
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (4,1,'Large Text Value','Static','',100,null,'Any form of Static Text','Main Text','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (5,1,'Footer Text Value','Static','',200,null,'Any form of Static Text','Footer Text','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (4,1,'Large Text Value','Static','',100,0,'Any form of Static Text','Main Text','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (5,1,'Footer Text Value','Static','',200,0,'Any form of Static Text','Footer Text','true',null,0);
 
 -- widgetList 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (17,2,'SQL1','SQL','SELECT * FROM SYS.M_SYSTEM_OVERVIEW',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null,0);
@@ -150,7 +150,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (16,2,'Server Connection','OPTION
 
 
 -- widgetNumberAndText
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (19,3,'SQL1','SQL','SELECT 7 FROM DUMMY',200,0,'SQL Statement for the list of data to be returned','SQL Query','true',null, 1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (19,3,'SQL1','SQL','SELECT 7 FROM DUMMY',200,1,'SQL Statement for the list of data to be returned','SQL Query','true',null, 1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (20,3,'TEXT1','Static','',300,0,'Any form of Static Text','Text','true',null,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (18,3,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
@@ -184,8 +184,8 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (24,8,'Server Connection','OPTION
 
 --widgetHistoryChart
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (33,9,'SQL1','SQL','SELECT CPU FROM METRIC2.M2_WIDGET_DB_CPU',200,0,'SQL Statement to fetch the current CPU value','SQL Query','false',null,1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (35,9,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (36,9,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (35,9,'RECLIMIT','Static','20',300,1,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (36,9,'CHARTTYPE','OPTION','line',400,1,'Required: line or bar','Chart Type','true',1,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (32,9,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
 --widgetBlockedTransactions
@@ -207,18 +207,18 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (45,13,'Server Connection','OPTIO
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (58,14,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_PHYSICALMEM',200,0,'SQL Statement to retrieve physical memory','SQL Query','false',null,1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (59,14,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (60,14,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (59,14,'RECLIMIT','Static','20',300,1,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (60,14,'CHARTTYPE','OPTION','line',400,1,'Required: line or bar','Chart Type','true',1,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (57,14,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (63,16,'SQL1','SQL','SELECT CNT FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement to retrieve current connections','SQL Query','false',null,1);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (64,16,'RECLIMIT','Static','20',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (65,16,'CHARTTYPE','OPTION','line',400,0,'Required: line or bar','Chart Type','true',1,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (64,16,'RECLIMIT','Static','20',300,1,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (65,16,'CHARTTYPE','OPTION','line',400,1,'Required: line or bar','Chart Type','true',1,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (62,16,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (70,17,'ZIPCODE','Static',' ',100,0,'Required, ZIP Code for weather feed','ZIP Code','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (70,17,'ZIPCODE','Static',' ',100,1,'Required, ZIP Code for weather feed','ZIP Code','true',null,0);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (83,18,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_DATADISK',200,0,'SQL Query for DATA disk details','SQL Query','false',null,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (85,18,'SQL2','SQL','SELECT * FROM METRIC2.M2_WIDGET_LOGDISK',300,0,'SQL Query for LOG disk details','SQL Query','false',null,0);
@@ -260,16 +260,16 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (109,29,'UOM1','OPTION',' ',300,0
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (122,30,'TICKER','Static','',100,1,'Stock Ticker','Ticker','true',null,1);
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (112,31,'HANDLE','Static',' ',100,0,'Required, a twitter handle for the user','@Twitter','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (113,31,'NUMTWEETS','Static','5',200,0,'The number of tweets to display','Tweet Count','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (115,31,'WIDID','Static','',300,0,'Required: Twitter widget ID (can be created here: https://twitter.com/settings/widgets)','Widget ID','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (112,31,'HANDLE','Static',' ',100,1,'Required, a twitter handle for the user','@Twitter','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (113,31,'NUMTWEETS','Static','5',200,1,'The number of tweets to display','Tweet Count','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (115,31,'WIDID','Static','',300,1,'Required: Twitter widget ID (can be created here: https://twitter.com/settings/widgets)','Widget ID','true',null,0);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,32,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_USERALERTS',200,0,'SQL Query for current user Alerts','SQL Query','false',null,0);
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (125,34,'SQL1','SQL','',200,0,'SQL Statement for the value to be hisplayed and stored','SQL Query','true',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (125,34,'SQL1','SQL','',200,1,'SQL Statement for the value to be hisplayed and stored','SQL Query','true',null,1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (124,34,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (126,34,'RECLIMIT','Static','30',300,0,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,1,'Optional: Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (126,34,'RECLIMIT','Static','30',300,1,'Integer: Number of records to fecth from history','Record Limit','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,0,'Optional: Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (130,34,'LINECOL','Static','#CCCCCC',600,0,'HTML Color: Color of the sparkline','Sparkline Color','true',null,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (131,34,'UOM1','OPTION',' ',250,0,'Optional, Unit of measure for the value','UOM','true',2,0);
 
@@ -290,7 +290,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (141,38,'SQL1','SQL','SELECT * FR
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (143,39,'SQL1','SQL','SELECT MET236.12135MET2 as Lat, MET2-115.17021MET2 as Long, MET2Las VegasMET2 as Label, MET210MET2 as Value FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null,0);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (144,40,'Server Connection','Connection','Local Server',100,1,'Local Server','Server Connection','true',null,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (145,40,'SQL1','SQL','SELECT 92 as percent, MET2Sales IncreaseMET2 as Label FROM DUMMY',200,0,'SQL Query for connection list','SQL Query','true',null,1);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (145,40,'SQL1','SQL','SELECT 92 as percent, MET2Sales IncreaseMET2 as Label FROM DUMMY',200,1,'SQL Query for connection list','SQL Query','true',null,1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (146,40,'ICONURL','URL','',300,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null,0);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (147,41,'URL','Static','',100,1,'http://rss.cnn.com/rss/edition.rss','Feed URL','true', null,0);
