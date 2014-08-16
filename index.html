@@ -3,7 +3,7 @@
 <html class="no-js">
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>metric&#178; | HANA Insights</title>
+        <title>metric&#178; | for SAP HANA</title>
         <meta name="description" content="metric&#178; is a realtime operational intelligence platform for enterprises running SAP HANA">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -14,8 +14,10 @@
         <link rel="stylesheet" href="css/jquery.mmenu.all.css" />
         <link rel="stylesheet" href="css/jquery.gridster2.css">
         <link rel="stylesheet" href="css/nv.d3.min.css">
+        <link rel="stylesheet" href="css/datepicker.css">
+        <link rel="stylesheet" href="css/bootstrap-tour.css">
         <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/widget.css">
+        <link rel="stylesheet" href="css/metrics.css">
         
         <!-- JS CDN -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -29,15 +31,17 @@
         <script src="js/vendor/jquery.cookie.js"></script>
         <script src="js/vendor/jquery.gravatar.js"></script>
         <script src="js/vendor/md5.js"></script>
+        <script src="js/vendor/bootstrap-datepicker.js"></script>
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="js/vendor/bootstrap-tour.min.js"></script>
         
         <!-- gridster plugins-->
         <script src="js/vendor/jquery.gridster2.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/m2.gridster.js"></script>
         
-        <!--  widget plugins -->
-        <script src="js/m2.widgets.js"></script>
-        <script src="js/widgets/widgetStockprice.js"></script>
+        <!--  Metric plugins -->
+        <script src="js/m2.metrics.js"></script>
+        <script src="js/metrics/metricStockprice.js"></script>
         <script src="js/vendor/jquery.timer.js"></script>
         <script src="js/vendor/jquery.graphup.js"></script>
         <script src="js/vendor/jquery.simpleWeather.js"></script> 
@@ -52,6 +56,7 @@
         <script src="js/m2.alerts.js"></script>
         <script src="js/m2.dialogs.js"></script>
         <script src="js/m2.functions.js"></script>
+        <script src="js/m2.tour.js"></script>
         <script src="js/m2.main.js"></script>
         
         <!-- Remove this code from Github releases -->
@@ -64,12 +69,13 @@
     <body>
         <div id="wrapper">
             <div id="header">
-                <div class="logo-area clearfix">
+                <div id="logoarea" class="logo-area clearfix">
             		<a href="index.html" class="logo"></a>
     	        </div>
                 <div class="tools-bar">
     		        <ul class="nav navbar-nav nav-main-xs">
-                        <li><a href="#menu" class="icon-toolsbar"><i class="fa fa-bars"></i></a></li>
+                       <!--  <li><a href="#menu" class="icon-toolsbar"><i class="fa fa-bars"></i></a></li> -->
+                        <li><a href="#sidebar" id="btnSideBar" class="icon-toolsbar"><i class="fa fa-bars"></i></a></li>
                         <li><span id="dashboardname"></span></li>
                     </ul>
 
@@ -78,7 +84,7 @@
             			<li class="hidden-xs hidden-sm"><a href="#" id="btnAddDashboard" class="h-seperate" onClick="" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
             			<li class="hidden-xs hidden-sm"><a href="#" id="btnEditDashboard" title="Edit this Dashboard"><i class="fa fa-edit"></i></a></li>
             			<li class="hidden-xs hidden-sm"><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon  fa fa-fire"></i></a></li>
-                        <li class="hidden-xs hidden-sm"><a href="http://www.metric2.com/doc.html" class="h-seperate" title="Help Website" target="_blank"><i class="icon  fa fa-life-ring"></i></a></li>
+                        <li class="hidden-xs hidden-sm"><a href="#" id="btnShowHelp" class="h-seperate" title="Help Website"><i class="icon  fa fa-life-ring"></i></a></li>
                         
                         <li><a href="#" class="nav-collapse avatar-header" title="Show / hide  menu"><div id="gravSm"><img src="img/avatar.png" class="circular-avatar-sm"></div></a></li>
     	
@@ -88,8 +94,8 @@
                             </a>
                         
                             <ul class="dropdown-menu pull-right icon-right arrow">
-                                <li><a href="#"><i class="fa fa-user"></i> Profile</a></li>
-                                <li><a href="#"><i class="fa fa-cog"></i> Settings </a></li>
+                                <li><a href="#" id="mnuProfile"><i class="fa fa-user"></i> Profile</a></li>
+                                <li><a href="#" id="mnuSettings"><i class="fa fa-cog"></i> Settings </a></li>
                                 <li class="divider"></li>
                                 <li><a href="#" id="mnuLogout"><i class="fa fa-sign-out"></i> Signout </a></li>
                             </ul>
@@ -118,7 +124,7 @@
                             <p><a id="instanceid" href="#"></a></p>
                         </div>
                         <div class="avatar-link btn-group btn-group-justified">
-                            <a id="btnShowAlerts" class="btn" href="#md-notification" title="Alerts"><i class="fa fa-exclamation-triangle"></i></a>
+                            <a id="btnShowAlerts2" class="btn" href="#md-notification" title="Alerts"><i class="fa fa-exclamation-triangle"></i></a>
                             <a class="btn"  data-toggle="modal" href="#md-notification"  title="Messages"><i class="fa fa-envelope-o"></i></a>
                             <a class="btn" href="#menu-right" title="Contact List"><i class="fa fa-file-o"></i></a>
                         </div>
@@ -185,7 +191,8 @@
                     <li><span><i class="icon  fa fa-fire"></i> Alerts</span>
                         <ul><li><a href="#" id="mnuShowAlerts"><i class="icon  fa fa-volume-down"></i> My Alerts</a></li></ul>
                     </li>
-                    <li><a href="#"><i class="icon fa fa-gears"></i> Settings </a></li>
+                    <li><a href="#" id="mnuProfile"><i class="icon fa fa-user"></i> Profile </a></li>
+                    <li><a href="#" id="mnuSettings"><i class="icon fa fa-gears"></i> Settings </a></li>
                 </ul>
             </nav> <!-- /menu -->
     

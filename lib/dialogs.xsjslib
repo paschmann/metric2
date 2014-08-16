@@ -3,6 +3,40 @@
 // --------------------------------------- Dialogs ----------------------------------------------------- //
 
 
+function showProfileDialog(){
+    if (userid){
+		//This is an edit
+		var rs = sqlLib.executeReader("SELECT * FROM metric2.m2_users WHERE user_id =" + userid);
+        while (rs.next()){
+		
+			var output = "<form class='form-horizontal'>";
+            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' />";
+		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' value = '" + rs.getString(2) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' id='lname' value = '" + rs.getString(3) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' id='email' value = '" + rs.getString(5) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
+		}
+		rs.close();
+	}
+	return output;
+}
+ 
+
+function showSettingsDialog(){
+    var output = '';
+    if (userid){
+		//This is an edit
+		var rs = sqlLib.executeReader("SELECT email_domain FROM metric2.m2_users WHERE user_id =" + userid);
+        while (rs.next()){
+			output += "<form class='form-horizontal'>";
+            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' />";
+	        output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='controls'><input type='text' placeholder='Domain Name' id='domain' value = '" + rs.getString(1) + "' /></div></div>";
+		}
+		rs.close();
+	}
+	return output;
+}   
+
 
 function showAlertDialog(alertid){
     
@@ -29,7 +63,7 @@ function showAlertDialog(alertid){
 	output += "<input type='" + debugmode + "' value = '" + alertid + "' id='alertid' />";
     output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
     output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
-	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
+	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
 	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "' disabled/></div></div>";
 	return output;
 }
@@ -78,7 +112,7 @@ function showDashboardDialog(){
 	
     output = "<form class='form-horizontal' role='form'>";
 		output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
-		output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
+		output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
     output += "</form>";
 }
 
@@ -172,9 +206,14 @@ function showWidgetDialog(){
     while (rs.next()) {
         var value = 'unknown';
         var value = dashboardwidgetid === undefined ? rs.getString(4) : getWidgetParamValueEscaped(rs.getString(1), dashboardwidgetid);
+		var required = '';
 		
 		value = replaceAll("MET2", "&#039;", value);
         value = replaceAll("MET3", "&#037;", value);	
+        
+        if (rs.getString(6) == '1'){
+            required = 'required="true"';
+        }
 		
 		if (rs.getString(9) == 'true'){
 			output += "<div class='form-group'><label for='pid_" + rs.getString(1) + "' class='col-sm-3 control-label'>" + rs.getString(8) + "</label><div class='col-sm-9'>";
@@ -182,7 +221,7 @@ function showWidgetDialog(){
 			if (rs.getString(3) == 'OPTION'){
 				output += "<select class='form-control' id='pid_" + rs.getString(1) + "'>" + showParamOption(rs.getString(10), value) + "</select>";
 			} else {
-				output += "<input class='form-control' type='text'  value='" + value + "' placeholder='" + rs.getString(7) + "' id='pid_" + rs.getString(1) + "' />";
+				output += "<input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + rs.getString(7) + "' id='pid_" + rs.getString(1) + "' />";
 			}
 			
 			output += "</div></div>";
@@ -196,7 +235,7 @@ function showWidgetDialog(){
 	
 	if (getWidgetTypeFromWidgetID(widgetid) == 'WebService'){
 		//var serviceurl = 'lib/saveDataPoint.html?pid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&value=12345';
-		var serviceurl = 'lib/getDataSet.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&datapoint=0';
+		var serviceurl = 'lib/api.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&datapoint=0';
 		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
 	}
     output += "</form>";

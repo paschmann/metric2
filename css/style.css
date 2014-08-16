@@ -718,3 +718,11 @@ margin-top: 10px;
     color: #999;
     padding: 20px;
 }
+
+.display-hidden{
+    display: hidden;
+}
+
+.margin-left-0 {
+    margin-left: 0;
+}

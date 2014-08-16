@@ -36,7 +36,7 @@ function showAlerts(){
 	strHTML += "<div class='row'>";
         strHTML += "<div class='col-md-2'>";
             strHTML += "<ul class='nav nav-list bs-docs-sidenav'>";
-                strHTML += "<li><a href='#' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
+                strHTML += "<li><a href='#' id='#btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
                 strHTML += "<li><a href='#' onclick='viewSummary();'><i class='icon-chevron-right'></i>Summary</a></li>";
 
                 var rs = sqlLib.executeReader("SELECT DISTINCT metric2.m2_dashboard.title FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
@@ -61,7 +61,7 @@ function showAlerts(){
             
             if (rs3.getString(9) == 1) { strStatus = 'Enabled'; strSetStatus = 'Disable'; intStatus = 0;} else { strStatus = 'Disabled'; strSetStatus = 'Enable'; intStatus = 1;}
                 //strHTML += "<tr><td>" + rs3.getString(7) + "</td><td>" + rs3.getString(1) + "</td><td>" + strStatus + "</td><td>" + rs3.getString(3) + "</td><td>" + rs3.getString(4) + "</td><td>On-Screen</td><td><a href='#' onclick='alertHistory(" + rs3.getString(8) + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + rs3.getString(8) + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + rs3.getString(8) + ");'>Edit Alert</a> | <a href='#' onclick='deleteAlert(" + rs3.getString(8) + ");'>Delete Alert</a></td><td><a href='#' onclick='clearAlert(" + rs3.getString(8) + ");'>Clear History</a></td></tr>";
-                strHTML += "<tr><td>" + rs3.getString(7) + "</td><td>" + rs3.getString(1) + "</td><td>" + strStatus + "</td><td>" + rs3.getString(3) + "</td><td>" + rs3.getString(4) + "</td><td>On-Screen</td><td><a href='#' onclick='alertHistory(" + rs3.getString(8) + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + rs3.getString(8) + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + rs3.getString(8) + ");'>Edit Alert</a></td><td><a href='#' onclick='clearAlert(" + rs3.getString(8) + ");'>Clear History</a></td></tr>";
+                strHTML += "<tr><td>" + rs3.getString(7) + "</td><td>" + rs3.getString(1) + "</td><td>" + strStatus + "</td><td>" + rs3.getString(3) + "</td><td>" + rs3.getString(4) + "</td><td>On-Screen</td><td><a href='#' id='alertID" + rs3.getString(8) + "' onclick='alertHistory(" + rs3.getString(8) + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + rs3.getString(8) + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + rs3.getString(8) + ");'>Edit Alert</a></td><td><a href='#' onclick='clearAlert(" + rs3.getString(8) + ");'>Clear History</a></td></tr>";
         }
         rs3.close();
         

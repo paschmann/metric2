@@ -9,7 +9,8 @@ var strHistoryTable = '';
 var chart = nv.models.lineChart();
 var navMenu = '';
 var useremail = '';
-
+var showTour = true;
+var tour;
 
 $( document ).ready(function() {
     configureLeftMenu();
@@ -22,16 +23,23 @@ $( document ).ready(function() {
     }
     dashboardActive(false);
     $('[data-toggle="tooltip"]').tooltip({'placement': 'bottom'});
-    
     configureClickEvents();
+    if (showTour == true){
+        configureTour();
+    }
 });
-
 
 function init(){
     getDataSet({ strService: 'Dashboards' });
     getDataSet({ strService: 'DBInfo' });
     getDataSet({ strService: 'UserInfo' });
 }
+
+// -------------------------   Demo/Tutorial Walk Through Tour ----------------------- //
+
+
+
+
 
 
 // -------------------------   Client Side click events ----------------------- //
@@ -53,6 +61,18 @@ function configureClickEvents(){
             strService: 'EditDashboardDialog',
             strDashboardID: intCurrentDashboardID    
         });
+    });
+    
+    $('#mnuProfile, btnProfile').click(function(){
+        getDataSet({ strService: 'EditProfileDialog'});
+    });
+    
+    $('#mnuSettings, btnSettings').click(function(){
+        getDataSet({ strService: 'EditSettingsDialog'});
+    });
+    
+     $('#btnShowHelp').click(function(){
+        tour.restart();
     });
                 
     $('#mnuLogout').click(function(){
@@ -85,7 +105,57 @@ function configureClickEvents(){
         e.preventDefault();
         $('nav#menu').trigger( 'open.mm' );
     });
+    
+    $('#btnSideBar').click(function(e){
+        if ($('#logoarea').css("display") == "block"){
+            $('#logoarea').css("display", "none");
+            $('#main').css("margin-left","0");
+            $('#header .tools-bar').css("margin-left","0");
+        } else {
+            $('#logoarea').css("display", "block");
+            $('#main').css("margin-left","270px");
+            $('#header .tools-bar').css("margin-left","250px");
+        }
+    });
+}
+
+function configureGristerClickEvents(){
+    $("[id^=tile_]").mouseover(function(e) {
+        var tileID = this.id.substring(5);
+        $('#editicon' + tileID).animate({ 'opacity': 1 },0);
+        $('#historyicon' + tileID).animate({ 'opacity': 1 },0);
+    });
+                    
+    $("[id^=tile_]").mouseout(function(e) {
+        var tileID = this.id.substring(5);
+        $('#editicon' + tileID).animate({ 'opacity': 0 },0);
+        $('#historyicon' + tileID).animate({ 'opacity': 0 },0);
+    });
                 
+    $("[id^=editicon]").click(function(e) {
+        getDataSet({
+            strService: 'EditWidgetDialog',
+            strDashboardWidgetID: this.id.substring(8)
+        })
+        e.stopPropagation();
+    });
+					
+    $("[id^=historyicon]").click(function(e) {
+        showHist(this.id.substring(11));
+        e.stopPropagation();
+    });
+                    
+	$("[id^=refreshicon]").click(function(e) {
+        getDataSet({
+            strService: 'RefreshWidget',
+            strDashboardWidgetID: this.id.substring(11)
+        });
+        e.stopPropagation();
+    });
+                    
+    $("[id^=tile_]").click(function(e) {
+		saveGridPosition();
+    });
 }
 
 
@@ -395,6 +465,10 @@ function getDataSet(options) {
                 dialogConstructor("Add Dashboard", false, true, data, 1, true);
             } else if (options.strService == 'EditDashboardDialog') {
                 dialogConstructor("Edit Dashboard", true, true, data, 1, true);
+            } else if (options.strService == 'EditProfileDialog') {
+                dialogConstructor("Edit Profile", false, true, data, 1, true);
+            } else if (options.strService == 'EditSettingsDialog') {
+                dialogConstructor("Edit Settings", false, true, data, 1, true);
             }  else if (options.strService == 'GetWidgetTypes') {
 				dialogConstructor("Select a Widget", false, true, getNewWidgetHTML(JSON.parse(data)), 3, true);
 				configureWidgetCarousel();

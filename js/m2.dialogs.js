@@ -170,8 +170,12 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
         d3.select("#dialogHTML1").append("svg")
             .datum(data)
             .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span>&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' />&nbsp;<span style='font-size: 20px;' class='glyphicon glyphicon-calendar'></span></td><td style='width: 1px; vertical-align: middle;'><span style='font-size: 20px;' class='glyphicon glyphicon-retweet' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><span style='font-size: 20px;' class='glyphicon glyphicon-road' onClick='showPred(" + dashboardwidgetid + ");' /></span>&nbsp;Forecast</td></tr></table>");
+        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><span id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='glyphicon glyphicon-search' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><span style='font-size: 20px; margin-right: 10px;' class='glyphicon glyphicon-road'/>Predictive Forecast</span></button></td></tr></table>");
         $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
+        
+        $('#startdt').datepicker({autoclose: true});
+        $('#enddt').datepicker({autoclose: true});
+        
         return chart;
     });
 }
@@ -210,7 +214,7 @@ function widgetForecastChart(strData, dashboardwidgetid) {
         d3.select("#dialogHTML1").append("svg")
             .datum(data)
             .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table style='text-align: left;' class='w-histchart-table'><tr><td></td><td style='text-align: right;'><img src='img/history-icon-small.png'  onClick='showHist(" + dashboardwidgetid + ");'>&nbsp;History</td></tr></table>");
+        $("#dialogHTML1").prepend("<table style='text-align: left;' class='w-histchart-table'><tr><td></td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' onClick='showHist(" + dashboardwidgetid + ");' ><span style='font-size: 20px; margin-right: 10px;' class='glyphicon glyphicon-road'/>History</span></button></td></tr></table>");
         return chart;
     });
 }
@@ -253,15 +257,30 @@ function alertHistoryTable(displaytype) {
 }
 
 function checkParamValidation(){
-    var ret = "false";
+    var ret = "";
+    var error = "false";
     //Check no alter, update or delete statements in the parameters to avoid hacks
     $("[id^=pid_]").each(function() {
         var val = this.value.toUpperCase();
         if (val.indexOf("DELETE") > -1 || val.indexOf("ALTER") > -1 || val.indexOf("UPDATE") > -1){
             ret = "<div class='alert alert-danger'><strong>Error: </strong>Cannot use DELETE, ALTER or UPDATE statements in SQL Queries</div>";
+            error = "true";
         }
     });
-    return ret;
+    
+    //Check which fields are required and throw error
+    $("input[required]").each(function () {
+        if ($(this).val().length <= 1) {
+            ret += "<div class='alert alert-danger'><strong>Required: </strong>Please complete " + $(this).attr("placeholder") + "</div>";
+            error = "true";
+        }
+    });
+    
+    if (error == "true") {
+        return ret;
+    } else {
+        return "false";
+    }
 }
 
 function saveDialog(strFunction) {
@@ -347,6 +366,16 @@ function saveDialog(strFunction) {
                 strService: "Update",
                 strSQL: "Update metric2.m2_alert SET cond = '" + document.getElementById('condition').value + "', operator = '" + document.getElementById('operator').value + "', value = '" + document.getElementById('value').value + "', notify = '" + document.getElementById('notify').value + "' WHERE alert_id = " + document.getElementById('alertid').value,
                 strReload: "alerts"
+            })
+        } else if (strFunction == 'Edit Profile') {
+            getDataSet({
+                strService: "Update",
+                strSQL: "Update metric2.m2_users SET name = '" + document.getElementById('name').value + "', lname = '" + document.getElementById('lname').value + "', email = '" + document.getElementById('email').value + "', password = '" + document.getElementById('password').value + "' WHERE user_id =" + document.getElementById('userid').value
+            })
+        } else if (strFunction == 'Edit Settings') {
+            getDataSet({
+                strService: "Update",
+                strSQL: "Update metric2.m2_users SET email_domain = '" + document.getElementById('domain').value + "' WHERE user_id =" + document.getElementById('userid').value
             })
         } else {
             console.log("No Function Defined Yet");
