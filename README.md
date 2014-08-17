@@ -1,6 +1,4 @@
-#metric²
-
-metric² is a self-service BI tool using responsive web based dashboards to display health and performance KPI's of your SAP HANA Database, Platform or Applications. Dashboards are built from a set of customizable widgets.
+![metric2-bg.png](http://metric2.com/img/metric2-bg.png)
 
 ### Features
 
