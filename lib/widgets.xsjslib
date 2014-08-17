@@ -447,7 +447,7 @@ function widgetHistoryChart(dashboardwidgetid, uom){
 		strHTML += "<script type='text/javascript' id='evalcode" + dashboardwidgetid + "' name='script'>";
 		strHTML += "$('." + dashboardwidgetid + "').peity('" + strChartType + "', {";
 			strHTML += "width: '" + parseInt(getWidgetWidth(dashboardwidgetid)) * 200 + "',";
-			strHTML += "height: '" + parseInt(getWidgetHeight(dashboardwidgetid)) * 145 + "'";
+			strHTML += "height: '" + parseInt(getWidgetHeight(dashboardwidgetid)) * 130 + "'";
 		strHTML += "})";
 		
 		strHTML += "</script>";
