@@ -8,11 +8,6 @@ Check out the metric² Website here [www.metric2.com](http://www.metric2.com "ww
 
 The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
 
-### Screenshots
-![Screenshot1.png](http://metric2.com/img/Screenshot1.png)
-
-![Screenshot2.png](http://metric2.com/img/Screenshot2.png)
-
 ## Download
 * [Version 2.0](https://github.com/paschmann/metric2/archive/master.zip)
 * [Version 1.0](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) (requires signup and is the HANA Delivery unit file)
