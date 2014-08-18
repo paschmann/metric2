@@ -25,17 +25,17 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 #####**Delivery Unit** (SAP HANA Package)
 
-- Download the delivery unit package [here](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager 
+- Download the delivery unit package [here](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
 
 #####**Github** Install Directions
 
 - Moves all files into a new project in eclipse and commit them from there
 
 ####Section 2 – Schema creation
-Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2.
+Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install\install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2 (and is not changeable).
 
 ####Section 3 – Sample data creation (optional)
-Once you have completed sections 1 & 2, you can choose to run some scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like, and execute the sql file included.
+Once you have completed sections 1 & 2, you can choose to run some of teh included sql scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like from the install folder, and execute the sql file included.
 
 
 ## Registration
