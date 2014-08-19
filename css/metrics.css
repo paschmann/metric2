@@ -16,6 +16,10 @@ table{
 	margin: 15px;
 }
 
+.diskbullet {
+    height: 135px;
+}
+
 .smallstat{
     /*background-color: #D4D4D4;*/
     border-radius: 2px 2px 2px 2px;
