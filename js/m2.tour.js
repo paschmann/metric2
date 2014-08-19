@@ -9,7 +9,7 @@ function configureTour(){
                     strHTML += "<button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>";
                     strHTML += "<button class='btn btn-sm btn-default' data-role='next'>Next »</button>";
                 strHTML += "</div>";
-            strHTML += "<button class='btn btn-sm btn-default' data-role='end'>Quit</button>";
+            strHTML += "<button class='btn btn-sm btn-default' data-role='end'>Close</button>";
             strHTML += "</nav>";
         strHTML += "</div>";
     
