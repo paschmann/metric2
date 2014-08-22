@@ -39,8 +39,7 @@ Once you have completed sections 1 & 2, you can choose to run some of teh includ
 
 
 ## Registration
-Although not required, please could you register with the metric² mailing list here: 
-![Mailing List](http://www.metric2.com/download.html "metric2 mailing list")
+Although not required, please could you register with the metric² mailing list here: [Mailing List](http://www.metric2.com/download.html "metric2 mailing list")
 
 ## Contact
 * Homepage: http://www.metric2.com
