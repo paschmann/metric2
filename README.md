@@ -10,7 +10,7 @@ The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HAN
 
 ## Download
 * [Version 2.0](https://github.com/paschmann/metric2/archive/master.zip)
-* [Version 1.0](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) (requires signup and is the HANA Delivery unit file)
+* [Version 1.0](http://www.metric2.com/download.html) (requires signup and is the HANA Delivery unit file)
 
 ## Installation
 
@@ -25,7 +25,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 #####**Delivery Unit** (SAP HANA Package)
 
-- Download the delivery unit package [here](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
+- Download the delivery unit package [here](http://www.metric2.com/download.html) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
 
 #####**Github** Install Directions
 
@@ -40,7 +40,7 @@ Once you have completed sections 1 & 2, you can choose to run some of teh includ
 
 ## Registration
 Although not required, please could you register with the metric² mailing list here: 
-![Mailing List](http://metric2.us5.list-manage.com/subscribe/post?u=bc00508167f417118dc4580e4&id=ae3a0aed93 "metric2 mailing list")
+![Mailing List](http://www.metric2.com/download.html "metric2 mailing list")
 
 ## Contact
 * Homepage: http://www.metric2.com
