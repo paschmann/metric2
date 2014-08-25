@@ -96,6 +96,11 @@ function setAlert(alertid, intStatus){
     sqlLib.executeUpdate(SQL);
 }
 
+function sendAlertEmail(email, msg){
+    var SQL = "INSERT INTO metric2.m2_outgoing_email (id, emailfrom, emailto, subject, contents) VALUES (metric2.alert_mail_id.NEXTVAL, 'info@metric2.com','" + email + "','" + msg + "','" + msg + "')";
+    sqlLib.executeUpdate(SQL);
+}
+
 function checkWidgetAlert(dashboardwidgetid, value){
     //check if widget has an alert - if yes, check against the specified value and send an alert if needed
 	try {
@@ -108,11 +113,11 @@ function checkWidgetAlert(dashboardwidgetid, value){
 			var doInsert = 0;
             var intCheckValue = rs.getInteger(3);
             var strOperator = rs.getString(2);
-            
+            var msg = "Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue;
 			
 			//Check if alerts exist and if there are notifications to push
 			response = "<script type='text/javascript' id='alertcode" + dashboardwidgetid + "' name='script'>";
-			response += "addNotification('Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue + "', 2);";
+			response += "addNotification('" + msg + "', 2);";
 			response += "</script>";
 			
 			if (alertid !== ''){
@@ -146,6 +151,10 @@ function checkWidgetAlert(dashboardwidgetid, value){
 				if (doInsert == 1){
 					var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + dashboardwidgetid + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", '" + rs.getString(4) + "', " + value + ")";
 					sqlLib.executeQuery(SQL);
+					
+					if (rs.getString(4) !== ''){
+                        sendAlertEmail(rs.getString(4), msg);
+					}
 				}
 			}
 		}
