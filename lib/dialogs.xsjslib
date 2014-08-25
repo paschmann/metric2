@@ -64,7 +64,7 @@ function showAlertDialog(alertid){
     output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
     output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
 	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
-	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "' disabled/></div></div>";
+	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "'/></div></div>";
 	return output;
 }
 
