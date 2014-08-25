@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="css/bootstrap-tour.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/metrics.css">
+        <link rel="stylesheet" href="css/media.css"> <!-- Important its last! -->
         
         <!-- JS CDN -->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -68,7 +69,7 @@
     
     <body>
         <div id="wrapper">
-            <div id="header">
+            <div id="header" class="hidden-xs hidden-sm">
                 <div id="logoarea" class="logo-area clearfix">
             		<a href="index.html" class="logo"></a>
     	        </div>
@@ -80,11 +81,11 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right tooltip-area">
-            			<li class="hidden-xs hidden-sm"><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-plus-circle"></i></a></li>
-            			<li class="hidden-xs hidden-sm"><a href="#" id="btnAddDashboard" class="h-seperate" onClick="" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
-            			<li class="hidden-xs hidden-sm"><a href="#" id="btnEditDashboard" title="Edit this Dashboard"><i class="fa fa-edit"></i></a></li>
-            			<li class="hidden-xs hidden-sm"><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon  fa fa-fire"></i></a></li>
-                        <li class="hidden-xs hidden-sm"><a href="#" id="btnShowHelp" class="h-seperate" title="Help Website"><i class="icon  fa fa-life-ring"></i></a></li>
+            			<li><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-plus-circle"></i></a></li>
+            			<li><a href="#" id="btnAddDashboard" class="h-seperate" onClick="" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
+            			<li><a href="#" id="btnEditDashboard" title="Edit this Dashboard"><i class="fa fa-edit"></i></a></li>
+            			<li><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon  fa fa-fire"></i></a></li>
+                        <li><a href="#" id="btnShowHelp" class="h-seperate" title="Help Website"><i class="icon  fa fa-life-ring"></i></a></li>
                         
                         <li><a href="#" class="nav-collapse avatar-header" title="Show / hide  menu"><div id="gravSm"><img src="img/avatar.png" class="circular-avatar-sm"></div></a></li>
     	
@@ -112,7 +113,7 @@
             
             
             
-            <div id="nav">
+            <div id="nav" class="hidden-xs hidden-sm">
                 <div id="nav-scroll">
                     <div class="avatar-slide">
                         <div class="avatar-detail">
@@ -163,7 +164,7 @@
             
             
             <div id="main">            
-    	        <ol id="dashboards" class="breadcrumb"></ol>
+    	        <ol id="dashboards" class="breadcrumb hidden-xs hidden-sm"></ol>
             
                 <div id="content">
                     <div id="loadspinner" class="loading" >
