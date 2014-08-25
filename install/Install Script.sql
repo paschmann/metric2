@@ -96,7 +96,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (5,'Icon and Text','5.png','Query','wid
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (6,'Number and Changed Value','6.png','Query','widgetNumberChange','Javascript','Displays a large number value with amount changed since last update',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (7,'Instance Details','7.png','Query','widgetInstanceDetails','Javascript','Displays the Instance ID and Number of the Connection',1,0,1,1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (8,'Current Connections','8.png','Query','widgetNumberChange','Javascript','Displays the current connections to your Database',1,1,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (9,'CPU Usage History','9.png','Query','widgetHistoryChart','Javascript','A history of CPU usage on the HANA Database Instance',1,1,1,1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (9,'DB CPU Usage History','9.png','Query','widgetHistoryChart','Javascript','A history of CPU for the HANA Database Instance',1,1,1,1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (10,'Block Transactions','10.png','Query','widgetBlockedTransactions','Javascript','A count of currently blocked transactions',1,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (11,'Blocked Transaction List','11.png','Query','widgetBlockedTransactionsList','Javascript','A list of transactions currently being blocked',1,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (12,'Component Overview','12.png','Query','widgetComponentOverview','Javascript','A summary of the status of each core system component',1,0,1,3);
@@ -187,7 +187,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (41,11,'SQL1','SQL','SELECT * FRO
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (39,11,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (44,12,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_SYSOVERVIEW',200,0,'SQL Statement to fetch the current count of blocked transactions','SQL Query','false',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (44,12,'SQL1','SQL','SELECT STATUS FROM METRIC2.M2_WIDGET_SYSOVERVIEW',200,0,'SQL Statement to fetch the status of each sys component','SQL Query','false',null,0);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (43,12,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
 
 --widgetUsedMemoryPie
