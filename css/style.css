@@ -94,7 +94,6 @@ a.logo {
   -webkit-overflow-scrolling: touch;
 }
 
-
 #header {
   background: white;
   border-bottom: 5px #2A89C1 solid;
@@ -108,7 +107,7 @@ a.logo {
   transition: transform 0.5s;
 }
 #header .tools-bar {
-  margin-left: 250px;
+  /* margin-left: 250px; */
   padding: 0 15px 0 0;
 }
 #header .tools-bar ul li.h-seperate {
