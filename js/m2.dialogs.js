@@ -270,7 +270,7 @@ function checkParamValidation(){
     
     //Check which fields are required and throw error
     $("input[required]").each(function () {
-        if ($(this).val().length <= 1) {
+        if ($(this).val().length <= 0) {
             ret += "<div class='alert alert-danger'><strong>Required: </strong>Please complete " + $(this).attr("placeholder") + "</div>";
             error = "true";
         }
