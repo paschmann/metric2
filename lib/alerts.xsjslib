@@ -36,7 +36,7 @@ function showAlerts(){
 	strHTML += "<div class='row'>";
         strHTML += "<div class='col-md-2'>";
             strHTML += "<ul class='nav nav-list bs-docs-sidenav'>";
-                strHTML += "<li><a href='#' id='#btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
+                strHTML += "<li><a href='#' id='btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
                 strHTML += "<li><a href='#' onclick='viewSummary();'><i class='icon-chevron-right'></i>Summary</a></li>";
 
                 var rs = sqlLib.executeReader("SELECT DISTINCT metric2.m2_dashboard.title FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
