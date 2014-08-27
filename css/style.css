@@ -53,7 +53,7 @@ label {
   position: relative;
   text-align: center;
   width: 270px;
-  display: block;
+  display: none;
   z-index: 5;
 }
 
@@ -82,7 +82,7 @@ a.logo {
   background: #e5e9ec;
   height: 100%;
   left: 0;
-  margin-left: 270px;
+  margin-left: 0;
   overflow: auto;
   /* overflow-x: hidden; */
   padding-top: 55px;
