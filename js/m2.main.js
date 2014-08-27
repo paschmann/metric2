@@ -110,11 +110,11 @@ function configureClickEvents(){
         if ($('#logoarea').css("display") == "block"){
             $('#logoarea').css("display", "none");
             $('#main').css("margin-left","0");
-            $('#header .tools-bar').css("margin-left","0");
+            /*$('#header .tools-bar').css("margin-left","0");*/
         } else {
             $('#logoarea').css("display", "block");
             $('#main').css("margin-left","270px");
-            $('#header .tools-bar').css("margin-left","250px");
+            /*$('#header .tools-bar').css("margin-left","250px");*/
         }
     });
 }
@@ -317,6 +317,10 @@ function loadDashboards(objDashboards){
             });
         }
     }
+    
+     $('#mnuAddDashboard').click(function(){
+        getDataSet({ strService: 'AddDashboardDialog'});
+    });
     
     if (intCurrentDashboardID == 1){
         getContent($("#dashboards li:first").data("id"));
