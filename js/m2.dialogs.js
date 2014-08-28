@@ -391,9 +391,8 @@ function deleteDialog(strFunction) {
         getDataSet({
             strService: "CallSP",
             strSQL: "CALL METRIC2.M2_P_DELETE_DASHBOARD(" + intCurrentDashboardID + ")",
-            strReload: 'dashboards'
+            strReload: 'true'
         })
-        saveFeedEvent("Dashboard deleted", 3);
     } else if (strFunction == 'Edit Widget') {
        var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
        getDataSet({
