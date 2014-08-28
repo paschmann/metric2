@@ -24,6 +24,26 @@ function getUserIDfromToken(usertoken){
     return sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE user_token = '" + usertoken + "'");
 }
 
+function updateUser(){
+    var email = $.request.parameters.get('email');
+    var lname = $.request.parameters.get('lname');
+    var company = $.request.parameters.get('company');
+    var name = $.request.parameters.get('name');
+    var password = $.request.parameters.get('password');
+    var tmpUserID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "'");
+
+    var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
+    password = hash(password, dt);
+    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email_domain = '" + company + "', email = '" + email + "', password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
+    sqlLib.executeQuery(SQL);
+    return SQL;
+}
+
+function hash(password, dt){
+    var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY('" + dt + "')) from DUMMY");
+    return hash;
+}
+
 function createUser(){
     var email = $.request.parameters.get('email');
     var lname = $.request.parameters.get('lname');
@@ -37,8 +57,7 @@ function createUser(){
     if (tmpUserID === ''){
         //need to hash + salt the password before storing, also store the salt
         var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
-        var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY('" + dt + "')) from DUMMY");
-        password = hash;
+        password = hash(password, dt);
         var SQL = "INSERT INTO METRIC2.M2_USERS (user_ID, name, lname, email_domain, email, password, acct_type, dt_added) VALUES (metric2.user_id.NEXTVAL, '" + name + "', '" + lname + "', '" + company + "', '" + email + "', '" + password + "', '0', '" + dt + "')";
         sqlLib.executeQuery(SQL);
         recCount = 1;
