@@ -6,11 +6,12 @@ function showWidgets(){
     try{
         // Loop through all our widgets for this dashboard and display them in the grid + gridster Div
         var rs = sqlLib.executeReader("SELECT title, width, dashboard_widget_id, type, height, code_type, col_pos, row_pos, code, hist_enabled from metric2.m2_dashboard_widget dw INNER JOIN metric2.m2_widget w ON w.widget_id = dw.widget_id where dashboard_id = " + dashboardid + " order by dashboard_widget_id");
-        
+        var intWidgetCounter = 0;
         strContent = "<div class='gridster' id='gridster'><ul id='gridtiles'>";
         
             while (rs.next()){
                 var intDashboardWidgetID = rs.getString(3);
+                intWidgetCounter++;
                 strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + rs.getString(8) + "' data-col='" + rs.getString(7) + "' data-sizex='" + rs.getString(2) + "' data-sizey='" + rs.getString(5) + "'>";
                     strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
                         strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + rs.getString(1);
@@ -28,6 +29,11 @@ function showWidgets(){
                     strContent += "</section>";
                 strContent += "</li>";
             }
+            
+            if (intWidgetCounter == 0){
+                strContent += "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
+            }
+            
             rs.close();
         strContent += "</ul></div>";
     } catch (err) {
