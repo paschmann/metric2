@@ -368,10 +368,24 @@ function saveDialog(strFunction) {
                 strReload: "alerts"
             })
         } else if (strFunction == 'Edit Profile') {
-            getDataSet({
-                strService: "Update",
-                strSQL: "Update metric2.m2_users SET name = '" + document.getElementById('name').value + "', lname = '" + document.getElementById('lname').value + "', email = '" + document.getElementById('email').value + "', password = '" + document.getElementById('password').value + "' WHERE user_id =" + document.getElementById('userid').value
-            })
+            $.ajax({
+                url: "lib/api.xsjs",
+                type: "GET",
+                data:{
+                    service: "UpdateUser",
+                    email: $('#email').val(),
+                    password: $('#password').val(),
+                    name: $('#name').val(),
+                    lname: $('#lname').val(),
+                    company: $('#company').val(),
+                    userid: $('#userid').value
+                },
+                success: function(data, textStatus, XMLHttpRequest) {
+                    addNotification('User Account Updated', 0);
+                }, error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    $('#msg').html('Status: ' + textStatus + " Error: " + errorThrown);
+                } 
+            });
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
                 strService: "Update",
