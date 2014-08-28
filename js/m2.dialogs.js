@@ -371,20 +371,10 @@ function saveDialog(strFunction) {
             $.ajax({
                 url: "lib/api.xsjs",
                 type: "GET",
-                data:{
-                    service: "UpdateUser",
-                    email: $('#email').val(),
-                    password: $('#password').val(),
-                    name: $('#name').val(),
-                    lname: $('#lname').val(),
-                    company: $('#company').val(),
-                    userid: $('#userid').value
-                },
+                data: $('form').serialize(),
                 success: function(data, textStatus, XMLHttpRequest) {
                     addNotification('User Account Updated', 0);
-                }, error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                    $('#msg').html('Status: ' + textStatus + " Error: " + errorThrown);
-                } 
+                }
             });
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
