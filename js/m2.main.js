@@ -266,7 +266,7 @@ function loadInstanceData(arrData){
 }
 
 
-// -------------------------   User funcitons ----------------------- //
+// -------------------------   User functions ----------------------- //
 
 
 function doLogout(){
@@ -456,11 +456,11 @@ function getDataSet(options) {
                 dialogConstructor("Widget History", true, false, data, 2, false);
 				widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
 				$('#myModal').appendTo("body").modal('show');
-				$('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).html() + ' History');
+				$('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' History');
 			} else if (options.strService == 'WidgetForecastDialog') {
 			    dialogConstructor("Widget Forecast (Avg/h)", false, false, data, 2, true);
 				widgetForecastChart(data, options.strDashboardWidgetID);
-				$('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).html() + ' Forecast (Avg/h)');
+				$('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' Forecast (Avg/h)');
             } else if (options.strService == 'AlertHistoryDialog') {
                 dialogConstructor("Alert History", false, false, data, 2, true);
                 strHistoryTable = data; //Save for later
