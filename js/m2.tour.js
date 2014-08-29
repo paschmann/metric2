@@ -16,13 +16,13 @@ function configureTour(){
     tour = new Tour({
         steps: [
             // 0
-            { element: "#", title: "metric&#178; Demo", content: "Thanks for checking out the demo of metric&#178;. This short guide will walk you through the basic fundamentals of using the website.<br /><br /><p style='font-size: 10px;'>If you prefer to explore on your own, just click the Close button below.</p>" },
+            { element: "#", title: "metric&#178; Introduction", content: "Thanks for checking out the demo of metric&#178;. In the demo we have included 3 different dashboards, giving you an example of 3 possible personas, these include: <br /><br /><Strong>A HANA Dashboard</strong> - Perfect for a IT or DBA team wanting to ensure their HANA instance is running optimally<br /><br /><strong>Sales Dashboard</strong> - A Sales department may use to track daily progress toward a set of goals<br /><br /><strong>Internet of Things Dashboard</strong> - metric&#178; can be used as a datamart and dashboard to store data from sensors, or devices located anywhere. These sensors can be polled, or data can be pushed into metric&#178; from the sensors using the included API.<br /><br />This short guide will walk you through the basic fundamentals of using the website.<br /><br /><p style='font-size: 10px;'>If you prefer to explore on your own, just click the Close button below.</p>" },
             // 1
             { element: "#btnSideBar", title: "Navigation", content: "The Sidebar displays details about your user profile, along with some key information about the HANA instance you are running on." },
             //2
             { element: ".mm-search", title: "Navigation", content: "The Side Menu displays a list of dashboards, alerts and options to modify settings or your user profile." },
             //3
-            { element: "#btnAddDashboard", title: "Navigation", content: "The Tool tip area gives users quick and easy access to many of the popular functions, inluding adding dashboards & metrics, showing alerts and profile changes" },
+            { element: "#btnAddDashboard", title: "Navigation", content: "The Tool tip area gives users quick and easy access to many of the popular functions, including adding dashboards & metrics, showing alerts and profile changes" },
             //4
             { element: "#btnAddDashboard", title: "Dashboards", content: "Realtime dashboards are the core of metric&#178;. Adding one is as simple as clicking the + button." },
             //5
