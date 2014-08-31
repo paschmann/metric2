@@ -2,7 +2,7 @@ DROP SCHEMA METRIC2 CASCADE;
 CREATE SCHEMA METRIC2;
 
 -- Replace SYSTEM with your user for the Dashboards
-CREATE USER M2_SVC_ACCOUNT PASSWORD *7dg6w612auiy*881;
+CREATE USER M2_SVC_ACCOUNT PASSWORD 7Ag6w612auiY881;
 CREATE ROLE M2_SERVICE;
 GRANT SELECT, UPDATE, DELETE ON SCHEMA metric2 TO M2_SERVICE;
 GRANT M2_SERVICE TO M2_SVC_ACCOUNT WITH ADMIN OPTION;
@@ -85,9 +85,9 @@ CREATE PROCEDURE METRIC2.M2_P_WIDGET_HISTORY(v_dwid INT, v_startdt VARCHAR(30), 
 CREATE PROCEDURE METRIC2.M2_P_DELETE_DASHBOARD(dashboard_id INT) LANGUAGE SQLSCRIPT AS BEGIN DELETE FROM METRIC2.M2_DWP_HISTORY WHERE DASHBOARD_WIDGET_PARAM_ID in (SELECT DASHBOARD_WIDGET_PARAM_ID FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS INNER JOIN METRIC2.M2_DASHBOARD_WIDGET ON METRIC2.M2_DASHBOARD_WIDGET_PARAMS.DASHBOARD_WIDGET_ID = METRIC2.M2_DASHBOARD_WIDGET.DASHBOARD_WIDGET_ID WHERE DASHBOARD_ID = :dashboard_id); DELETE FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS WHERE DASHBOARD_WIDGET_ID in (SELECT DASHBOARD_WIDGET_ID FROM METRIC2.M2_DASHBOARD_WIDGET WHERE DASHBOARD_ID = :dashboard_id); DELETE FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id in (SELECT DASHBOARD_WIDGET_ID FROM METRIC2.M2_DASHBOARD_WIDGET WHERE DASHBOARD_ID = :dashboard_id); DELETE FROM metric2.m2_alert WHERE dashboard_widget_id in (SELECT DASHBOARD_WIDGET_ID FROM METRIC2.M2_DASHBOARD_WIDGET WHERE DASHBOARD_ID = :dashboard_id); DELETE FROM metric2.m2_alert_history WHERE dashboard_widget_id in (SELECT DASHBOARD_WIDGET_ID FROM METRIC2.M2_DASHBOARD_WIDGET WHERE DASHBOARD_ID = :dashboard_id); DELETE FROM METRIC2.M2_DASHBOARD WHERE DASHBOARD_ID = :dashboard_id; END;
 CREATE PROCEDURE METRIC2.M2_P_DELETE_WIDGET(widget_id INT) LANGUAGE SQLSCRIPT AS BEGIN DELETE FROM METRIC2.M2_DWP_HISTORY WHERE DASHBOARD_WIDGET_PARAM_ID in (SELECT DASHBOARD_WIDGET_PARAM_ID FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS WHERE DASHBOARD_WIDGET_ID = :widget_id); DELETE FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS WHERE DASHBOARD_WIDGET_ID = :widget_id; DELETE FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id  = :widget_id; DELETE FROM metric2.m2_alert WHERE dashboard_widget_id = :widget_id; DELETE FROM metric2.m2_alert_history WHERE dashboard_widget_id  = :widget_id; END;
 CREATE PROCEDURE METRIC2.M2_P_HISTGENERATOR(dwp_id INT, min_Val INT, max_val INT, start_hour INT, end_hour INT, add_days INT) LANGUAGE SQLSCRIPT AS CNTR INTEGER; BEGIN CNTR := :start_hour; WHILE CNTR <= :end_hour DO INSERT INTO "METRIC2"."M2_DWP_HISTORY" VALUES ("METRIC2"."DWP_HISTORY_ID".NEXTVAL, :dwp_id, ADD_DAYS(ADD_SECONDS(CURRENT_DATE, 60*(:CNTR*60)), :add_days), TO_INT(:min_val + (:max_val-:min_val)*RAND())); CNTR := CNTR + 1; END WHILE; END;
-CREATE PROCEDURE METRIC2.M2_P_DELETE_WIDGET_HISTORY(widget_id INT) LANGUAGE SQLSCRIPT AS BEGIN DELETE FROM METRIC2.M2_DWP_HISTORY WHERE DASHBOARD_WIDGET_PARAM_ID in (SELECT DASHBOARD_WIDGET_PARAM_ID FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS WHERE DASHBOARD_WIDGET_ID = :widget_id); END
+CREATE PROCEDURE METRIC2.M2_P_DELETE_WIDGET_HISTORY(widget_id INT) LANGUAGE SQLSCRIPT AS BEGIN DELETE FROM METRIC2.M2_DWP_HISTORY WHERE DASHBOARD_WIDGET_PARAM_ID in (SELECT DASHBOARD_WIDGET_PARAM_ID FROM METRIC2.M2_DASHBOARD_WIDGET_PARAMS WHERE DASHBOARD_WIDGET_ID = :widget_id); END;
 
--- Data Inserts
+-- Widgets by Type
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (1,'Text and Footer','1.png','Static','widgetTextAndFooter','Javascript','Display Plain Text',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (2,'List','2.png','Query','widgetList','Javascript','A Table of List data',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (3,'Number and Text','3.png','Query','widgetNumberAndText','Javascript','A Large number with text below it',2,1,null,null);
@@ -111,7 +111,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (22,'System Type','22.png','Query','wid
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (23,'Recent Unsuccessful Connections','23.png','Query','widgetRecentUnConnections','Javascript','A recent (12 hours) count of unsuccessful connection attempts',1,1,1,1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (24,'DB Memory Overview','24.png','Query','widgetDBMemoryOverview','Javascript','A summary of Database Memory details',1,0,1,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (25,'Resident Memory Overview','25.png','Query','widgetResMemoryOverview','Javascript','A summary of Resident Memory details',1,0,1,2);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (26,'Ping','26.png','Query','widgetPing','Javascript','Ping a host IP Address',1,1,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (26,'Ping','26.png','Query','widgetPing','Javascript','Ping a host IP Address',7,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (27,'System Connections','27.png','Query','widgetFunnel','Javascript','Displays the 3 groups of connection types',1,0,1,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (28,'System Alert Ticker','28.png','Query','widgetSystemAlerts','Javascript','Displays the system alerts in a ticker format',1,0,1,3);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (29,'Sensor (API)','29.png','WebService','widgetSensorAPI','Javascript','Displays a physical temperature from a sensor',6,1,null,null);
@@ -121,13 +121,14 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (32,'User Alert Ticker','32.png','Query
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (33,'Sensor (Poll)','33.png','Service','widgetSensorPoll','Javascript','Displays a value from a Sensor using poll (HTTP GET)',6,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (34,'Number and History','34.png','Query','widgetHistorySmall','Javascript','Displays a value, icon and small history chart below the number',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (35,'Row and Column Table Size','35.png','Query','widgetTableSizes','Javascript','Displays the size of the row and columns in memory',1,0,1,2);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (36,'JSON Web Service','36.png','Service','widgetJSONService','Javascript','Client side call to a web service, and displays the value',2,0,null,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (37,'JSON Web Service Table','37.png','Service','widgetJSONServiceTable','Javascript','Client side call to a web service, and displays the response as a table',2,0,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (36,'JSON Web Service','36.png','Service','widgetJSONService','Javascript','Client side call to a web service, and displays the value',7,0,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (37,'JSON Web Service Table','37.png','Service','widgetJSONServiceTable','Javascript','Client side call to a web service, and displays the response as a table',7,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (38,'Connection List','38.png','Query','widgetConnectionList','Javascript','Displays a list of running connections including IP, host, schema, and status',1,0,1,3);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (39,'Map','39.png','Query','widgetDataMap','Javascript','Displays a map and queries your DB for a latitude, longditude, name and value',2,0,2,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (40,'Progress Bar','40.png','Query','widgetProgressBar','Javascript','Displays a progress bar from a custom SQL Script (SQL should return a percent and a value)',2,1,1,null);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (41,'RSS Feed','41.png','Service','widgetRSSFeed','Javascript','Displays posts from a specified RSS Feed',2,0,null,2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (41,'RSS Feed','41.png','Service','widgetRSSFeed','Javascript','Displays posts from a specified RSS Feed',7,0,null,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (42,'Image Box','42.png','Static','widgetImageBox','Javascript','Displays a Image using the supplied URL',2,0,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (43,'Gauge','43.png','Query','metricGauge','Client','Displays a gauge with a numeric value',2,1,null,null);
 
 -- Widget Params
 -- widgetTextAndFooter
@@ -288,6 +289,9 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (148,41,'FEEDCOUNT','Static','',2
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (149,42,'URL','Static','http://scn.sap.com/resources/sbs_static/2406/developer-center-picture-5-transp.png',100,1,'Url of Image including HTTP','URL','true',null,0);
 
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (151,43,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (150,43,'SQL1','SQL','SELECT 1 as min, 10 as max, 5 as value, MET2SpeedMET2 as Label, MET2Motor 1MET2 as Title FROM DUMMY',500,0,'SQL Statement for values, requires min, max, value, Label and Title','SQL Query','true',null,0);
+
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
@@ -303,14 +307,18 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (10,'ft','ft',2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (11,'m','m',2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (12,'localserver','Local Server',3);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (13,' ',' ',2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (14, '$', '$', 2)
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (14, '$', '$', 2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (15, '$M', '$M', 2);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (16, 'Gal/Day', 'Gal/Day', 2)
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (17, 'l/Day', 'l/Day', 2)
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (18, 't/Day', 't/Day', 2)
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (19, 't/s', 't/s', 2)
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (20, 'kg/s', 'kg/s', 2)
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (21, 'lbs/s', 'lbs/s', 2)
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (16, 'Gal/Day', 'Gal/Day', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (17, 'l/Day', 'l/Day', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (18, 't/Day', 't/Day', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (19, 't/s', 't/s', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (20, 'kg/s', 'kg/s', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (21, 'lbs/s', 'lbs/s', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (22, 'mph', 'mph', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (23, 'km', 'km', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (24, 'ft/s', 'ft/s', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (25, 'm/s', 'm/s', 2);
 
 
 INSERT INTO "METRIC2"."M2_PAL_TS_FIXEDVALS" VALUES (1);
