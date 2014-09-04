@@ -298,8 +298,9 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (148,41,'FEEDCOUNT','Static','',2
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (149,42,'URL','Static','http://scn.sap.com/resources/sbs_static/2406/developer-center-picture-5-transp.png',100,1,'Url of Image including HTTP','URL','true',null,0);
 
+-- metricGauge
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (151,43,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (150,43,'SQL1','SQL','SELECT 1 as min, 10 as max, 5 as value, MET2SpeedMET2 as Label, MET2Motor 1MET2 as Title FROM DUMMY',500,0,'SQL Statement for values, requires min, max, value, Label and Title','SQL Query','true',null,0);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (150,43,'SQL1','SQL','SELECT 1 as min, 10 as max, 5 as value, MET2SpeedMET2 as Label, MET2Motor 1MET2 as Title FROM DUMMY',500,0,'SQL Statement for values, requires min, max, value, Label and Title','SQL Query','true',null,1);
 
 
 
