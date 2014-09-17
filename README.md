@@ -35,7 +35,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install\install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2 (and is not changeable).
 
 ####Section 3 – Sample data creation (optional)
-Once you have completed sections 1 & 2, you can choose to run some of teh included sql scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like from the install folder, and execute the sql file included.
+Once you have completed sections 1 & 2, you can choose to run some of the included sql scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like from the install folder, and execute the sql file included.
 
 
 ## Registration
