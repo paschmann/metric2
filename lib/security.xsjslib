@@ -3,7 +3,8 @@
 
 function getUserLoginToken() {
     // Get the salt from the useraccount, apply it, and test the password
-    var userID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "' AND password = '" + password + "'");
+    var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY(DT_ADDED)) from METRIC2.M2_Users where email = '" + email + "'");
+    var userID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "' AND password = '" + hash + "'");
     // Calculate HMACSHA1-Value (160 Bits) which is returned as a Buffer of 20 Bytes
     var hmacSha1ByteBuffer = $.util.crypto.hmacSha1(userID, Math.random().toString(36).slice(2));
     // Encode ByteBuffer to Base64-String
@@ -23,6 +24,26 @@ function getUserIDfromToken(usertoken){
     return sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE user_token = '" + usertoken + "'");
 }
 
+function updateUser(){
+    var email = $.request.parameters.get('email');
+    var lname = $.request.parameters.get('lname');
+    var company = $.request.parameters.get('company');
+    var name = $.request.parameters.get('name');
+    var password = $.request.parameters.get('password');
+    var tmpUserID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "'");
+
+    var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
+    password = hash(password, dt);
+    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email_domain = '" + company + "', email = '" + email + "', password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
+    sqlLib.executeQuery(SQL);
+    return SQL;
+}
+
+function hash(password, dt){
+    var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY('" + dt + "')) from DUMMY");
+    return hash;
+}
+
 function createUser(){
     var email = $.request.parameters.get('email');
     var lname = $.request.parameters.get('lname');
@@ -35,8 +56,10 @@ function createUser(){
     //check if user already exists
     if (tmpUserID === ''){
         //need to hash + salt the password before storing, also store the salt
-        var SQL = "INSERT INTO METRIC2.M2_USERS (user_ID, name, lname, email_domain, email, password, acct_type, dt_added) VALUES (metric2.user_id.NEXTVAL, '" + name + "', '" + lname + "', '" + company + "', '" + email + "', '" + password + "', '0', CURRENT_TIMESTAMP)";
-        sqlLib.executeQuery(SQL);
+        var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
+        password = hash(password, dt);
+        var SQL = "INSERT INTO METRIC2.M2_USERS (user_ID, name, lname, email_domain, email, password, acct_type, dt_added) VALUES (metric2.user_id.NEXTVAL, '" + name + "', '" + lname + "', '" + company + "', '" + email + "', '" + password + "', '0', '" + dt + "')";
+        var msg = sqlLib.executeQuery(SQL);
         recCount = 1;
     } else {
         recCount = -1;

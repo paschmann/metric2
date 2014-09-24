@@ -1,1 +1,0 @@
-CREATE VIEW "METRIC2"."M2_WIDGET_TOTAL_CPU" ( "SM" ) AS select ABS(SUM(TOTAL_CPU)) AS SM from sys.m_service_statistics WITH READ ONLY

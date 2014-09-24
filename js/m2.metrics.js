@@ -1,8 +1,14 @@
+function getScalarVal(sql, obj, property){
+    var resp = JSON.parse(sql[obj]);
+    return resp[0][property];
+}
 
-// --------------------------------------- metrics UI ----------------------------------------------------- //
 
+
+// --------------------------------------- Common metrics UI ----------------------------------------------------- //
 
 function widgetJSONServiceTable(data){
+    //Requires data.dwid, data.URL
 	var value = '';
 	authtoken = '';
 	
@@ -39,11 +45,13 @@ function widgetJSONServiceTable(data){
 }
 
 function widgetDateTime(data){
+    //Requires data.dwid
 	showClock(data.dwid);
 	timer = $.timer(function() { showClock(data.dwid); }); timer.set({ time : 1000, autostart : true });
 }
 
 function widgetTextAndFooter(data){
+    //Requires data.dwid, data['Large Text Value'], data['Footer Text Value']
     var html = "<div class='t1-widget-text-big'>" + data['Large Text Value']  + "</div>";
     html += "<div class='t1-widget-footer'>";
     html += "<div class='t1-widget-percent-medium-grey'>" + data['Footer Text Value'] + "</div>";
@@ -52,6 +60,7 @@ function widgetTextAndFooter(data){
 }
 
 function widgetStockPrice(data){
+    //Requires data.dwid, data.TICKER
         var url = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%3D%22' + data.TICKER + '%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=';
         $.getJSON(url, function(resp) {           
             var items = [];
@@ -78,6 +87,7 @@ function widgetStockPrice(data){
 
 
 function widgetDataMap(data){
+    //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
 	var objDataSet = JSON.parse(data.SQL1);
 	$('#t1-widget-container' + data.dwid).html('<div id="map"></div>');
 	var R = Raphael("map", 400, 300),
@@ -159,6 +169,7 @@ function widgetDataMap(data){
 
 
 function widgetJSONService(data){
+    //Requires data.dwid, data.URL, data.OBJKEY, data.TEXT1
     var value = '';
     $.getJSON(data.URL, function( resp ) {
         var items = [];
@@ -173,8 +184,9 @@ function widgetJSONService(data){
 }
 
 
-function widgetWeather(data){		
-  $.simpleWeather({
+function widgetWeather(data){
+    //Requires data.dwid, data.ZIPCODE
+    $.simpleWeather({
 	zipcode: data.ZIPCODE,
 	woeid: data.ZIPCODE,
 	location: '',
@@ -196,6 +208,7 @@ function widgetWeather(data){
 
 
 function showClock(data){
+    //Requires data.dwid
     var Digital = new Date();
 	var hours = Digital.getHours();
 	var minutes = Digital.getMinutes();
@@ -219,6 +232,7 @@ function showClock(data){
 
 
 function widgetTwitter(data){
+    //Requires data.dwid, data.HANDLE, data.NUMTWEETS
     var html = "<a style='margin: 5px;' class='twitter-timeline' href='https://twitter.com/" + data.HANDLE + "' width='450' height='420'  data-tweet-limit='" + data.NUMTWEETS + "' data-chrome='nofooter noheader transparent' data-widget-id='" + data.WIDID + "'>Tweets by " +  data.HANDLE + "</a>";
     $('#t1-widget-container' + data.dwid).html(html);
 	!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
@@ -228,7 +242,7 @@ function widgetTwitter(data){
 
 
 function widgetPing(data){
-
+    //Requires data.dwid, data.IP
 	//jQuery.ajax({
 //		url:ip,
 //		//dataType: 'html script',
@@ -275,6 +289,7 @@ function widgetUserAlertRotator(){
 }
 
 function metricGauge(data){
+    //Requires data.dwid, data.SQL1 (objData[0].VALUE, objData[0].MIN, objData[0].MAX, objData[0].TITLE, objData[0].LABEL)
     try {
         var objData = jQuery.parseJSON(data.SQL1);
         $('#t1-widget-container' + data.dwid).html("<div id='gauge" + data.dwid + "'></div>");
@@ -288,12 +303,14 @@ function metricGauge(data){
             showInnerShadow: false,
             levelColors: ['#5BD993', '#FFDD72', '#F55B4C']
         }); 
+        console.log(g);
     } catch (err) {
 		$('#t1-widget-container' + data.dwid).html(err);
 	}
 }
 
 function widgetTable(data){
+    //Requires data.dwid, data.SQL1
     if (data.SQL1 != '[]'){
         var resp = JSON.parse(data.SQL1);
         var html = "<table style='text-align: left; margin: 10px; width: inherit;' class='table table-striped'>";
@@ -316,6 +333,7 @@ function widgetTable(data){
 }
 
 function widgetList(data){
+    //Requires data.dwid, data.SQL1
     if (data.SQL1 != '[]'){
         var resp = JSON.parse(data.SQL1);
         var html = "<table style='text-align: left; margin: 10px; width: inherit;' class='table table-striped'>";
@@ -338,53 +356,196 @@ function widgetList(data){
 }
 
 function widgetNumberAndText(data){
+    //Requires data.dwid, data.SQL1 (VALUE)
     var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE');
     html += "<p class='t1-widget-text-small'>" + data.TEXT1 + "</p></div>";
 	$('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetIcon(data){
+     //Requires data.dwid, data.SQL1 (VALUE), data.TEXT1, data.ICONURL
     var html = "<img class='w-icon-img' src='" + data.ICONURL + "' >";
 	html += "<p class='w-icon-datapoint'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</p>";
 	html += "<p class='w-icon-text1'>" + data.TEXT1 + "</p>";
-	//html += alertLib.checkWidgetAlert(data, datapoint);
 	$('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetAllServicesStarted(data){
+     //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (STATUS)
     var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div><br />";
 	html += "<div class='t1-widget-footer'>";
     html += "<div class='t1-widget-percent-medium-grey'>" + getScalarVal(data, 'SQL2', 'STATUS') + "</div>";
 	html += "</div>";
-	//html += alertLib.checkWidgetAlert(data, value1);
-    $('#t1-widget-container' + data.dwid).html(html);
+	$('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetImageBox(data){
+     //Requires data.dwid, data.URL
 	var html = "<img class='w-icon-img' src='" + data.URL + "' >";
 	$('#t1-widget-container' + data.dwid).html(html);
 }
 
 
 
+function widgetNumberChange(data){
+    //Requires data.dwid, data.SQL1 (VALUE), data.UOM1, data.DECPLACE
+	var fltPrevValue = parseInt($('#t1-widget-container' + data.dwid + ' .t1-widget-text-big').html());
+	if (isNaN(fltPrevValue)){
+	    fltPrevValue = 0;
+	}
+	var strUOM = data.UOM1;
+	var intDecPlace = parseInt(data.DECPLACE);
+	
+	var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div>";
+	var fltCurValuedata = parseFloat(getScalarVal(data, 'SQL1', 'VALUE'));
+	var strFooter = "";
+	
+	
+	try{
+            var fltChangeValue = (fltCurValuedata - fltPrevValue);
+			fltChangeValue = fltChangeValue.toFixed(intDecPlace);
+			html += "<div class='t1-widget-footer' style='margin-top: 30px;'>";
+			if (fltChangeValue > 0){
+				strFooter = "<div class='t1-widget-percent-medium-green'>&#9650 " + fltChangeValue + " " + strUOM + "</div>";
+			} else if (data.SQL1 == fltPrevValue) {
+				strFooter = "<div class='t1-widget-percent-medium-grey'>&#9668 " + strUOM + "</div>";
+			} else {
+				strFooter = "<div class='t1-widget-percent-medium-red'>&#9660" + fltChangeValue + " " + strUOM + "</div>";
+			}
+	} catch (err) {
+		strFooter = err;
+		html += "</div>";
+	}
+	
+	$('#t1-widget-container' + data.dwid).html(html + strFooter);
+}
 
-function getScalarVal(sql, obj, property){
-    var resp = JSON.parse(sql[obj]);
-    return resp[0][property];
+
+function widgetHistChart(data){
+    //Requires data.dwid, data.SQL1 (VALUE), data.SQL1_Hist (VALUE), data.CHARTTYPE, data.UOM1, data.RECLIMIT
+	try{
+		var strHistData = new Array([]);
+		var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //last value?
+		var reclimit = data.RECLIMIT;
+		var uom = data.UOM1;
+		strHistData = JSON.parse(data.SQL1_Hist);
+		var strChartType = data.CHARTTYPE;
+		var strData = '';
+        
+        strHistData.reverse();
+						
+		for(var i=0; i<strHistData.length; i++) {
+			strData += parseFloat(strHistData[i].VALUE, 10) + ',';
+		}
+		strData = strData.substring(0, strData.length - 1);
+		
+		var html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
+		html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
+		
+		$('#t1-widget-container' + data.dwid).html(html);
+		
+		$('.peity' + data.dwid).peity(strChartType, {
+		    width: parseInt(1) * 200,
+		    height: parseInt(1) * 130
+		});
+		
+		
+	} catch (err) {
+		return err;
+	}
+}
+
+
+function widgetHistorySmall(data){
+    //Requires data.dwid, data.SQL1 (VALUE), data.SQL1_Hist (VALUE), data.CHARTTYPE, data.UOM1, data.RECLIMIT,  data.ICONURL, data.LINECOL
+    try{
+		var strHistData = new Array([]);
+		var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //just the last point?
+		var reclimit = data.RECLIMIT;
+        var uom = data.UOM1;
+        var imgURL = data.ICONURL;
+        var strSparkColor = data.LINECOL;
+		strHistData = JSON.parse(data.SQL1_Hist); //too many points?
+		var strData = '';
+        
+        strHistData.reverse();
+						
+		for(var i=0; i<strHistData.length; i++) {
+			strData += parseFloat(strHistData[i].VALUE, 10) + ',';
+		}
+		strData = strData.substring(0, strData.length - 1);
+		
+		var html = "<div class='t1-widget-text-big' style='top: 65px;'><table style='width: 100%;'><tr>";
+        if (imgURL){
+            html += "<td><img src='" + imgURL + "' /> </td>";
+        }
+        html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
+		html += "<div class='t1-widget-footer' style='text-align:center'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
+		
+		$('#t1-widget-container' + data.dwid).html(html);
+		
+		$('.peity' + data.dwid).peity('line', {
+		    width: parseInt(2) * 185,
+		    height: parseInt(1) * 60,
+		    strokeColour: strSparkColor, colour: '#FFFFFF'
+		});
+		
+		
+	} catch (err) {
+		return err;
+	}
+}
+
+
+function widgetProgressBar(data){
+    //Requires data.dwid, data.SQL1 (VALUE, LABEL), data.ICONURL
+	var datapoints = JSON.parse(data.SQL1);
+	var imgUrl = data.ICONURL;
+	var html = "<table style='width: 100%;'><tr><td>";
+	
+	if (imgUrl !== ''){
+        html += "<img class='w-icon-img' src='" + imgUrl + "'>";
+	} else {
+        html += "&nbsp;";
+	}
+	
+	html += "</td><td><div class='widget-progressbar-percent'>" + datapoints[0].VALUE + "%</div>";
+	html += "<div class='widget-progressbar'>" + datapoints[0].LABEL + "</div></td></tr></table>";
+	html += "<div style='width: 94%; margin: 0 auto;'><table style='width: 100%; border: 1px solid #BBB; height: 30px; border-spacing: 5px;'>";
+	html += "<tr><td class='widget-progressbar-td' style='background-color: #DDD; width:" + datapoints[0].VALUE + "%;'>&nbsp;</td><td></td></tr>";
+	html += "</table></div>";
+    $('#t1-widget-container' + data.dwid).html(html);
 }
 
 
 
+function widgetRSSFeed(data){
+    //Requires data.dwid, data.FEEDCOUNT, data.URL
+	var html = "<div id='rss'></div>";
+	$('#t1-widget-container' + data.dwid).html(html);
+	$('#rss').FeedEk({
+		FeedUrl : data.URL,
+		MaxCount : data.FEEDCOUNT,
+		ShowDesc : true,
+		ShowPubDate:true,
+		DescCharacterLimit:100,
+		TitleLinkTarget:'_blank'
+    });
+}
+
+
+// --------------------------------------- HANA specific metrics UI ----------------------------------------------------- //
+
+
 function widgetRecentUnConnections(data){
-	//insertWidgetHistory(data, 'SQL1', datapoint);
-    var html = "<div class='iconframe'><img src='img/icon-lock.png' class='w-unsuccesfulconns-img'>";
+     //Requires data.dwid, data.SQL1 (VALUE)
+	var html = "<div class='iconframe'><img src='img/icon-lock.png' class='w-unsuccesfulconns-img'>";
     html += "<p class='w-unsuccesfulconns-datapoint'>" + getScalarVal(data, 'SQL1', 'VALUE') + " Attempts</p></div>";
-	
-	//html += alertLib.checkWidgetAlert(data, data);
 	$('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetIconDistributed(data){
+    //Requires data.dwid, data.SQL1 (VALUE)
     var html = "<div class='iconframe'>";
 	var strText = '';
 	if (getScalarVal(data, 'SQL1', 'VALUE') == 'Yes'){
@@ -400,7 +561,7 @@ function widgetIconDistributed(data){
 
 
 function widgetBullet(data){
-    
+    //Requires data.dwid, data.SQL1, SQL2, SQL3 (VALUE, datadisk[0].DATA_SIZE, datadisk[0].USED_SIZE)
     var datadisk = JSON.parse(data.SQL1);
     var logdisk = JSON.parse(data.SQL2);
     var tracedisk = JSON.parse(data.SQL3);
@@ -408,7 +569,6 @@ function widgetBullet(data){
 	var data1 = '{"title": "Data Size", "subtitle": "' + datadisk[0].DATA_SIZE + ' Gb","ranges": [' + datadisk[0].USED_SIZE + ', ' + datadisk[0].DISK_SIZE + ', ' + datadisk[0].DISK_SIZE + '],"measures": [' + datadisk[0].DATA_SIZE + '],"markers": [' + datadisk[0].DISK_SIZE + ']}';
 	var data2 = '{"title": "Log Size", "subtitle": "' + logdisk[0].DATA_SIZE + ' Gb","ranges": [' + logdisk[0].USED_SIZE + ', ' + logdisk[0].DISK_SIZE + ', ' + logdisk[0].DISK_SIZE + '],"measures": [' + logdisk[0].DATA_SIZE + '],"markers": [' + logdisk[0].DISK_SIZE + ']}';
 	var data3 = '{"title": "Trace Size", "subtitle": "' + tracedisk[0].DATA_SIZE + ' Gb","ranges": [' + tracedisk[0].USED_SIZE + ', ' + tracedisk[0].DISK_SIZE + ', ' + tracedisk[0].DISK_SIZE + '],"measures": [' + tracedisk[0].DATA_SIZE + '],"markers": [' + tracedisk[0].DISK_SIZE + ']}';
-	//showBullet("t1-widget-container" + data.dwid, data1, data2, data3);
 	
 	var strContent = '<div id="bullet' + data.dwid + '1" class="diskbullet" style="margin-top:40px;"><svg></svg></div><div id="bullet' + data.dwid + '2" class="diskbullet"><svg></svg></div><div id="bullet' + data.dwid + '3" class="diskbullet"><svg></svg></div>';
 	data1 = JSON.parse(data1);
@@ -435,6 +595,7 @@ function widgetBullet(data){
 }
 
 function widgetInstanceDetails(data){
+    //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (VALUE)
     var html = "<table><tr><td><p class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE');
     html += "</td></tr><tr><td><font style='font-size: 40px; color: #999;'>" + getScalarVal(data, 'SQL2', 'VALUE') + "</font></p></td></tr></table>";
 	html += "";
@@ -443,137 +604,11 @@ function widgetInstanceDetails(data){
 }
 
 
-function widgetNumberChange(data){
-	//var data = data.SQL1;
-	var fltPrevValue = parseInt($('#t1-widget-container' + data.dwid + ' .t1-widget-text-big').html());
-	if (isNaN(fltPrevValue)){
-	    fltPrevValue = 0;
-	}
-	var strUOM = data.UOM1;
-	var intDecPlace = parseInt(data.DECPLACE);
-	//insertWidgetHistory(data, 'SQL1', data);
-	
-	var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div>";
-	var fltCurValuedata = parseFloat(getScalarVal(data, 'SQL1', 'VALUE'));
-	var strFooter = "";
-	
-	
-	try{
-            var fltChangeValue = (fltCurValuedata - fltPrevValue);
-			fltChangeValue = fltChangeValue.toFixed(intDecPlace);
-			html += "<div class='t1-widget-footer' style='margin-top: 30px;'>";
-			if (fltChangeValue > 0){
-				strFooter = "<div class='t1-widget-percent-medium-green'>&#9650 " + fltChangeValue + " " + strUOM + "</div>";
-			} else if (data.SQL1 == fltPrevValue) {
-				strFooter = "<div class='t1-widget-percent-medium-grey'>&#9668 " + strUOM + "</div>";
-			} else {
-				strFooter = "<div class='t1-widget-percent-medium-red'>&#9660" + fltChangeValue + " " + strUOM + "</div>";
-			}
-	} catch (err) {
-		strFooter = err;
-		html += "</div>";
-	}
-	
-	//html += alertLib.checkWidgetAlert(data, fltCurValuedata);
-	
-	$('#t1-widget-container' + data.dwid).html(html + strFooter);
-}
-
-function widgetHistChart(data){
-	try{
-		var strHistData = new Array([]);
-		var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //last value?
-		var reclimit = data.RECLIMIT;
-		var uom = data.UOM1;
-		//insertWidgetHistory(data, 'SQL1', datapoint);
-		strHistData = JSON.parse(data.SQL1_Hist);
-		var strChartType = data.CHARTTYPE;
-		var strData = '';
-        
-        strHistData.reverse();
-						
-		for(var i=0; i<strHistData.length; i++) {
-			strData += parseFloat(strHistData[i].VALUE, 10) + ',';
-		}
-		strData = strData.substring(0, strData.length - 1);
-		
-		var html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
-		html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
-		
-		$('#t1-widget-container' + data.dwid).html(html);
-		
-		$('.peity' + data.dwid).peity(strChartType, {
-		    width: parseInt(1) * 200,
-		    height: parseInt(1) * 130
-		});
-		
-		//html += alertLib.checkWidgetAlert(data, datapoint);
-		
-		
-	} catch (err) {
-		return err;
-	}
-}
-
-
-function widgetHistorySmall(data){
-    try{
-		var strHistData = new Array([]);
-		var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //just the last point?
-		var reclimit = data.RECLIMIT;
-        var uom = data.UOM1;
-        var imgURL = data.ICONURL;
-        var strSparkColor = data.LINECOL;
-		//insertWidgetHistory(data, 'SQL1', datapoint);
-		strHistData = JSON.parse(data.SQL1_Hist); //too many points?
-		var strData = '';
-        
-        strHistData.reverse();
-						
-		for(var i=0; i<strHistData.length; i++) {
-			strData += parseFloat(strHistData[i].VALUE, 10) + ',';
-		}
-		strData = strData.substring(0, strData.length - 1);
-		
-		var html = "<div class='t1-widget-text-big' style='top: 65px;'><table style='width: 100%;'><tr>";
-        if (imgURL){
-            html += "<td><img src='" + imgURL + "' /> </td>";
-        }
-        html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
-		html += "<div class='t1-widget-footer' style='text-align:center'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
-		
-		//html += alertLib.checkWidgetAlert(data, datapoint);
-		
-		$('#t1-widget-container' + data.dwid).html(html);
-		
-		$('.peity' + data.dwid).peity('line', {
-		    width: parseInt(2) * 185,
-		    height: parseInt(1) * 60,
-		    strokeColour: strSparkColor, colour: '#FFFFFF'
-		});
-		
-		
-	} catch (err) {
-		return err;
-	}
-}
-
-function getIconForStatus(strStatus){
-	if (strStatus === 'OK') {
-		return '<img src="img/OKIcon.png">';
-	} else if (strStatus === 'WARNING'){
-		return '<img src="img/WARNINGIcon.png">';
-	} else {
-		return '<img src="img/ERRORIcon.png">';
-	}
-}
-
-
 function widgetUsedMemoryPie(data){
+    //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (VALUE)
 	var intPhysicalMem = getScalarVal(data, 'SQL1', 'VALUE');
 	var intFreePhysicalMem = getScalarVal(data, 'SQL2', 'VALUE');
-    //insertWidgetHistory(data, 'SQL1', intFreePhysicalMem);
-	var html = "";
+    var html = "";
 	html += "<div class='t1-widget-peity'>";
 	html += "<table width='100%'><tr>";
 	html += "<td><span class='pie-memory' data-diameter='120'>" + intFreePhysicalMem + "/" + intPhysicalMem + "</span></td>";
@@ -602,12 +637,10 @@ function widgetUsedMemoryPie(data){
 			}
 	}
 	);
-	
-	//html += alertLib.checkWidgetAlert(data, intFreePhysicalMem);
 }
 
-
 function widgetComponentOverview(data){
+    //Requires data.dwid, data.SQL1 (STATUS)
 	var datapoints = JSON.parse(data.SQL1);
 	var html = "<table width='100%'><tr>";
 	
@@ -630,8 +663,18 @@ function widgetComponentOverview(data){
     $('#t1-widget-container' + data.dwid).html(html);
 }
 
+function getIconForStatus(strStatus){
+	if (strStatus === 'OK') {
+		return '<img src="img/OKIcon.png">';
+	} else if (strStatus === 'WARNING'){
+		return '<img src="img/WARNINGIcon.png">';
+	} else {
+		return '<img src="img/ERRORIcon.png">';
+	}
+}
 
 function widgetSystemOverview(data){
+    //Requires data.dwid, data.SQL1 (SM), data.SQL2 (SM), data.SQL3 (VALUE), data.SQL4 (VALUE)
 	var html = "<table class='w-misc-table'>";
 	
 	html += "<tr><td><div class='t1-widget-text-medium'>" +  getScalarVal(data, 'SQL1', 'SM') + "%</div></td>";
@@ -648,8 +691,8 @@ function widgetSystemOverview(data){
     $('#t1-widget-container' + data.dwid).html(html);
 }
 
-
 function widgetTableSizes(data){
+    //Requires data.dwid, data.SQL1 (ROWS, COLS)
 	var datapoints = JSON.parse(data.SQL1);
 	var html = "<table class='w-misc-table' style='margin-top: 25px;'>";
 	
@@ -663,10 +706,8 @@ function widgetTableSizes(data){
     $('#t1-widget-container' + data.dwid).html(html);
 }
 
-
-
-
 function widgetDBMemoryOverview(data){
+    //Requires data.dwid, data.SQL1 (ALLOCATION_LIMIT, PEAK, TOTAL_MEMORY_USED_SIZE)
 	var datapoints = JSON.parse(data.SQL1);
 	var html = "<table width='100%' style='align: center;'>";
 	
@@ -679,6 +720,7 @@ function widgetDBMemoryOverview(data){
 }
 
 function widgetResMemoryOverview(data){
+    //Requires data.dwid, data.SQL1 (TOTAL_PHYSICAL_MEMORY, TOTAL_MEMORY, PHYSICAL_MEMORY)
 	var datapoints = JSON.parse(data.SQL1);
 	var html = "<table width='100%' style='align: center;'>";
 	
@@ -691,6 +733,7 @@ function widgetResMemoryOverview(data){
 }
 
 function widgetFunnel(data){
+    //Requires data.dwid, data.SQL1 (STATUS)
 	var datapoints = JSON.parse(data.SQL1);
 	var html = "<table class='w-funnel-table'>";
 	
@@ -709,27 +752,9 @@ function widgetFunnel(data){
 }
 
 
-function widgetProgressBar(data){
-	var datapoints = JSON.parse(data.SQL1);
-	var imgUrl = data.ICONURL;
-	var html = "<table style='width: 100%;'><tr><td>";
-	
-	if (imgUrl !== ''){
-        html += "<img class='w-icon-img' src='" + imgUrl + "'>";
-	} else {
-        html += "&nbsp;";
-	}
-	
-	html += "</td><td><div class='widget-progressbar-percent'>" + datapoints[0].VALUE + "%</div>";
-	html += "<div class='widget-progressbar'>" + datapoints[0].LABEL + "</div></td></tr></table>";
-	html += "<div style='width: 94%; margin: 0 auto;'><table style='width: 100%; border: 1px solid #BBB; height: 30px; border-spacing: 5px;'>";
-	html += "<tr><td class='widget-progressbar-td' style='background-color: #DDD; width:" + datapoints[0].VALUE + "%;'>&nbsp;</td><td></td></tr>";
-	html += "</table></div>";
-    $('#t1-widget-container' + data.dwid).html(html);
-}
-
 
 function widgetSystemAlerts(data){
+    //Requires data.dwid, 
 	var html = '';
 	var img = '';
 	//var rs = data.SQL1;
@@ -775,6 +800,7 @@ function widgetSystemAlerts(data){
 }
 
 function widgetUserAlerts(data){
+    //Requires data.dwid, 
 	var html = '';
 	var img = '';
 	//var rs = data.SQL1;
@@ -812,48 +838,18 @@ function widgetUserAlerts(data){
 }
 
 function widgetSensorPoll(data){
+    //Requires data.dwid, 
     $('#t1-widget-container' + data.dwid).html('');
 }
 	
 	
 function widgetSensorAPI(data){
+    //Requires data.dwid, data.VALUE, data.UOM1, data.TEXT1
     try {
         var html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
-	    html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";	
-	//html += alertLib.checkWidgetAlert(data, datapoint);
-	//insertWidgetHistory(data, 'VALUE', datapoint);
-	    $('#t1-widget-container' + data.dwid).html(html);
+        html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";	
+        $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err);
     }
 }
-
-
-function widgetRSSFeed(data){
-	var html = "<div id='rss'></div>";
-	$('#t1-widget-container' + data.dwid).html(html);
-	$('#rss').FeedEk({
-		FeedUrl : data.URL,
-		MaxCount : data.FEEDCOUNT,
-		ShowDesc : true,
-		ShowPubDate:true,
-		DescCharacterLimit:100,
-		TitleLinkTarget:'_blank'
-    });
-}
-
-
-
-function insertWidgetHistory(data, paramname, value, dashboardwidgetparamid){
-	try {
-		if (!dashboardwidgetparamid && value !== 'NaN' && value !== 'Undefined' && value !== ''){
-				dashboardwidgetparamid = sqlLib.executeScalar("SELECT DASHBOARD_WIDGET_PARAM_ID FROM metric2.M2_dashboard_widget_params INNER JOIN metric2.M2_WIDGET_PARAM ON metric2.M2_WIDGET_PARAM.param_id = metric2.m2_dashboard_widget_params.param_id WHERE metric2.m2_widget_param.name = '" + paramname + "' AND metric2.M2_dashboard_widget_params.dashboard_widget_id =" + data);
-		}
-		sqlLib.executeQuery("INSERT INTO metric2.M2_DWP_HISTORY (dwp_hist_id, dashboard_widget_param_id, value) VALUES (metric2.dwp_history_id.NEXTVAL, " + dashboardwidgetparamid + ", '" + value + "')");
-		return 'Inserted';
-	} catch (err) {
-		return err.message;
-	}
-}
-
-

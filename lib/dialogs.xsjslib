@@ -10,11 +10,13 @@ function showProfileDialog(){
         while (rs.next()){
 		
 			var output = "<form class='form-horizontal'>";
-            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' />";
-		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' value = '" + rs.getString(2) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' id='lname' value = '" + rs.getString(3) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' id='email' value = '" + rs.getString(5) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
+            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
+            output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
+		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
 		}
 		rs.close();
 	}
@@ -64,7 +66,7 @@ function showAlertDialog(alertid){
     output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
     output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
 	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
-	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "' disabled/></div></div>";
+	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "'/></div></div>";
 	return output;
 }
 
@@ -84,13 +86,13 @@ function showAlertOperatorDropdown(selected){
 function showWidgetForecastDialog(dashboardwidgetid, reclimit, forecasttype){
 	sqlLib.executeUpdate("DROP VIEW METRIC2.M2_V_PAL_TS_DATA");
 	var dashboardwidgetparamid = sqlLib.executeScalar("SELECT DISTINCT metric2.m2_dwp_history.dashboard_widget_param_id from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid);
-	sqlLib.executeUpdate("CREATE VIEW METRIC2.M2_V_PAL_TS_DATA AS SELECT TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')) ID, AVG(TO_REAL(a.VALUE)) VALUE FROM METRIC2.M2_DWP_HISTORY a WHERE DASHBOARD_WIDGET_PARAM_ID = " + dashboardwidgetparamid + " GROUP BY TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')), DASHBOARD_WIDGET_PARAM_ID ORDER BY TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')) ASC");
-	sqlLib.executeUpdate("Delete * from METRIC2.M2_PAL_TS_RESULTS");
+	var msg1 = sqlLib.executeUpdate("CREATE VIEW METRIC2.M2_V_PAL_TS_DATA AS SELECT TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')) ID, AVG(TO_REAL(a.VALUE)) VALUE FROM METRIC2.M2_DWP_HISTORY a WHERE DASHBOARD_WIDGET_PARAM_ID = " + dashboardwidgetparamid + " GROUP BY TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')), DASHBOARD_WIDGET_PARAM_ID ORDER BY TO_INT(TO_CHAR(UTCTOLOCAL(DT_ADDED, '" + strTimeZone + "'), 'HH24')) ASC");
+	var msg2 = sqlLib.executeUpdate("DELETE FROM METRIC2.M2_PAL_TS_RESULTS");
 	
 	if (forecasttype == 'double'){
-		sqlLib.executeUpdate("CALL _SYS_AFL.PAL_TS_S (M2_V_PAL_TS_DATA, M2_PAL_TS_PARAMS, M2_PAL_TS_RESULTS) WITH OVERVIEW");
+		var msg3 = sqlLib.executeUpdate("CALL _SYS_AFL.PAL_TS_S (METRIC2.M2_V_PAL_TS_DATA, METRIC2.M2_PAL_TS_PARAMS, METRIC2.M2_PAL_TS_RESULTS) WITH OVERVIEW");
 	} else {
-		sqlLib.executeUpdate("CALL _SYS_AFL.PAL_TS_S (M2_V_PAL_TS_DATA, M2_PAL_TS_PARAMS, M2_PAL_TS_RESULTS) WITH OVERVIEW");
+		var msg4 = sqlLib.executeUpdate("CALL _SYS_AFL.PAL_TS_S (METRIC2.M2_V_PAL_TS_DATA, METRIC2.M2_PAL_TS_PARAMS, METRIC2.M2_PAL_TS_RESULTS) WITH OVERVIEW");
 	}
 	var strHTML = sqlLib.executeRecordSetObj("SELECT ID, VALUE FROM METRIC2.M2_V_PAL_RESULTS");
     return strHTML;
@@ -120,7 +122,7 @@ function showDashboardDialog(){
 function showWidgetHistoryDialog(dashboardwidgetid, reclimit, startdt, enddt){
 
 	//var strHTML = '[["2012-10-02",200],["2012-10-09", 300],["2012-10-12", 150]]';
-    var strSQL = "SELECT TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY') as year, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM') as month, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD') as day, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24') as hour,TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') as min, '00' as secs, TO_DECIMAL(AVG(TO_INT(metric2.m2_dwp_history.value)),2,2) as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + " AND (TO_DATE(TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE('" + startdt + "','MM/DD/YYYY')  AND TO_DATE('" + enddt + "','MM/DD/YYYY')) GROUP BY TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') ORDER BY day, hour, min";
+    var strSQL = "SELECT TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY') as year, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM') as month, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD') as day, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24') as hour,TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') as min, '00' as secs, TO_DECIMAL(AVG(TO_DECIMAL(metric2.m2_dwp_history.value)),2,2) as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + " AND (TO_DATE(TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE('" + startdt + "','MM/DD/YYYY')  AND TO_DATE('" + enddt + "','MM/DD/YYYY')) GROUP BY TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') ORDER BY day, hour, min";
 	//var strSQL = "CALL METRIC2.M2_P_WIDGET_HISTORY(" + dashboardwidgetid + ",'" + startdt + "','" + enddt + "');";
 	var strHTML = sqlLib.executeRecordSetObj(strSQL);
 	return strHTML;

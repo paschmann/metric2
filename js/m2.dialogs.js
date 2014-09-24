@@ -270,7 +270,7 @@ function checkParamValidation(){
     
     //Check which fields are required and throw error
     $("input[required]").each(function () {
-        if ($(this).val().length <= 1) {
+        if ($(this).val().length <= 0) {
             ret += "<div class='alert alert-danger'><strong>Required: </strong>Please complete " + $(this).attr("placeholder") + "</div>";
             error = "true";
         }
@@ -368,10 +368,14 @@ function saveDialog(strFunction) {
                 strReload: "alerts"
             })
         } else if (strFunction == 'Edit Profile') {
-            getDataSet({
-                strService: "Update",
-                strSQL: "Update metric2.m2_users SET name = '" + document.getElementById('name').value + "', lname = '" + document.getElementById('lname').value + "', email = '" + document.getElementById('email').value + "', password = '" + document.getElementById('password').value + "' WHERE user_id =" + document.getElementById('userid').value
-            })
+            $.ajax({
+                url: "lib/api.xsjs",
+                type: "GET",
+                data: $('form').serialize(),
+                success: function(data, textStatus, XMLHttpRequest) {
+                    addNotification('User Account Updated', 0);
+                }
+            });
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
                 strService: "Update",
@@ -391,9 +395,8 @@ function deleteDialog(strFunction) {
         getDataSet({
             strService: "CallSP",
             strSQL: "CALL METRIC2.M2_P_DELETE_DASHBOARD(" + intCurrentDashboardID + ")",
-            strReload: 'dashboards'
+            strReload: 'true'
         })
-        saveFeedEvent("Dashboard deleted", 3);
     } else if (strFunction == 'Edit Widget') {
        var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
        getDataSet({

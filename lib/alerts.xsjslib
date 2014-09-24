@@ -36,9 +36,9 @@ function showAlerts(){
 	strHTML += "<div class='row'>";
         strHTML += "<div class='col-md-2'>";
             strHTML += "<ul class='nav nav-list bs-docs-sidenav'>";
-                strHTML += "<li><a href='#' id='#btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
+                strHTML += "<li><a href='#' id='btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
                 strHTML += "<li><a href='#' onclick='viewSummary();'><i class='icon-chevron-right'></i>Summary</a></li>";
-
+                
                 var rs = sqlLib.executeReader("SELECT DISTINCT metric2.m2_dashboard.title FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
                 while (rs.next()){
                     strHTML += "<li><a href='#'><i class='icon-chevron-right'></i> " + rs.getString(1) + "</a></li>";
@@ -96,6 +96,11 @@ function setAlert(alertid, intStatus){
     sqlLib.executeUpdate(SQL);
 }
 
+function sendAlertEmail(email, msg){
+    var SQL = "INSERT INTO metric2.m2_outgoing_email (id, emailfrom, emailto, subject, contents) VALUES (metric2.alert_mail_id.NEXTVAL, 'info@metric2.com','" + email + "','" + msg + "','" + msg + "')";
+    sqlLib.executeUpdate(SQL);
+}
+
 function checkWidgetAlert(dashboardwidgetid, value){
     //check if widget has an alert - if yes, check against the specified value and send an alert if needed
 	try {
@@ -108,11 +113,11 @@ function checkWidgetAlert(dashboardwidgetid, value){
 			var doInsert = 0;
             var intCheckValue = rs.getInteger(3);
             var strOperator = rs.getString(2);
-            
+            var msg = "Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue;
 			
 			//Check if alerts exist and if there are notifications to push
 			response = "<script type='text/javascript' id='alertcode" + dashboardwidgetid + "' name='script'>";
-			response += "addNotification('Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue + "', 2);";
+			response += "addNotification('" + msg + "', 2);";
 			response += "</script>";
 			
 			if (alertid !== ''){
@@ -146,6 +151,10 @@ function checkWidgetAlert(dashboardwidgetid, value){
 				if (doInsert == 1){
 					var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + dashboardwidgetid + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", '" + rs.getString(4) + "', " + value + ")";
 					sqlLib.executeQuery(SQL);
+					
+					if (rs.getString(4) !== ''){
+                        sendAlertEmail(rs.getString(4), msg);
+					}
 				}
 			}
 		}

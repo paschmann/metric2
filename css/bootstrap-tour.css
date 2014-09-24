@@ -37,6 +37,7 @@
   border-radius: 6px;
 }
 .popover[class*="tour-"] {
+  max-width: 500px;
   z-index: 1100;
 }
 .popover[class*="tour-"] .popover-navigation {

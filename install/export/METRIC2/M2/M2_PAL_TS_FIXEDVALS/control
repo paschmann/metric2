@@ -1,7 +1,0 @@
-import data
-into table "METRIC2"."M2_PAL_TS_FIXEDVALS"
-from 'data'
-    record delimited by '\n'
-    field delimited by ','
-    optionally enclosed by '"'
-error log 'data.err'
