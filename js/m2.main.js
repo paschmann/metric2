@@ -51,7 +51,7 @@ function configureClickEvents(){
             intWidgetGroup: 0
         });
     });
-                
+    
     $('#btnAddDashboard, #mnuAddDashboard').click(function(){
         getDataSet({ strService: 'AddDashboardDialog'});
     });
@@ -372,18 +372,29 @@ function loadWidgetContent(objWidgets){
         for (var i = 0;i < len; ++i) {
             ob = objWidgets[i];
             var url = 'js/widgets/' + ob.codetype + '.js';
+            /*
             $("<link/>", {
                 rel: "stylesheet",
                 type: "text/css",
                 href: "js/widgets/" + ob.codetype + ".css"
-            }).appendTo("head");
-            
+              
             $.getScript( url, function() {
                     window[ob.codetype](ob);
                     timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: ob.dwid});}, ob.refresh));
             });
+            */
         }
     }
+}
+
+function loadClientMetrics(objData){
+    $.each(objData.widgetData, function(key,value) {
+        window[objData.widgetData[key].code](objData.widgetData[key]);
+                    
+        if (objData.widgetData[key].refresh != 0){
+            timers.push(setTimeout( function() { getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: objData.widgetData[key].dwid});} , objData.widgetData[key].refresh));
+        }
+    });
 }
 		
 
@@ -427,26 +438,31 @@ function getDataSet(options) {
             } else if (options.strService == 'Position') {
                 //addNotification('Positions updated', 0);
             } else if (options.strService == 'Widgets') {
-                document.getElementById("grid").innerHTML = data;
-                /*
-                var objData = jQuery.parseJSON(data);
-				document.getElementById("grid").innerHTML = objData.html;
-				loadWidgetContent(JSON.parse(objData.widgets));
-                */
-				loadGridster();
-				loadDynamicJScript('script', '');
+                if (data == "<div class='gridster' id='gridster'><ul id='gridtiles'>TypeError: rs.next is not a function") {
+                    $("#grid").html("<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>");
+                } else {
+                    var objData = jQuery.parseJSON(data);
+                    $("#grid").html(objData.widgets);
+                    loadDynamicJScript('script', ''); //must be before loading client metrics otherwise it clears its timers
+                    //load client side widget data (new style)
+                    loadClientMetrics(objData);
+                }
+                loadGridster();
 				dashboardActive(true);
-				//Change: 001
-			    //getDataSet({ strService: 'WidgetContents', strDashboardID: options.strDashboardID });
-			} else if (options.strService == 'WidgetContents') {
-                loadWidgetContent(JSON.parse(data));
-            } else if (options.strService == 'RefreshWidget') {
+				
+				//Loop through object and check for any alerts to display
+				
+			} else if (options.strService == 'RefreshWidget') {
                 var elemID = "t1-widget-container" + options.strDashboardWidgetID;
-                document.getElementById(elemID).innerHTML = data;
-				loadDynamicJScript('script', elemID);
-				//Change: 001
-				//ob = JSON.parse(data);
-				//window[ob.codetype](ob)
+                var objData = jQuery.parseJSON(data);
+                if (objData.widgets != ''){
+                    document.getElementById(elemID).innerHTML = objData.widgets;
+                }
+                loadDynamicJScript('script', elemID);
+                loadClientMetrics(objData);
+                
+				//Loop through object and check for any alerts to display
+				
 			} else if (options.strService == 'EditWidgetDialog') {
 			    //dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay)
                 dialogConstructor("Edit Widget", true, true, data, 1, true);
@@ -480,6 +496,7 @@ function getDataSet(options) {
 				configureWidgetCarousel();
             }  else if (options.strService == 'Alerts') {
                 dashboardActive(false);
+                $('#dashboardname').html("<a href='#'>Alerts</a>");
 				document.getElementById('grid').innerHTML = data;
             } else if (options.strService == 'AddAlert') {
                 dialogConstructor("Add Alert", false, true, data, 1, true);
@@ -497,6 +514,7 @@ function getDataSet(options) {
 			} else if (options.strService == 'CreateDashboard') {
                 getDataSet({ strService: 'Dashboards'});
                 saveFeedEvent("Dashboard created", 0);
+                getContent($("#dashboards li:last").data("id"));
             } else if (options.strService == 'UpdateDashboard') {
                 getDataSet({ strService: 'Dashboards'});
                 saveFeedEvent("Dashboard updated", 0);

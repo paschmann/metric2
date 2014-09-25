@@ -40,7 +40,6 @@ a.toggle-column-hide {
 
 label {
   color: #A1A1A1;
-  font-family: "Arial", sans-serif;
   font-size: 12px;
 }
 
@@ -214,7 +213,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 }
 
 .mm-list {
-  font-family: "Arial", sans-serif;
+  /* font-family: "Arial", sans-serif; */
   font-size: 12px;
   text-shadow: none;
 }
@@ -395,7 +394,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-text-size-adjust: none;
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
   font-size: 14px;
   text-shadow: none;
   border: none;
@@ -601,13 +600,48 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 }
 
 
+/* Carousel */
 
-.carousel-control { width: 10%; }
+#widgetcarousel {
+    margin-left: 35px;
+    margin-right: 35px;
+}
+
+.carousel-inner .addbtn {
+    position:absolute;
+    bottom: 25px;
+}
+
+.carousel-inner .thumbnail {
+    min-height: 360px;
+    height: 360px;
+}
+
+.thumbnail .caption {
+    margin-top: 10px;
+}
+
+.thumbnail .caption h4 {
+    margin-bottom: 10px;
+}
+
+.carousel-control.left {
+    margin-left: -20px;
+}
+
+.carousel-control.right {
+    margin-right: -40px;
+}
+
+
+.carousel-control { width: 20px; }
 .carousel-inner .active.left { left: -33%; }
 .carousel-inner .next        { left:  33%; }
 .carousel-inner .prev        { left: -33%; }
+
 .carousel-control.left,.carousel-control.right {
     background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0px, rgba(255, 255, 255, 1.0) 100%);
+    color: #000;
 }
 
 

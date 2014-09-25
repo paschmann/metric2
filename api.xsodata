@@ -1,3 +1,0 @@
-service namespace "lilabs.metric2.lib" {
-       "METRIC2"."M2_USERS" as "API";
-}
