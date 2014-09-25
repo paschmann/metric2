@@ -50,6 +50,82 @@ function widgetDateTime(data){
 	timer = $.timer(function() { showClock(data.dwid); }); timer.set({ time : 1000, autostart : true });
 }
 
+function metricClock(data){
+    var html = '<div class="t1-metric-clock-top"><span id="clock-dt"></span><br /><span id="clock-time"></span></div>';
+    html += '<ul id="clock">';
+    html += '<li id="sec"></li>';
+    html += '<li id="hour"></li>';
+    html += '<li id="min"></li>';
+    html += '</ul>';
+    
+    html += '<ul style="margin-top: 5px;">';
+    html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz1"></span></li>';
+    html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz2"></span></li>';
+    html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz3"></span></li>';
+    html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz4"></span></li>';
+    html += '</ul>';
+    
+    $('#t1-widget-container' + data.dwid).html(html);
+    
+    setInterval( function() {
+        var seconds = new Date().getSeconds();
+        var sdegree = seconds * 6;
+        var srotate = "rotate(" + sdegree + "deg)";
+
+        $("#sec").css({"-moz-transform" : srotate, "-webkit-transform" : srotate});
+
+    }, 1000 );
+
+
+    setInterval( function() {
+        var hours = new Date().getHours();
+        var mins = new Date().getMinutes();
+        var hdegree = hours * 30 + (mins / 2);
+        var hrotate = "rotate(" + hdegree + "deg)";
+        
+        $("#clock-time").html(hours + ":" + mins);
+        $("#clock-dt").html(new Date().toDateString());
+        
+        $("#clock-tz1").html(calcTime(+2) + "<br /><b>Cape Town</b>");
+        $("#clock-tz2").html(calcTime(-4) + "<br /><b>New York</b>");
+        $("#clock-tz3").html(calcTime(+11) + "<br /><b>Sydney</b>");
+        $("#clock-tz4").html(calcTime(+8) + "<br /><b>Shanghai</b>");
+
+        $("#hour").css({"-moz-transform" : hrotate, "-webkit-transform" : hrotate});
+
+    }, 1000 );
+
+
+    setInterval( function() {
+        var mins = new Date().getMinutes();
+        var mdegree = mins * 6;
+        var mrotate = "rotate(" + mdegree + "deg)";
+        
+        $("#min").css({"-moz-transform" : mrotate, "-webkit-transform" : mrotate});
+
+    }, 1000 );
+}
+
+function calcTime(offset) {
+
+    // create Date object for current location
+    d = new Date();
+    
+    // convert to msec
+    // add local time zone offset 
+    // get UTC time in msec
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    
+    // create new Date object for different city
+    // using supplied offset
+    nd = new Date(utc + (3600000*offset));
+    
+    // return time as a string
+    return nd.toLocaleString();
+
+}
+
+
 function widgetTextAndFooter(data){
     //Requires data.dwid, data['Large Text Value'], data['Footer Text Value']
     var html = "<div class='t1-widget-text-big'>" + data['Large Text Value']  + "</div>";
@@ -256,36 +332,36 @@ function widgetPing(data){
 }
 
 function widgetAlertRotator(){
-				var aniSpd01 = 5000;
-				var fadeSpd01 = 500;
-				var startIndex = 0;
-				var endIndex = $('#aniHolder div').length;
+	var aniSpd01 = 5000;
+	var fadeSpd01 = 500;
+	var startIndex = 0;
+	var endIndex = $('#w-sysalerts-rotator div').length;
 				
-				$('#aniHolder div:first').fadeIn(fadeSpd01);
-			
-				window.setInterval(function() {
-				$('#aniHolder div:eq(sysalert' + startIndex + ')').fadeOut(fadeSpd01);
-					startIndex++;
-					$('#aniHolder div:eq(sysalert' + startIndex + ')').fadeIn(fadeSpd01);
-					if (endIndex == startIndex) startIndex = 0;
-				}, aniSpd01);
-			}
+	$('#w-sysalerts-rotator div:first').fadeIn(fadeSpd01);
+		
+	timers.push(setInterval(function() {
+    	$('#sysalert' + startIndex).fadeOut(fadeSpd01);
+		startIndex++;
+		$('#sysalert' + startIndex).fadeIn(fadeSpd01);
+		if (endIndex == startIndex) startIndex = 0;
+	}, aniSpd01));
+}
 			
 			
 function widgetUserAlertRotator(){
-				var aniSpd01 = 5000;
-				var fadeSpd01 = 500;
-				var startIndex = 0;
-				var endIndex = $('#userAlert div').length;
+	var aniSpd01 = 5000;
+	var fadeSpd01 = 500;
+	var startIndex = 0;
+	var endIndex = $('#w-useralerts-rotator div').length;
 				
-				$('#userAlert div:first').fadeIn(fadeSpd01);
-			
-				window.setInterval(function() {
-				$('#userAlert div:eq(useralert' + startIndex + ')').fadeOut(fadeSpd01);
-					startIndex++;
-					$('#userAlert div:eq(useralert' + startIndex + ')').fadeIn(fadeSpd01);
-					if (endIndex == startIndex) startIndex = 0;
-				}, aniSpd01);
+	$('#w-useralerts-rotator div:first').fadeIn(fadeSpd01);
+		
+	timers.push(setInterval(function() {
+    	$('#useralert' + startIndex).fadeOut(fadeSpd01);
+		startIndex++;
+		$('#useralert' + startIndex).fadeIn(fadeSpd01);
+		if (endIndex == startIndex) startIndex = 0;
+	}, aniSpd01));
 }
 
 function metricGauge(data){
@@ -303,7 +379,6 @@ function metricGauge(data){
             showInnerShadow: false,
             levelColors: ['#5BD993', '#FFDD72', '#F55B4C']
         }); 
-        console.log(g);
     } catch (err) {
 		$('#t1-widget-container' + data.dwid).html(err);
 	}
@@ -755,91 +830,88 @@ function widgetFunnel(data){
 
 function widgetSystemAlerts(data){
     //Requires data.dwid, 
-	var html = '';
-	var img = '';
-	//var rs = data.SQL1;
-	var count = 0;
+	var arrAlerts = new Array([]);
+	var html;
+	arrAlerts = JSON.parse(data.SQL1);
 	
-	/*
-	html += "<div id='aniHolder'>";
-        while (rs.next()){
-			count++;
-			if (rs.getString(2) === '4') {
-				img = '<img src="img/ERRORIcon.png">';
-			} else if (rs.getString(2) === '2'){
-				img = '<img src="img/WARNINGIcon.png">';
-			} else {
-				img = '<img src="img/OKIcon.png">';
-			}
+	//"[{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.STAT_VIEW_HOST_BLOCKED_TRANSACTIONS (139 current operation cancelled by request and transaction rolled back:  [2625] execution plan aborted (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:32:01.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"1 new runtime dump file(s) found on host saphana","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 13:31:33.0000000","HOST":"*","ALERT_ID":"46","ALERT_NAME":"RTEdump files","ALERT_DESCRIPTION":"Identifies new runtime dump files (*rtedump*) have been generated in the trace directory of the system. These contain information about, for example, build, loaded modules, running threads, CPU, and so on.","ALERT_USERACTION":"Check the contents of the dump files."},{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.HOST_VOLUME_IO_DETAILED_STATISTICS (3584 distributed SQL error:  [2617] executor: plan operation execution failed with an exception (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:31:32.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"There are currently 502 diagnosis files. This might indicate a problem with trace file rotation, a high number of crashes, or another issue.","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"50","ALERT_NAME":"Number of diagnosis files","ALERT_DESCRIPTION":"Determines the number of diagnosis files written by the system. An unusually large number of files can indicate a problem with the database (for example, problem with trace file rotation or a high number of crashes).","ALERT_USERACTION":"Investigate the diagnosis files."},{"ALERT_DETAILS":"The SAP_INTERNAL_HANA_SUPPORT role is currently granted to 1 user(s).","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"63","ALERT_NAME":"Granting of SAP_INTERNAL_HANA_SUPPORT role","ALERT_DESCRIPTION":"Determines if the internal support role (SAP_INTERNAL_HANA_SUPPORT) is currently granted to any database users.","ALERT_USERACTION":"Check if the corresponding users still need the role. If not, revoke the role from them."},{"ALERT_DETAILS":"Data backup does not exist. Without a data backup, your database cannot be recovered.","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 08:16:31.0000000","HOST":"*","ALERT_ID":"35","ALERT_NAME":"Existence of data backup","ALERT_DESCRIPTION":"Determines whether or not a data backup exists. Without a data backup, your database cannot be recovered.","ALERT_USERACTION":"Perform a data backup as soon as possible."},{"ALERT_DETAILS":"Your license will expire in 14 days. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_RATING":"3","ALERT_TIMESTAMP":"2014-09-23 20:00:14.0000000","HOST":"*","ALERT_ID":"31","ALERT_NAME":"License expiry","ALERT_DESCRIPTION":"Determines how many days until your license expires. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_USERACTION":"Obtain a valid license and install it. For the exact expiration date, see the monitoring view M_LICENSE."}]"
 	
-            html += "<div id='" + rs.getString(1) + "'>";
-				html += "<table class='w-sysalerts-table'>";
-					html += "<tr>";
-						html += "<td class='w-sysalerts-td'>" + img + "</td>";
-						html += "<td class='w-sysalerts-text'>" + rs.getString(6) + "<br /><b>" + rs.getString(1) + "</b></td>";
-					html += "</tr>";
-				html += "</table>";
-			html += "</div>";
+	html = "<div id='w-sysalerts-rotator'>";
+	
+	for(var i = 0; i < arrAlerts.length; i++) {
+	    var img;
+	    if (arrAlerts[i].ALERT_RATING === '4') {
+			img = '<img src="img/ERRORIcon.png">';
+		} else if (arrAlerts[i].ALERT_RATING === '2'){
+			img = '<img src="img/WARNINGIcon.png">';
+		} else {
+			img = '<img src="img/OKIcon.png">';
 		}
 		
-	if (count === 0){
-		html += "<div id='sysalert" + count + "'>";
-				html += "<table class='w-sysalerts-table'>";
-					html += "<tr>";
-						html += "<td class='w-sysalerts-td'><img src='img/OKIcon.png'></td>";
-						html += "<td class='w-sysalerts-text'><br /><b>No Alerts</b></td>";
-					html += "</tr>";
-				html += "</table>";
-			html += "</div>";
+		html += "<div id='sysalert" + i + "'>";
+			html += "<table class='w-sysalerts-table'>";
+				html += "<tr>";
+					html += "<td class='w-sysalerts-td'>" + img + "</td>";
+					html += "<td class='w-sysalerts-text'>" + arrAlerts[i].ALERT_TIMESTAMP + "<br /><b>" + arrAlerts[i].ALERT_NAME + "</b><br />" + arrAlerts[i].ALERT_DETAILS + "</td>";
+				html += "</tr>";
+			html += "</table>";
+		html += "</div>";
 	}
-	*/
+		
+	if (arrAlerts.length === 0){
+		html += "<div id='sysalert0'>";
+			html += "<table class='w-sysalerts-table'>";
+				html += "<tr>";
+					html += "<td class='w-sysalerts-td'><img src='img/OKIcon.png'></td>";
+					html += "<td class='w-sysalerts-text'><br /><b>No Alerts</b></td>";
+				html += "</tr>";
+			html += "</table>";
+		html += "</div>";
+	}
 	
-	html += "</div>";
-	html += "<script type='text/javascript' id='evalcode" + data + "' name='script'>widgetAlertRotator();</script>";
+	html += "</div>"; /* Close <div id="aniHolder"> */
 	$('#t1-widget-container' + data.dwid).html(html);
+	
+	widgetAlertRotator();
 }
 
 function widgetUserAlerts(data){
     //Requires data.dwid, 
-	var html = '';
-	var img = '';
-	//var rs = data.SQL1;
-	var count = 0;
+	var arrAlerts = new Array([]);
+	var html;
+	arrAlerts = JSON.parse(data.SQL1);
 	
-	/*
-	html += "<div id='userAlert'>";
-        while (rs.next()){
-			count++;
-			html += "<div id='useralert" + count + "'>";
-				html += "<table class='w-sysalerts-table'>";
-					html += "<tr>";
-						html += "<td class='w-sysalerts-td' style='width: 1px;'><img src='img/WARNINGIcon.png'></td>";
-						html += "<td class='w-sysalerts-text'>" +  rs.getString(5) + "<br />" + rs.getString(9) + "<br />Condition: <b>" + rs.getString(4) + " " + rs.getString(2) + " " + rs.getString(6) + "</b></td>";
-					html += "</tr>";
-				html += "</table>";
-			html += "</div>";
-		}
-		
-	if (count === 0){
-		html += "<div id='useralert" + count + "'>";
-				html += "<table class='w-sysalerts-table'>";
-					html += "<tr>";
-						html += "<td class='w-sysalerts-td' style='width: 1px;'><img src='img/OKIcon.png'></td>";
-						html += "<td class='w-sysalerts-text'><br /><b>No Alerts</b></td>";
-					html += "</tr>";
-				html += "</table>";
-			html += "</div>";
+	//"[{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/05/14 12:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/04/14 10:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 12:08:24","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:08","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:13","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"}]"
+	
+	html = "<div id='w-useralerts-rotator'>";
+	
+	for(var i = 0; i < arrAlerts.length; i++) {
+	    var img;
+	    html += "<div id='useralert" + i + "'>";
+			html += "<table class='w-sysalerts-table'>";
+				html += "<tr>";
+					html += "<td class='w-sysalerts-td' style='width: 1px;'><img src='img/WARNINGIcon.png'></td>";
+					html += "<td class='w-sysalerts-text'>" +  arrAlerts[i].ALERT_TIMESTAMP + "<br />" + arrAlerts[i].TITLE + "<br />Condition: <b>" + arrAlerts[i].ACTUAL + " " + arrAlerts[i].OPERATOR + " " + arrAlerts[i].VALUE + "</b></td>";
+				html += "</tr>";
+			html += "</table>";
+		html += "</div>";
 	}
-	*/
+		
+	if (arrAlerts.length === 0){
+		html += "<div id='useralert0'>";
+			html += "<table class='w-useralerts-table'>";
+				html += "<tr>";
+					html += "<td class='w-sysalerts-td'><img src='img/OKIcon.png'></td>";
+					html += "<td class='w-sysalerts-text'><br /><b>No Alerts</b></td>";
+				html += "</tr>";
+			html += "</table>";
+		html += "</div>";
+	}
 	
-	html += "</div>";
-	widgetUserAlertRotator();
+	html += "</div>"; /* Close <div id="aniHolder"> */
 	$('#t1-widget-container' + data.dwid).html(html);
-}
-
-function widgetSensorPoll(data){
-    //Requires data.dwid, 
-    $('#t1-widget-container' + data.dwid).html('');
+	
+	widgetUserAlertRotator();
 }
 	
 	
