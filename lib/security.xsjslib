@@ -1,4 +1,3 @@
-
 // --------------------------------------- Security ----------------------------------------------------- //
 
 function getUserLoginToken() {
@@ -59,11 +58,7 @@ function createUser(){
         var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
         password = hash(password, dt);
         var SQL = "INSERT INTO METRIC2.M2_USERS (user_ID, name, lname, email_domain, email, password, acct_type, dt_added) VALUES (metric2.user_id.NEXTVAL, '" + name + "', '" + lname + "', '" + company + "', '" + email + "', '" + password + "', '0', '" + dt + "')";
-<<<<<<< HEAD
-        sqlLib.executeQuery(SQL);
-=======
         var msg = sqlLib.executeQuery(SQL);
->>>>>>> metric-structure-revision
         recCount = 1;
     } else {
         recCount = -1;

@@ -32,51 +32,15 @@ function createAlertHist(alertid, dashboardwidgetid){
 
 
 function showAlerts(){
-	var strHTML = "";
-	strHTML += "<div class='row'>";
-        strHTML += "<div class='col-md-2'>";
-            strHTML += "<ul class='nav nav-list bs-docs-sidenav'>";
-                strHTML += "<li><a href='#' id='btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
-                strHTML += "<li><a href='#' onclick='viewSummary();'><i class='icon-chevron-right'></i>Summary</a></li>";
-                
-                var rs = sqlLib.executeReader("SELECT DISTINCT metric2.m2_dashboard.title FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
-                while (rs.next()){
-                    strHTML += "<li><a href='#'><i class='icon-chevron-right'></i> " + rs.getString(1) + "</a></li>";
-                }
-                rs.close();
-            strHTML += "</ul>";
-          strHTML += "</div>";
-        
-        strHTML += "<div class='col-md-10'>"
-        strHTML += "<div id='alerttable'>";
-        strHTML += "<h1>User Alerts</h1>";
-        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Widget Name</th><th>Status</th><th>Operator</th><th>Value</th><th>Notify</th><th>Alert Count</th><th>Modify</th><th>Clear</th></tr></thead><tbody>";
-
-        var rs3 = sqlLib.executeReader("SELECT metric2.m2_dashboard_widget.title, cond, operator, value, notify, last_executed, metric2.m2_dashboard.title, alert_id, status FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
-        while (rs3.next()){
-            var strStatus = '';
-            var strSetStatus = '';
-            var intStatus = 0;
-            var histcount = sqlLib.executeScalar("SELECT count(alert_hist_id) FROM metric2.m2_alert_history WHERE alert_id = " + rs3.getString(8));
-            
-            if (rs3.getString(9) == 1) { strStatus = 'Enabled'; strSetStatus = 'Disable'; intStatus = 0;} else { strStatus = 'Disabled'; strSetStatus = 'Enable'; intStatus = 1;}
-                //strHTML += "<tr><td>" + rs3.getString(7) + "</td><td>" + rs3.getString(1) + "</td><td>" + strStatus + "</td><td>" + rs3.getString(3) + "</td><td>" + rs3.getString(4) + "</td><td>On-Screen</td><td><a href='#' onclick='alertHistory(" + rs3.getString(8) + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + rs3.getString(8) + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + rs3.getString(8) + ");'>Edit Alert</a> | <a href='#' onclick='deleteAlert(" + rs3.getString(8) + ");'>Delete Alert</a></td><td><a href='#' onclick='clearAlert(" + rs3.getString(8) + ");'>Clear History</a></td></tr>";
-                strHTML += "<tr><td>" + rs3.getString(7) + "</td><td>" + rs3.getString(1) + "</td><td>" + strStatus + "</td><td>" + rs3.getString(3) + "</td><td>" + rs3.getString(4) + "</td><td>On-Screen</td><td><a href='#' id='alertID" + rs3.getString(8) + "' onclick='alertHistory(" + rs3.getString(8) + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + rs3.getString(8) + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + rs3.getString(8) + ");'>Edit Alert</a></td><td><a href='#' onclick='clearAlert(" + rs3.getString(8) + ");'>Clear History</a></td></tr>";
-        }
-        rs3.close();
-        
-        strHTML += "</tbody></table></div>";
-        strHTML += "<div id='alerttable'>";
-        strHTML += "<h1>System Alerts</h1>";
-        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Host</th><th>Rating</th><th>Last Check</th><th>Alert Details</th></tr></thead><tbody>";
-
-        var rs2 = sqlLib.executeReader("SELECT ALERT_DETAILS, ALERT_RATING, UTCTOLOCAL(ALERT_TIMESTAMP, '" + strTimeZone + "'), HOST, ALERT_ID, ALERT_NAME, ALERT_DESCRIPTION, ALERT_USERACTION FROM _SYS_STATISTICS.STATISTICS_CURRENT_ALERTS  WHERE (ALERT_RATING =2 OR ALERT_RATING =3 OR ALERT_RATING =4 OR ALERT_RATING =5)");
-        while (rs2.next()){
-            strHTML += "<tr><td>" + rs2.getString(4) + "</td><td>" + rs2.getString(2) + "</td><td>" + rs2.getString(3) + "</td><td>" + rs2.getString(1) + "</td></tr>";
-        }
-        rs2.close();
-        strHTML += "</tbody></table></div></div>";
-    return strHTML;
+    var alertContents = [];
+    var alertUser = [];
+    var data = {};
+    
+    data.userAlertCounts = sqlLib.executeRecordSetObj("SELECT alert_id, count(alert_hist_id) as cnt FROM metric2.m2_alert_history WHERE alert_id IN (SELECT alert_id FROM metric2.m2_alert WHERE metric2.m2_alert.user_id = " + userid + ") GROUP BY alert_id");
+    data.userAlerts = sqlLib.executeRecordSetObj("SELECT metric2.m2_dashboard_widget.title, cond, operator, value, notify, last_executed, metric2.m2_dashboard.title as dashboardtitle, alert_id as ALERTID, status FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id WHERE metric2.m2_dashboard.user_id = " + userid);
+    data.sysAlerts = sqlLib.executeRecordSetObj("SELECT ALERT_DETAILS as ALERTDETAILS, ALERT_RATING as ALERTRATING, UTCTOLOCAL(ALERT_TIMESTAMP, '" + strTimeZone + "') as TIME, HOST, ALERT_ID, ALERT_NAME as ALERTNAME, ALERT_DESCRIPTION as ALERTDESCRIPTION, ALERT_USERACTION as ALERTUSERACTION FROM _SYS_STATISTICS.STATISTICS_CURRENT_ALERTS  WHERE (ALERT_RATING =2 OR ALERT_RATING =3 OR ALERT_RATING =4 OR ALERT_RATING =5)");
+    
+    return data;
 }
 
 function deleteAlert(alertid){

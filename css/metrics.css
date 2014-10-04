@@ -108,7 +108,10 @@ table{
    height: 100%;
    min-height: 100%;
   */
-   border-top: 1px solid #EEE;
+    height: -moz-calc(100% - 36px); /* Firefox */
+    height: -webkit-calc(100% - 36px); /* Chrome, Safari */
+    height: calc(100% - 36px); /* IE9+ and future browsers */
+    border-top: 1px solid #EEE;
 }
 
 
@@ -180,6 +183,10 @@ t1-widget-header-div{
     text-align: center;
     /*top: 30%;*/
     width: 100%;
+}
+
+canvas.peity {
+    margin-top: 12px;
 }
 
 .t1-widget-icon {
@@ -543,6 +550,8 @@ ul#clock li{
     width: 24%;
     text-align: center;
     border: none;
+    line-height: 1.0;
+    margin-top: 10px;
 }
 
 #clock-timezones i {
@@ -573,30 +582,14 @@ ul#clock li{
     margin-top:40px
 }
 
-.w-distributed-img{
-    margin-top: 20px;
-}
-
-.w-distributed-datapoint{
+.w-distributed-datapoint, .w-unsuccesfulconns-datapoint{
     color: #FFF; 
     font-size: 26px; 
     line-height: 5px; 
     margin-top:30px;
 }
 
-.w-unsuccesfulconns-img{
-    margin-top: 20px;
-}
-
-.w-unsuccesfulconns-datapoint{
-    color: #FFF; 
-    font-size: 26px;
-    margin-top:20px;
-}
-
-
-
-.w-icon-img{
+.w-icon-img, .w-unsuccesfulconns-img, .w-distributed-img{
     margin-top: 30px;
 }
 

@@ -58,6 +58,40 @@ function saveFeedEvent(strText, intIcon) {
     // Future: Append data to Event Feed Table (Right side menu)
 }
 
+function loadAlerts(objData){
+    var strHTML = "";
+	strHTML += "<div class='row'>";
+        strHTML += "<div class='col-md-2'>";
+            strHTML += "<ul class='nav nav-list bs-docs-sidenav'>";
+                strHTML += "<li><a href='#' id='btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a></li>";
+                strHTML += "<li><a href='#' onclick='viewSummary();'><i class='icon-chevron-right'></i>Summary</a></li>";
+            strHTML += "</ul>";
+          strHTML += "</div>";
+        
+        strHTML += "<div class='col-md-10'>"
+        strHTML += "<div id='alerttable'>";
+        strHTML += "<h1>User Alerts</h1>";
+        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Widget Name</th><th>Status</th><th>Operator</th><th>Value</th><th>Notify</th><th>Alert Count</th><th>Modify</th><th>Clear</th></tr></thead><tbody>";
+        var userAlerts = jQuery.parseJSON(objData.userAlerts);
+        $.each(userAlerts, function(key, value) {
+            var histcount = 0;
+            if (userAlerts[key].STATUS === '1') { strStatus = 'Enabled'; strSetStatus = 'Disable'; intStatus = 0;} else { strStatus = 'Disabled'; strSetStatus = 'Enable'; intStatus = 1;}
+            strHTML += "<tr><td>" + userAlerts[key].DASHBOARDTITLE + "</td><td>" + userAlerts[key].TITLE + "</td><td>" + strStatus + "</td><td>" + userAlerts[key].OPERATOR + "</td><td>" + userAlerts[key].VALUE + "</td><td>On-Screen</td><td><a href='#' id='alertID" + userAlerts[key].ALERTID + "' onclick='alertHistory(" + userAlerts[key].ALERTID + ");'>" + histcount + "</a></td><td><a href='#' onclick='setAlert(" + userAlerts[key].ALERTID + ", " + intStatus + ");'>" + strSetStatus + "</a> | <a href='#' onclick='editAlert(" + userAlerts[key].ALERTID + ");'>Edit Alert</a></td><td><a href='#' onclick='clearAlert(" + userAlerts[key].ALERTID + ");'>Clear History</a></td></tr>";
+        });
+        
+        strHTML += "</tbody></table></div>";
+        strHTML += "<div id='alerttable'>";
+        strHTML += "<h1>System Alerts</h1>";
+        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Host</th><th>Rating</th><th>Last Check</th><th>Alert Details</th></tr></thead><tbody>";
+        var systemAlerts = jQuery.parseJSON(objData.sysAlerts);
+        $.each(systemAlerts, function(key, value) {
+            strHTML += "<tr><td>" + systemAlerts[key].HOST + "</td><td>" + systemAlerts[key].ALERTRATING + "</td><td>" + systemAlerts[key].TIME + "</td><td>" + systemAlerts[key].ALERTDETAILS + "</td></tr>";
+        });
+
+        strHTML += "</tbody></table></div></div>";
+     $("#grid").html(strHTML);
+}
+
 
 function addNotification(strMsg, i) {
     var type = '';

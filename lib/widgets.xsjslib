@@ -1,53 +1,72 @@
 // --------------------------------------- Widgets ----------------------------------------------------- //
 
 
-function showWidgets(){
-    
-    try{
-        // Loop through all our widgets for this dashboard and display them in the grid + gridster Div
-        var rs = sqlLib.executeReader("SELECT title, width, dashboard_widget_id, type, height, code_type, col_pos, row_pos, code, hist_enabled from metric2.m2_dashboard_widget dw INNER JOIN metric2.m2_widget w ON w.widget_id = dw.widget_id where dashboard_id = " + dashboardid + " order by dashboard_widget_id");
-        var intWidgetCounter = 0;
-        
-        strContent = "<div class='gridster' id='gridster'><ul id='gridtiles'>";
-        
-            while (rs.next()){
-                var intDashboardWidgetID = rs.getString(3);
-                intWidgetCounter++;
-                strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + rs.getString(8) + "' data-col='" + rs.getString(7) + "' data-sizex='" + rs.getString(2) + "' data-sizey='" + rs.getString(5) + "'>";
-                    strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
-                        strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + rs.getString(1);
-                            if (rs.getString(10) == '1'){
-                                strContent += "<img class='t1-historyicon-img' id='historyicon" + intDashboardWidgetID + "' src='img/history-icon.png'>";
-                            }				
-                            strContent += "<img class='t1-editicon-img' id='editicon" + intDashboardWidgetID + "' src='img/settings-icon.png'>";
-                        strContent += "</header>";
-                    strContent += "</div>";
-                    strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'>";
-                        strContent += showWidgetContents(intDashboardWidgetID, rs.getString(9));
-                    strContent += "</div>";
-                strContent += "</li>";
-            }
-            
-            if (intWidgetCounter === 0){
-                strContent += "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
-            }
-            
-            rs.close();
-        strContent += "</ul></div>";
-    } catch (err) {
-        strContent += err;
-    }
-}
-
-
 function getListOfWidgets(dashboardid){
 	return sqlLib.executeRecordSetObj("SELECT title FROM METRIC2.m2_DASHBOARD_WIDGET WHERE dashboard_id = " + dashboardid);
 }
 
+
+function getWidgetTypes(widgetGroup){
+    try{
+    var SQL = "";
+        if (widgetGroup == '0'){
+            SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget ORDER BY widget_id";
+        } else {
+            SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget WHERE widget_group = " + widgetGroup + " ORDER BY widget_id";
+        }
+        return sqlLib.executeRecordSetObj(SQL);
+    } catch (err) {
+        return 'Error getting widget types (getWidgetTypes:getDataSet.xsjs)';
+    }
+}
+
+function showWidgets(){
+    
+    try{
+        // Loop through all our widgets for this dashboard
+        var rs = sqlLib.executeReader("SELECT dashboard_widget_id from metric2.m2_dashboard_widget dw where dashboard_id = " + dashboardid);
+        var intWidgetCounter = 0;
+        
+        while (rs.next()){
+            var intDashboardWidgetID = rs.getString(1);
+            intWidgetCounter++;
+            widgetContents.push(showWidgetDiv(intDashboardWidgetID));
+            //strContent = showWidgetContents(intDashboardWidgetID, rs.getString(9));
+        }
+        Dataset.widgetCount = intWidgetCounter;
+        rs.close();
+        
+    } catch (err) {
+        Dataset.error = err;
+    }
+}
+
+/*
+function showWidgetContents(intDashboardWidgetID, code){
+	try{
+        var strContent = '';
+        widgetContents.push(showWidgetDiv(intDashboardWidgetID));
+        
+		//var refreshrate = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
+		if (refreshrate !== 0 && strCodeType != 'Client'){
+			strContent += "<script type='text/javascript' id='timercode" + intDashboardWidgetID + "' name='script'>";
+			strContent += "timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: '" + intDashboardWidgetID + "'});}, " + refreshrate + "));";
+			strContent += "</script>"; 
+		}
+		return strContent;
+	} catch (err) {
+        // If any widget throws an error, simply display the loading icon
+        return err; // Useful for debugging
+        //strContent += "<img style='margin-top: 50px;' src='img/loading.gif' />";
+	}
+}
+*/
+
 function showWidgetDiv(intDashboardWidgetID){
+    try {
         var data = {};
         var code = getWidgetCode(intDashboardWidgetID);
-        var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled, WP.type, WP.HIST_DATAPOINT, DW.title, DW.width, DW.height, DW.col_pos, DW.row_pos FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.param_id = DWP.param_id INNER JOIN metric2.m2_dashboard_widget DW ON DWP.dashboard_widget_id = DW.dashboard_widget_id WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
+        var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled, WP.type, WP.HIST_DATAPOINT, DW.title, DW.width, DW.height, DW.col_pos, DW.row_pos, W.hist_enabled FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.param_id = DWP.param_id INNER JOIN metric2.m2_dashboard_widget DW ON DWP.dashboard_widget_id = DW.dashboard_widget_id INNER JOIN metric2.m2_widget W ON W.widget_id = DW.widget_id WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
         data.dwid = intDashboardWidgetID;
         data.code = code;
         data.refresh = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
@@ -60,6 +79,7 @@ function showWidgetDiv(intDashboardWidgetID){
             data.height = rs.getString(8);
             data.colpos = rs.getString(9);
             data.rowpos = rs.getString(10);
+            data.histEnabled =  rs.getString(11);
             
             var datapoint = '';
             if (rs.getString(1).indexOf('SQL') >= 0){
@@ -84,41 +104,14 @@ function showWidgetDiv(intDashboardWidgetID){
                     insertWidgetHistory(intDashboardWidgetID, paramname, datapoint);
                 }
             }
-            //Check for alerts and add to object if needed?
+            //Check for alerts and add to object, then process the alert client side
         }
-        rs.close();
+            rs.close();
+        } catch (err) {
+            data.error = err.description;
+        }
         return data;
 }
-
-function showWidgetContents(intDashboardWidgetID, code){
-	try{
-        var strContent = '';
-        var strCodeType = getWidgetCodeType(intDashboardWidgetID);
-        // if code is blank, this is a refresh, and needs to get from db
-        if (code === ''){
-            code = getWidgetCode(intDashboardWidgetID);
-        }
-        
-        if (strCodeType == 'Client'){
-            widgetContents.push(showWidgetDiv(intDashboardWidgetID));
-        }
-	
-		var refreshrate = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
-		if (refreshrate !== 0 && strCodeType != 'Client'){
-			strContent += "<script type='text/javascript' id='timercode" + intDashboardWidgetID + "' name='script'>";
-			strContent += "timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: '" + intDashboardWidgetID + "'});}, " + refreshrate + "));";
-			strContent += "</script>"; 
-		}
-		return strContent;
-	} catch (err) {
-        // If any widget throws an error, simply display the loading icon
-        strContent += err; // Useful for debugging
-        //strContent += "<img style='margin-top: 50px;' src='img/loading.gif' />";
-	} finally {
-        return null;
-	}
-}
-
 
 function updateWidgetPositions(objGridPos){
     for (var i = 0, len = objGridPos.length; i < len; ++i) {
@@ -135,23 +128,6 @@ function deleteWidget(){
 	executeUpdate("DELETE FROM metric2.m2_alert WHERE dashboard_widget_id =" + dashboardwidgetid);
     strContent += 'Deleted';
 }
-
-
-function getWidgetTypes(widgetGroup){
-    try{
-    var SQL = "";
-        if (widgetGroup == '0'){
-            SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget ORDER BY widget_id";
-        } else {
-            SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget WHERE widget_group = " + widgetGroup + " ORDER BY widget_id";
-        }
-        return sqlLib.executeRecordSetObj(SQL);
-    } catch (err) {
-        return 'Error getting widget types (getWidgetTypes:getDataSet.xsjs)';
-    }
-}
-
-
 
 function updateWigetValue(){
     widgetLib.insertWidgetHistory(dashboardwidgetid, 'SQL1', datapoint, dashboardwidgetparamid);

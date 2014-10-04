@@ -1,4 +1,3 @@
-
 // -------------------------   Dialog Functions ----------------------- //
 	
 function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay){
@@ -35,7 +34,7 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
             //Wide
             $('#dialogHTML1').css('height','auto');
             $('#modaldlg').css('height','auto');
-            $('#modaldlg').css('width','720px');
+            $('#modaldlg').css('width','820px');
             break;
     }
             
@@ -53,7 +52,18 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
 }
 
 
-
+function loadProfileDialog(data){
+    $.each(objData.widgetData, function(key, value) {
+			var output = "<form class='form-horizontal'>";
+            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
+            output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
+		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
+		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
+	});
+}
 
 
 
@@ -91,14 +101,32 @@ function getNewWidgetHTML(objWidgets) {
             strCarousel += '<div class="item">';
         }
             strCarousel += '<div class="col-md-4">';
-            strCarousel += '<img src="img/metrics/' +  objWidgets[i].ICON_URL + '" alt="" style="width: 210px; height: 185px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});" />';
+            
+            //strCarousel += '<div class="row">';
+              //strCarousel += '<div class="col-sm-6 col-md-4">';
+                strCarousel += '<div class="thumbnail">';
+                  strCarousel += '<img src="img/metrics/' +  objWidgets[i].ICON_URL + '" alt="" style="width: 210px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});" />';
+                  strCarousel += '<div class="caption">';
+                    strCarousel += '<h4>' + objWidgets[i].NAME + '</h4>';
+                   strCarousel += ' <p>' + objWidgets[i].DESCRIPTION + '</p>';
+                    strCarousel += '<p class="addbtn"><a href="#" class="btn btn-primary" role="button" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});">Add</a></p>';
+                  strCarousel += '</div>';
+               strCarousel += ' </div>';
+              //strCarousel += '</div>';
+           //strCarousel += ' </div>';
             strCarousel += '</div>';
         strCarousel += '</div>';
     }
     
+    if (objWidgets.length === 0){
+        strCarousel += '<div class="col-md-12"><p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p></div>';
+    } else {
+        strCarousel += '</div><a class="carousel-control left" href="#widgetcarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="carousel-control right" href="#widgetcarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a></div>';
+        strCarousel += '</div>';
+    }
     
-    strCarousel += '<a class="carousel-control left" href="#widgetcarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="carousel-control right" href="#widgetcarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a></div>';
-    strCarousel += '</div></div>';
+    
+    
     var elem = document.getElementById('metriccount');
     
     if (typeof elem !== 'undefined' && elem !== null) {
@@ -172,8 +200,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
             .call(chart.forceY([minval, maxval]));
         $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><span id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='glyphicon glyphicon-search' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><span style='font-size: 20px; margin-right: 10px;' class='glyphicon glyphicon-road'/>Predictive Forecast</span></button></td></tr></table>");
         $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
-        
-        $('#startdt').datepicker({autoclose: true});
+        $('#startdt').datepicker();
         $('#enddt').datepicker({autoclose: true});
         
         return chart;
@@ -419,4 +446,4 @@ function deleteDialog(strFunction) {
         });
         saveFeedEvent("History deleted", 3);
     }
-}
+} 

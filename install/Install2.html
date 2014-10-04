@@ -23,15 +23,13 @@
         <script>
         $( document ).ready(function() {
             var installstmts;
+            var jURL = '../lib/install.xsjs';
                $('#myWizard').easyWizard({
             	buttonsClass: 'btn',
             	submitButton: false,
             	after: function(wizardObj, prevStepObj, currentStepObj) {
             		switch(currentStepObj.selector){
             		    case '.step[data-step="2"]':
-            		         $.get( "Install Script.sql", function( data ) {
-                                    installstmts = data;
-                            });
             		        break;
             		    case '.step[data-step="3"]':
             		       
@@ -39,16 +37,16 @@
             		        var r = confirm("Are you sure you want to create the metric2 schema? (This will overwrite any existing schema with the same name)");
                             if (r == true) {
                                 //OK, run through statements
-                                var jURL = '../lib/install.xsjs';
+                                
     
                                 jQuery.ajax({
                                     url:jURL,
                                     type: 'GET',
                                     data:{
-                                        SQL: installstmts
+                                        SQL: 'step3'
                                     },
                                     success: function(data) {
-                                        alert ('done');
+                                        $('#results').html(data);
                                     }
                                 });
                             }
@@ -57,6 +55,16 @@
             		        var r = confirm("Are you sure you want to create the demo dashboards?");
                             if (r == true) {
                                 //OK
+                                jQuery.ajax({
+                                    url:jURL,
+                                    type: 'GET',
+                                    data:{
+                                        SQL: 'step4'
+                                    },
+                                    success: function(data) {
+                                        $('#results').html(data);
+                                    }
+                                });
                             }
             		        break;
             		    default:

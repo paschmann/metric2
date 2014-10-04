@@ -58,7 +58,7 @@ function metricClock(data){
     html += '<li id="min"></li>';
     html += '</ul>';
     
-    html += '<ul style="margin-top: 5px;">';
+    html += '<ul>';
     html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz1"></span></li>';
     html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz2"></span></li>';
     html += '<li id="clock-timezones"><i class="fa fa-clock-o"></i><br /><span id="clock-tz3"></span></li>';
@@ -456,7 +456,7 @@ function widgetAllServicesStarted(data){
 
 function widgetImageBox(data){
      //Requires data.dwid, data.URL
-	var html = "<img class='w-icon-img' src='" + data.URL + "' >";
+	var html = "<img class='' style='width: 100%; height: 100%; padding: 5px;' src='" + data.URL + "' >";
 	$('#t1-widget-container' + data.dwid).html(html);
 }
 
@@ -520,8 +520,8 @@ function widgetHistChart(data){
 		$('#t1-widget-container' + data.dwid).html(html);
 		
 		$('.peity' + data.dwid).peity(strChartType, {
-		    width: parseInt(1) * 200,
-		    height: parseInt(1) * 130
+		    width: parseInt(data.width) * 200,
+		    height: parseInt(data.height) * 130
 		});
 		
 		
@@ -550,12 +550,12 @@ function widgetHistorySmall(data){
 		}
 		strData = strData.substring(0, strData.length - 1);
 		
-		var html = "<div class='t1-widget-text-big' style='top: 65px;'><table style='width: 100%;'><tr>";
+		var html = "<div class='t1-widget-text-big' style='top: 55px;'><table style='width: 100%;'><tr>";
         if (imgURL){
             html += "<td><img src='" + imgURL + "' /> </td>";
         }
         html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
-		html += "<div class='t1-widget-footer' style='text-align:center'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
+		html += "<div class='t1-widget-footer' style='text-align:center; margin-top: 0px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
 		
 		$('#t1-widget-container' + data.dwid).html(html);
 		
@@ -574,6 +574,8 @@ function widgetHistorySmall(data){
 
 function widgetProgressBar(data){
     //Requires data.dwid, data.SQL1 (VALUE, LABEL), data.ICONURL
+    
+    try {
 	var datapoints = JSON.parse(data.SQL1);
 	var imgUrl = data.ICONURL;
 	var html = "<table style='width: 100%;'><tr><td>";
@@ -589,7 +591,11 @@ function widgetProgressBar(data){
 	html += "<div style='width: 94%; margin: 0 auto;'><table style='width: 100%; border: 1px solid #BBB; height: 30px; border-spacing: 5px;'>";
 	html += "<tr><td class='widget-progressbar-td' style='background-color: #DDD; width:" + datapoints[0].VALUE + "%;'>&nbsp;</td><td></td></tr>";
 	html += "</table></div>";
+    } catch (err) {
+        html = 'Error';
+    }
     $('#t1-widget-container' + data.dwid).html(html);
+    
 }
 
 
@@ -775,7 +781,7 @@ function widgetTableSizes(data){
 	html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" +  datapoints[0].cols + "<sup>GB</sup></div></td>";
 	
 	html += "<tr><td class='t1-widget-text-table'><img src='img/row-tables.png' />&nbsp;&nbsp;Rows</td>";
-	html += "<td class='t1-widget-text-table'><img src='img/col-tables.png' />&nbsp;&nbsp;Cols</td>";
+	html += "<td class='t1-widget-text-table'><img src='img/col-tables.png' />&nbsp;&nbsp;Columns</td>";
 		
 	html += "</table>";
     $('#t1-widget-container' + data.dwid).html(html);
