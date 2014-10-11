@@ -61,7 +61,7 @@ function showAlertDialog(alertid){
 	var output = "<form class='form-horizontal'>";
 	output += "<input type='" + debugmode + "' value = 'value' id='condition' />";
 	output += "<input type='" + debugmode + "' value = '" + alertid + "' id='alertid' />";
-    output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
+    output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showAlertWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
     output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
 	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
 	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "'/></div></div>";
@@ -239,6 +239,21 @@ function showWidgetDialog(){
 		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
 	}
     output += "</form>";
+}
+
+function showAlertWidgetNameDropDown(dashboardwidgetid){
+    var strHTML = "<select id='widgetid'>";
+    var rs = sqlLib.executeReader("SELECT dashboard_widget_id, metric2.m2_dashboard_widget.title, metric2.m2_dashboard.title FROM metric2.m2_dashboard_widget INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id INNER JOIN metric2.m2_widget ON metric2.m2_dashboard_widget.widget_id = metric2.m2_widget.widget_id WHERE metric2.m2_dashboard.user_id = " + userid + " AND metric2.m2_widget.hist_enabled = 1 order by metric2.m2_dashboard.dashboard_id ASC");
+	while (rs.next()){
+		strHTML += "<option ";
+		if (dashboardwidgetid == rs.getString(1)){
+			strHTML += ' selected ';
+		}
+		strHTML += " value=" + rs.getString(1) + ">" + rs.getString(3) + " - " + rs.getString(2) + "</option>";
+	}
+	rs.close();
+	strHTML += "</select>";
+	return strHTML;
 }
 
 

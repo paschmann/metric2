@@ -31,7 +31,6 @@ function showWidgets(){
             var intDashboardWidgetID = rs.getString(1);
             intWidgetCounter++;
             widgetContents.push(showWidgetDiv(intDashboardWidgetID));
-            //strContent = showWidgetContents(intDashboardWidgetID, rs.getString(9));
         }
         Dataset.widgetCount = intWidgetCounter;
         rs.close();
@@ -41,26 +40,6 @@ function showWidgets(){
     }
 }
 
-/*
-function showWidgetContents(intDashboardWidgetID, code){
-	try{
-        var strContent = '';
-        widgetContents.push(showWidgetDiv(intDashboardWidgetID));
-        
-		//var refreshrate = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
-		if (refreshrate !== 0 && strCodeType != 'Client'){
-			strContent += "<script type='text/javascript' id='timercode" + intDashboardWidgetID + "' name='script'>";
-			strContent += "timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: '" + intDashboardWidgetID + "'});}, " + refreshrate + "));";
-			strContent += "</script>"; 
-		}
-		return strContent;
-	} catch (err) {
-        // If any widget throws an error, simply display the loading icon
-        return err; // Useful for debugging
-        //strContent += "<img style='margin-top: 50px;' src='img/loading.gif' />";
-	}
-}
-*/
 
 function showWidgetDiv(intDashboardWidgetID){
     try {
@@ -80,7 +59,6 @@ function showWidgetDiv(intDashboardWidgetID){
             data.colpos = rs.getString(9);
             data.rowpos = rs.getString(10);
             data.histEnabled =  rs.getString(11);
-            
             var datapoint = '';
             if (rs.getString(1).indexOf('SQL') >= 0){
                 if (rs.getString(4).indexOf('RANGE') >= 0){
@@ -100,13 +78,13 @@ function showWidgetDiv(intDashboardWidgetID){
                 if (rs.getString(5) !== null){
                     var val = JSON.parse(datapoint);
                     insertWidgetHistory(intDashboardWidgetID, paramname, val[0][rs.getString(5)]);
+                    data['Alert'] = alertLib.checkWidgetAlert(intDashboardWidgetID, val[0][rs.getString(5)]);
                 } else {
                     insertWidgetHistory(intDashboardWidgetID, paramname, datapoint);
                 }
             }
-            //Check for alerts and add to object, then process the alert client side
         }
-            rs.close();
+        rs.close();
         } catch (err) {
             data.error = err.description;
         }
@@ -120,6 +98,12 @@ function updateWidgetPositions(objGridPos){
     }
 } 
 
+function cloneMetric(){
+    //Pass in the dashboard widget id to clone and the dashboard to clone to (not function yet = 0)
+    var strSQL = "CALL METRIC2.M2_P_CLONEMETRIC(" + dashboardwidgetid + ", 0)";
+    var msg = sqlLib.executeUpdate(strSQL);
+    return msg;
+}
 
 function deleteWidget(){
     executeQuery("DELETE FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id =" + dashboardwidgetid);

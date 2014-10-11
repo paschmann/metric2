@@ -81,11 +81,12 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right tooltip-area">
-            			<li><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-plus-circle"></i></a></li>
+            			<li><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-tachometer"></i></a></li>
+            			<li><a href="#" id="btnAddAlert" title="Add a new Alert"><i class="fa fa-plus-square"></i></a></li>
             			<li><a href="#" id="btnAddDashboard" class="h-seperate" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
             			<li><a href="#" id="btnEditDashboard" title="Edit this Dashboard"><i class="fa fa-edit"></i></a></li>
-            			<li><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon  fa fa-fire"></i></a></li>
-                        <li><a href="#" id="btnShowHelp" class="h-seperate" title="Help Website"><i class="icon  fa fa-life-ring"></i></a></li>
+            			<li><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon fa fa-flag"></i></a></li>
+                        <li><a href="#" id="btnShowHelp" class="h-seperate" title="Help Tutorial"><i class="icon fa fa-life-ring"></i></a></li>
                         
                         <li><a href="#" class="nav-collapse avatar-header" title="Show / hide  menu"><div id="gravSm"><img src="img/avatar.png" class="circular-avatar-sm"></div></a></li>
     	
@@ -127,7 +128,7 @@
                         <div class="avatar-link btn-group btn-group-justified">
                             <a id="btnShowAlerts2" class="btn" href="#md-notification" title="Alerts"><i class="fa fa-exclamation-triangle"></i></a>
                             <a class="btn"  data-toggle="modal" href="#md-notification"  title="Messages"><i class="fa fa-envelope-o"></i></a>
-                            <a class="btn" href="#menu-right" title="Contact List"><i class="fa fa-file-o"></i></a>
+                            <a class="btn" href="#menu-right" title="Metric Packs"><i class="fa fa-file-o"></i></a>
                         </div>
                     </div> <!-- //avatar-slide-->
                     
@@ -186,7 +187,7 @@
                     <li><span><i class="icon fa fa-bar-chart-o"></i> Metrics</span>
                         <ul><li><a href="#" id="mnuAddWidget"><i class="icon fa fa-tachometer"></i> Add a Metric </a></li></ul>
                     </li>
-                    <li><span><i class="icon  fa fa-fire"></i> Alerts</span>
+                    <li><span><i class="icon  fa fa-flag"></i> Alerts</span>
                         <ul><li><a href="#" id="mnuShowAlerts"><i class="icon  fa fa-volume-down"></i> My Alerts</a></li></ul>
                     </li>
                     <li><a href="#" id="mnuProfile"><i class="icon fa fa-user"></i> Profile </a></li>
@@ -207,6 +208,7 @@
                         <div id="dialogHTML1" class="modal-body"></div>
                         <div class="modal-footer">
                             <button id="btnModalDelete" type="button" class="btn btn-danger pull-left" data-dismiss="modal" >Delete</button>
+                            <button id="btnModalClone" type="button" class="btn btn-default pull-left" data-dismiss="modal" >Clone</button>
                             <button id="btnModalClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <button id="btnModalSave" type="button" class="btn btn-primary" data-dismiss="modal" >Save</button>
                         </div>

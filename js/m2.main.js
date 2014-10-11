@@ -62,6 +62,10 @@ function configureClickEvents() {
             intWidgetGroup: 0
         });
     });
+    
+    $('#btnAddAlert').click(function() {
+        addAlert();
+    });
 
     $('#btnAddDashboard, #mnuAddDashboard').click(function() {
         getDataSet({
@@ -117,6 +121,10 @@ function configureClickEvents() {
     $('#btnModalSave').click(function(e) {
         saveDialog($('#modal-header').html());
         e.stopImmediatePropagation();
+    });
+    
+    $('#btnModalClone').click(function(e) {
+        cloneMetric();
     });
 
     $('body').on("click", ".toggle-menu", function(e) {
@@ -231,7 +239,9 @@ function dashboardActive(boolState) {
         $('#btnAddWidget').show();
         $('#btnEditDashboard').show();
         $('#btnAddDashboard').addClass('h-seperate');
+        $('#btnAddAlert').hide();
     } else {
+        $('#btnAddAlert').show();
         $('#btnAddWidget').hide();
         $('#btnEditDashboard').hide();
         $('#btnAddDashboard').removeClass('h-seperate');
@@ -426,7 +436,9 @@ function loadWidgetContent(objWidgets) {
 function loadClientMetrics(objData) {
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
-
+        if (objData.widgetData[key].Alert) {
+            addNotification(this.Alert, 2);
+        }
         if (objData.widgetData[key].refresh != 0) {
             timers.push(setTimeout(function() {
                 getDataSet({
@@ -534,36 +546,38 @@ function getDataSet(options) {
                 //Loop through object and check for any alerts to display
 
             } else if (options.strService == 'EditWidgetDialog') {
-                //dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay)
-                dialogConstructor("Edit Widget", true, true, data, 1, true);
+                //dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn)
+                dialogConstructor("Edit Widget", true, true, data, 1, true, true);
             } else if (options.strService == 'NewWidgetDialog') {
-                dialogConstructor("New Widget", false, true, data, 3, true);
+                dialogConstructor("New Widget", false, true, data, 3, true, false);
             } else if (options.strService == 'WidgetHistoryDialog') {
-                dialogConstructor("Widget History", true, false, data, 2, false);
+                dialogConstructor("Widget History", true, false, data, 2, false, false);
                 widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
                 $('#myModal').appendTo("body").modal('show');
                 $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' History');
             } else if (options.strService == 'WidgetForecastDialog') {
-                dialogConstructor("Widget Forecast (Avg/h)", false, false, data, 2, true);
+                dialogConstructor("Widget Forecast (Avg/h)", false, false, data, 2, true, false);
                 widgetForecastChart(data, options.strDashboardWidgetID);
                 $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' Forecast (Avg/h)');
             } else if (options.strService == 'AlertHistoryDialog') {
-                dialogConstructor("Alert History", false, false, data, 2, true);
+                dialogConstructor("Alert History", false, false, data, 2, true, false);
                 strHistoryTable = data; //Save for later
                 alertHistoryTable(1);
             } else if (options.strService == 'DeleteWidget') {
                 addNotification('Metric Deleted', 3);
+            } else if (options.strService == 'CloneMetric') {
+                addNotification('Metric Cloned', 0);
             } else if (options.strService == 'AddDashboardDialog') {
-                dialogConstructor("Add Dashboard", false, true, data, 1, true);
+                dialogConstructor("Add Dashboard", false, true, data, 1, true, false);
             } else if (options.strService == 'EditDashboardDialog') {
-                dialogConstructor("Edit Dashboard", true, true, data, 1, true);
+                dialogConstructor("Edit Dashboard", true, true, data, 1, true, false);
             } else if (options.strService == 'EditProfileDialog') {
                 //data = loadProfileDialog(data);
-                dialogConstructor("Edit Profile", false, true, data, 1, true);
+                dialogConstructor("Edit Profile", false, true, data, 1, true, false);
             } else if (options.strService == 'EditSettingsDialog') {
-                dialogConstructor("Edit Settings", false, true, data, 1, true);
+                dialogConstructor("Edit Settings", false, true, data, 1, true, false);
             } else if (options.strService == 'GetWidgetTypes') {
-                dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true);
+                dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
                 configureWidgetCarousel();
             } else if (options.strService == 'Alerts') {
                 dashboardActive(false);
@@ -571,9 +585,9 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);
             } else if (options.strService == 'AddAlert') {
-                dialogConstructor("Add Alert", false, true, data, 1, true);
+                dialogConstructor("Add Alert", false, true, data, 1, true, false);
             } else if (options.strService == 'EditAlert') {
-                dialogConstructor("Edit Alert", true, true, data, 1, true);
+                dialogConstructor("Edit Alert", true, true, data, 1, true, false);
             } else if (options.strService == 'DeleteAlert') {
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);

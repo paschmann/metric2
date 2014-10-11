@@ -1,6 +1,6 @@
 // -------------------------   Dialog Functions ----------------------- //
 	
-function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay){
+function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn){
     if (boolDeleteBtn){
         $('#btnModalDelete').show();
     } else {
@@ -11,6 +11,12 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
         $('#btnModalSave').show();
     } else {
         $('#btnModalSave').hide();
+    }
+    
+    if (boolCloneBtn){
+        $('#btnModalClone').show();
+    } else {
+        $('#btnModalClone').hide();
     }
 
     $('#modal-header').html(strDialogTitle);
@@ -308,6 +314,14 @@ function checkParamValidation(){
     } else {
         return "false";
     }
+}
+
+function cloneMetric(){
+    getDataSet({
+                strService: "CloneMetric",
+                strDashboardWidgetID: document.getElementById('dashboardwidgetid').value,
+                strReload: "dashboard"
+    })
 }
 
 function saveDialog(strFunction) {
