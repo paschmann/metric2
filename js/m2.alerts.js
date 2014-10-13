@@ -59,12 +59,9 @@ function saveFeedEvent(strText, intIcon) {
 }
 
 function loadAlerts(objData){
+    try{
     var strHTML = "";
 	strHTML += "<div class='row' style='margin-top: 20px;'>";
-	    strHTML += "<div class='col-md-12 pull right'>"
-	    strHTML += "<a href='#' id='btnAddAlert' onclick='addAlert();'><i class='icon-chevron-right'></i>Add Alert</a>"
-	    strHTML += "</div>"
-	    
         strHTML += "<div class='col-md-12'>"
         strHTML += "<div id='alerttable'>";
         strHTML += "<h1>User Alerts</h1>";
@@ -86,6 +83,11 @@ function loadAlerts(objData){
 
         strHTML += "</tbody></table></div></div>";
      $("#grid").html(strHTML);
+    } catch (err) {
+        strHTML += "Error loading all Alerts";
+        $("#grid").html(strHTML);
+        console.log(err);
+    }
 }
 
 
