@@ -82,7 +82,7 @@ function loadAlerts(objData){
         });
 
         strHTML += "</tbody></table></div></div>";
-     $("#grid").html(strHTML);
+        $("#grid").html(strHTML);
     } catch (err) {
         $("#grid").html(strHTML);
         console.log(err);
