@@ -560,8 +560,8 @@ function widgetHistorySmall(data){
 		$('#t1-widget-container' + data.dwid).html(html);
 		
 		$('.peity' + data.dwid).peity('line', {
-		    width: parseInt(2) * 185,
-		    height: parseInt(1) * 60,
+		    width: parseInt(data.width) * 185,
+		    height: parseInt(data.height) * 60,
 		    strokeColour: strSparkColor, colour: '#FFFFFF'
 		});
 		
