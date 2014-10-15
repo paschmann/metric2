@@ -164,7 +164,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (8,4,'SQL2','SQL','SELECT STATUS 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (6,4,'Server Connection','OPTION','Local Server',100,0,'Local Server','Server Connection','true',3,0, null);
 
 -- widgetIcon
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (9,5,'ICONURL','URL','',100,1,'Full URL Path to your icon (200px x 100px)','URL Link','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (9,5,'ICONURL','URL','',100,1,'Optional: The font awesome name of the Icon','Icon Name','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (10,5,'SQL1','SQL','SELECT 1 as VALUE FROM DUMMY',200,1,'SQL Statement for your data point','SQL Query','true',null, 1, 'VALUE');
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (11,5,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0);
 
@@ -276,7 +276,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (118,32,'SQL1','SQL','SELECT * FR
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (125,34,'SQL1','RANGE','',200,1,'SQL Statement for the value to be displayed and stored','SQL Query','true',null,1, 'VALUE');
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (124,34,'Server Connection','OPTION','Local Server',100,0,'Local Server','Server Connection','true',3,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (126,34,'RECLIMIT','Static','30',300,1,'Integer: Number of records to fecth from history','Record Limit','true',null,0, null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,0,'Optional: Full URL Path to your icon (200px x 100px)','URL Link','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (128,34,'ICONURL','URL','',500,0,'Optional: The font awesome name of the Icon','Icon Name','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (130,34,'LINECOL','Static','#CCCCCC',600,0,'HTML Color: Color of the sparkline','Sparkline Color','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (131,34,'UOM1','OPTION',' ',250,0,'Optional, Unit of measure for the value','UOM','true',2,0, null);
 
@@ -298,7 +298,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (143,39,'SQL1','SQL','SELECT MET2
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (144,40,'Server Connection','Connection','Local Server',100,1,'Local Server','Server Connection','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (145,40,'SQL1','SQL','SELECT 92 as VALUE, MET2Sales IncreaseMET2 as Label FROM DUMMY',200,1,'SQL Query for connection list','SQL Query','true',null,1, 'VALUE');
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (146,40,'ICONURL','URL','',300,0,'Full URL Path to your icon (200px x 100px)','URL Link','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (146,40,'ICONURL','URL','',300,0,'Optional: The font awesome name of the Icon','Icon Name','true',null,0, null);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (147,41,'URL','Static','',100,1,'http://rss.cnn.com/rss/edition.rss','Feed URL','true', null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (148,41,'FEEDCOUNT','Static','',200,1,'4','Feed Count','true', null,0, null);
