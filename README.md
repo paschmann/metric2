@@ -1,4 +1,4 @@
-![metric2-bg.png](http://metric2.com/img/metric2-bg.png)
+![metric2-bg.png](http://www.metric2.com/wp-content/uploads/2014/10/metric2-bg.png)
 
 ### Features
 
