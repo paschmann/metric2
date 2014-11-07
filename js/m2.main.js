@@ -2,6 +2,7 @@
 var userToken = 0;
 var intCurrentDashboardID = 1;
 var timers = new Array();
+var alertlist = new Array();
 var gridsterloaded = 0;
 var strNotificationTable = '';
 var strCarousel = '';
@@ -24,7 +25,7 @@ $(document).ready(function() {
     } else {
         init();
     }
-    dashboardActive(false);
+    dashboardActive(true);
     $('[data-toggle="tooltip"]').tooltip({
         'placement': 'bottom'
     });
@@ -56,6 +57,10 @@ function init() {
 // -------------------------   Client Side click events ----------------------- //
 
 function configureClickEvents() {
+    $('#btnShowAlertList').click(function() {
+        loadAlertList();
+    });
+    
     $('#btnAddWidget, #mnuAddWidget').click(function() {
         getDataSet({
             strService: 'GetWidgetTypes',
@@ -105,6 +110,7 @@ function configureClickEvents() {
     });
 
     $('#btnShowAlerts, #mnuShowAlerts').click(function() {
+        dashboardActive(false);
         getDataSet({
             strService: 'Alerts'
         });
@@ -437,7 +443,7 @@ function loadClientMetrics(objData) {
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
         if (objData.widgetData[key].Alert) {
-            addNotification(this.Alert, 2);
+            addNotification(this.Alert, 1);
         }
         if (objData.widgetData[key].refresh != 0) {
             timers.push(setTimeout(function() {
@@ -580,7 +586,6 @@ function getDataSet(options) {
                 dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
                 configureWidgetCarousel();
             } else if (options.strService == 'Alerts') {
-                dashboardActive(false);
                 $('#dashboardname').html("<a href='#'>Alerts</a>");
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);

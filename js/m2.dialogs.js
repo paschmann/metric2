@@ -54,20 +54,64 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
             chart.update();
         }
     });
-        
+}
+
+function loadAlertList(){
+    $('#myAlertModal').appendTo('body').modal('show');
+    $('#alertdialoglist').html('');
+    
+    var maxlist = 0;
+    if (alertlist.length > 5){
+        maxlist = 5;
+    } else {
+        maxlist = alertlist.length;
+    }
+    
+    for (i = 0; i <= maxlist - 1; i++){
+        var objAlert = alertlist[i];
+        var type = '';
+        switch (objAlert.type) {
+            case 0:
+                note = 'Success';
+                type = 'fa-check';
+                break;
+            case 1:
+                note = 'Information';
+                type = 'fa-exclamation-triangle';
+                break;
+            case 2:
+                note = 'Error';
+                type = 'fa-times';
+                break;
+            case 3:
+                note = 'Error';
+                type = 'fa-times';
+                break;
+            default:
+                type = null;
+                break;
+        }
+        var html = '<li><section class="thumbnail-in"><div class="widget-im-tools tooltip-area pull-right"><span>';
+        html += '<time class="timeago lasted" title="when you opened the page">' + jQuery.timeago(objAlert.timestamp) + '</time>';
+        html += '</span></div>';
+        html += '<h4>' +  note + '</h4>';
+        html += '<div class="im-thumbnail bg-theme-inverse"><i class="fa ' + type + '"></i></div>';
+        html += '<div class="pre-text">' + objAlert.msg + '</div></section></li>';
+        $('#alertdialoglist').append(html);
+    }
 }
 
 
 function loadProfileDialog(data){
     $.each(objData.widgetData, function(key, value) {
-			var output = "<form class='form-horizontal'>";
-            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
-            output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
-		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
+		var output = "<form class='form-horizontal'>";
+        output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
+        output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
+		output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
+	    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
+		output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
+		output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
+		output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
 	});
 }
 
@@ -107,9 +151,6 @@ function getNewWidgetHTML(objWidgets) {
             strCarousel += '<div class="item">';
         }
             strCarousel += '<div class="col-md-4">';
-            
-            //strCarousel += '<div class="row">';
-              //strCarousel += '<div class="col-sm-6 col-md-4">';
                 strCarousel += '<div class="thumbnail">';
                   strCarousel += '<img src="img/metrics/' +  objWidgets[i].ICON_URL + '" alt="" style="width: 210px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});" />';
                   strCarousel += '<div class="caption">';
@@ -118,8 +159,6 @@ function getNewWidgetHTML(objWidgets) {
                     strCarousel += '<p class="addbtn"><a href="#" class="btn btn-primary" role="button" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});">Add</a></p>';
                   strCarousel += '</div>';
                strCarousel += ' </div>';
-              //strCarousel += '</div>';
-           //strCarousel += ' </div>';
             strCarousel += '</div>';
         strCarousel += '</div>';
     }
@@ -340,7 +379,7 @@ function saveDialog(strFunction) {
             })
             paramCount = $("[id^=pid_]").size();
             setTimeout(function() {
-                //Once we have inserted the widget, then loop and do each param, give HANA time to insert to avoid issue
+                //Once we have inserted the widget, then loop and do each param, give HANA time to insert to avoid issues
                 $("[id^=pid_]").each(function() {
                     var val = replaceAll("'", "MET2", this.value);
                     val = replaceAll("%", "MET3", val);
@@ -351,14 +390,7 @@ function saveDialog(strFunction) {
                         strReload: "dashboard"
                     })
                 });
-                /*
-                getDataSet({
-                    strService: "Insert",
-                    strSQL : strSQL
-                })
-                */
             }, 1000);
-            
             getContent(intCurrentDashboardID);
         } else if (strFunction == 'Edit Widget') {
             refreshrate = document.getElementById('refreshrate').value;

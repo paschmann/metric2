@@ -130,9 +130,9 @@ function showWidgetHistoryDialog(dashboardwidgetid, reclimit, startdt, enddt){
 function showAlertHistoryDialog(alertid){
 
 	var strHTML = "<table class='w-histchart-table'><tr><td style='text-align: right;'>";
-		strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
-		strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
-		strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
+	strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
+	strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
+	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
 	strHTML += "</td></tr></table>";
 	strHTML += "<div id='alerttable' style='margin-left: 0px;'>";
 		strHTML += "<table class='table table-striped' id='table2'>";

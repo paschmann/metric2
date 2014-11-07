@@ -26,8 +26,8 @@ function clearAlert(alertID){
     });	
 }
 
-
 function saveFeedEvent(strText, intIcon) {
+    //Not being used
     var strIcon = '';
     switch (intIcon) {
         case 0:
@@ -55,7 +55,6 @@ function saveFeedEvent(strText, intIcon) {
           allow_dismiss: true, // If true then will display a cross to close the popup.
           stackup_spacing: 10 // spacing between consecutively stacked growls.
     });
-    // Future: Append data to Event Feed Table (Right side menu)
 }
 
 function loadAlerts(objData){
@@ -107,7 +106,7 @@ function addNotification(strMsg, i) {
             break;
         default:
             type = null;
-              break;
+            break;
     }
     
     $.bootstrapGrowl(strMsg, {
@@ -120,4 +119,10 @@ function addNotification(strMsg, i) {
           allow_dismiss: true, // If true then will display a cross to close the popup.
           stackup_spacing: 10 // spacing between consecutively stacked growls.
     });
+    var objAlert = [];
+    objAlert.msg = strMsg;
+    objAlert.type = i;
+    objAlert.timestamp = Date.now();
+    
+    alertlist.unshift(objAlert);
 }

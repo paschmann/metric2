@@ -93,8 +93,8 @@ table{
 	z-index: 100;
     border: 1px solid #DDDDDD;
 	*/
-    border-radius: 2px 2px 2px 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    border-radius: 1px;
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); */
     margin: 0.6em;
     background-color: #FFF;
     height: 100%;

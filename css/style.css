@@ -1,3 +1,195 @@
+.widget-im.notification ul li section {
+    box-shadow: none;
+    margin-bottom: 0;
+    padding: 9px 15px;
+}
+.widget-im.notification ul li section:after {
+    border-bottom: 1px solid #ededed;
+    bottom: 0;
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+}
+.widget-im.notification ul li section h4 {
+    color: #777;
+    font-size: 14px;
+}
+.widget-im.notification ul li section h4 small {
+    color: #bbb;
+    font-size: 12px;
+}
+.widget-im.notification ul li section .pre-text {
+    font-size: 12px;
+    padding-top: 4px;
+    width: 95%;
+}
+.widget-im.notification ul li:last-child section:after {
+    border-bottom: 0 none;
+}
+.widget-im.notification .btn-block {
+    border-radius: 0;
+    margin: 0;
+}
+.widget-im.notification ul li .im-thumbnail {
+    box-shadow: -3px 3px 20px rgba(0, 0, 0, 0.1) inset;
+}
+.widget-im.notification ul li .im-thumbnail i {
+    color: rgba(0, 0, 0, 0.2) !important;
+    font-size: 24px;
+    height: 60px;
+    line-height: 60px;
+}
+.widget-im.notification .im-confirm-group .btn {
+    height: 60px;
+}
+.modal-body .widget-im.notification {
+    background-color: #fff;
+    padding: 0;
+}
+.widget-im {
+    overflow: hidden;
+    position: relative;
+}
+.widget-im ul li {
+    position: relative;
+}
+.widget-im ul li i {
+    color: #ddd;
+}
+.widget-im ul li a:hover i {
+    color: #48a770;
+}
+.widget-im ul li.empty {
+    color: #abaaa5;
+    padding: 25px 0;
+    text-align: center;
+}
+.widget-im ul li.empty i {
+    color: #edece5;
+    display: block;
+    margin-bottom: 15px;
+}
+.widget-im ul li section {
+    background-color: #fff;
+    border-color: #fff;
+    margin-bottom: 10px;
+    padding: 15px 17px;
+    position: relative;
+    transition: transform 0.5s ease 0s;
+    z-index: 1;
+}
+.widget-im ul li section.push-in {
+    transform: translate3d(-40%, 0px, 0px);
+}
+.widget-im ul li section.push-in a.im-delete:after, .widget-im ul li section.push-in a.im-action:after {
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.widget-im ul li section label {
+    border-left: 20px solid transparent;
+    border-top: 20px solid #99cc00;
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.widget-im ul li section.thumbnail-in {
+    padding-left: 92px;
+}
+.widget-im ul li h4 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.widget-im ul li .pre-text {
+    color: #ccc;
+    overflow: hidden;
+    padding: 5px 0 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+.widget-im ul li .im-thumbnail {
+    background-color: #fbfbfb;
+    border-right: 1px solid #f5f5f5;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 75px;
+    z-index: 2;
+}
+.widget-im ul li .im-thumbnail img {
+    border-radius: 2px;
+    height: 61px;
+    margin-left: 7px;
+    margin-top: 7px;
+    width: 61px;
+}
+.widget-im ul li .im-thumbnail i {
+    font-size: 30px;
+    height: 75px;
+    line-height: 75px;
+    text-align: center;
+    width: 75px;
+}
+.widget-im .im-confirm-group {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40%;
+    z-index: 0;
+}
+.widget-im .im-confirm-group .btn {
+    border: 0 none;
+    border-radius: 0;
+    height: 75px;
+    padding: 0;
+}
+.widget-im .widget-im-tools span + span {
+    color: #999;
+    margin-left: 7px;
+}
+.widget-im ul li time {
+    background-color: #f7f6f1;
+    border-radius: 2px;
+    color: #bbb;
+    display: inline-block;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 html {
   min-width: 320px;
 }
@@ -46,7 +238,7 @@ label {
 
 .logo-area {
   background-color: #262a33;
-  border-bottom: 5px #191c21 solid;
+  border-bottom: 5px #23272e solid;
   float: left;
   height: 55px;
   position: relative;
