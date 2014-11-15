@@ -3,81 +3,31 @@
 
 function showProfileDialog(){
     if (userid){
-		//This is an edit
-		var rs = sqlLib.executeReader("SELECT * FROM metric2.m2_users WHERE user_id =" + userid);
-        while (rs.next()){
-		
-			var output = "<form class='form-horizontal'>";
-            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
-            output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
-		    output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
-		    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
-		}
-		rs.close();
+		return sqlLib.executeRecordSetObj("SELECT * FROM metric2.m2_users WHERE user_id =" + userid);
 	}
-	return output;
+	return '';
 }
  
 
 function showSettingsDialog(){
-    var output = '';
     if (userid){
 		//This is an edit
-		var rs = sqlLib.executeReader("SELECT email_domain FROM metric2.m2_users WHERE user_id =" + userid);
-        while (rs.next()){
-			output += "<form class='form-horizontal'>";
-            output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' />";
-	        output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='controls'><input type='text' placeholder='Domain Name' id='domain' value = '" + rs.getString(1) + "' /></div></div>";
-		}
-		rs.close();
+		return sqlLib.executeRecordSetObj("SELECT email_domain, user_id FROM metric2.m2_users WHERE user_id =" + userid);
 	}
-	return output;
+	return '';
 }   
 
 
 function showAlertDialog(alertid){
-    
-	var dashboardwidgetid = '';
-	var operator = '=';
-	var notify = '';
-	var value = '';
-	var cond = '';
-
-	if (alertid){
-		//This is an edit
-		var rs = sqlLib.executeReader("SELECT * FROM metric2.m2_alert WHERE alert_id =" + alertid + " AND user_id = " + userid);
-        while (rs.next()){
-			dashboardwidgetid = rs.getString(2);
-			cond = rs.getString(3);
-			operator = rs.getString(4);
-			notify = rs.getString(6);
-			value = rs.getString(5);
-		}
-		rs.close();
+    var data = {};
+    if (alertid){
+	    data.alertDetail = sqlLib.executeRecordSetObj("SELECT * FROM metric2.m2_alert WHERE alert_id =" + alertid + " AND user_id = " + userid);
+	} else {
+	    data.alertDetail = null;
 	}
-	var output = "<form class='form-horizontal'>";
-	output += "<input type='" + debugmode + "' value = 'value' id='condition' />";
-	output += "<input type='" + debugmode + "' value = '" + alertid + "' id='alertid' />";
-    output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showAlertWidgetNameDropDown(dashboardwidgetid) + "</div></div>";
-    output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
-	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
-	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "'/></div></div>";
-	return output;
-}
-
-
-function showAlertOperatorDropdown(selected){
-    var output = '';
+	data.alertWidgets = sqlLib.executeRecordSetObj("SELECT dashboard_widget_id, metric2.m2_dashboard_widget.title, metric2.m2_dashboard.title as dtitle FROM metric2.m2_dashboard_widget INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id INNER JOIN metric2.m2_widget ON metric2.m2_dashboard_widget.widget_id = metric2.m2_widget.widget_id WHERE metric2.m2_dashboard.user_id = " + userid + " AND metric2.m2_widget.hist_enabled = 1 order by metric2.m2_dashboard.dashboard_id ASC");
 	
-	output += selected == '>' ? "<option selected>></option>" : "<option>></option>";
-	output += selected == '<' ? "<option selected><</option>" : "<option><</option>";
-	output += selected == '<=' ? "<option selected><=</option>" : "<option><=</option>";
-	output += selected == '>=' ? "<option selected>>=</option>" : "<option>>=</option>";
-		
-	return output;
+	return data;
 }
 
 
@@ -101,19 +51,9 @@ function showDashboardDialog(){
     var dashboardtitle = '';
 	var dashboardsubtitle = '';
 	if(service !== 'AddDashboardDialog'){
-        //This is an edit
-        var rs = sqlLib.executeReader("SELECT title, subtitle FROM metric2.m2_dashboard WHERE dashboard_id =" + dashboardid);
-        while (rs.next()){
-            dashboardtitle = rs.getString(1);
-            dashboardsubtitle = rs.getString(2);
-        }
-		rs.close();
+        return sqlLib.executeRecordSetObj("SELECT title, subtitle, dashboard_id FROM metric2.m2_dashboard WHERE dashboard_id =" + dashboardid);
     }
-	
-    output = "<form class='form-horizontal' role='form'>";
-		output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
-		output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
-    output += "</form>";
+	return '';
 }
 
 
