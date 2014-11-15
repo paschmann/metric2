@@ -73,9 +73,7 @@ function configureClickEvents() {
     });
 
     $('#btnAddDashboard, #mnuAddDashboard').click(function() {
-        getDataSet({
-            strService: 'AddDashboardDialog'
-        });
+        showDashboardDialog(null, false);
     });
 
     $('#btnEditDashboard').click(function() {
@@ -439,6 +437,10 @@ function loadWidgetContent(objWidgets) {
     }
 }
 
+
+
+
+
 function loadClientMetrics(objData) {
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
@@ -574,14 +576,17 @@ function getDataSet(options) {
             } else if (options.strService == 'CloneMetric') {
                 addNotification('Metric Cloned', 0);
             } else if (options.strService == 'AddDashboardDialog') {
-                dialogConstructor("Add Dashboard", false, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showDashboardDialog(objData, false);
             } else if (options.strService == 'EditDashboardDialog') {
-                dialogConstructor("Edit Dashboard", true, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showDashboardDialog(objData, true);
             } else if (options.strService == 'EditProfileDialog') {
-                //data = loadProfileDialog(data);
-                dialogConstructor("Edit Profile", false, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showProfileDialog(objData);
             } else if (options.strService == 'EditSettingsDialog') {
-                dialogConstructor("Edit Settings", false, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showSettingsDialog(objData);
             } else if (options.strService == 'GetWidgetTypes') {
                 dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
                 configureWidgetCarousel();
@@ -590,9 +595,11 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);
             } else if (options.strService == 'AddAlert') {
-                dialogConstructor("Add Alert", false, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showAlertDialog(objData, false);
             } else if (options.strService == 'EditAlert') {
-                dialogConstructor("Edit Alert", true, true, data, 1, true, false);
+                var objData = jQuery.parseJSON(data);
+                showAlertDialog(objData, true);
             } else if (options.strService == 'DeleteAlert') {
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);
