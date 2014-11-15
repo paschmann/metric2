@@ -101,23 +101,6 @@ function loadAlertList(){
     }
 }
 
-
-function loadProfileDialog(data){
-    $.each(objData.widgetData, function(key, value) {
-		var output = "<form class='form-horizontal'>";
-        output += "<input type='" + debugmode + "' value = '" + userid + "' id='userid' name='userid'/>";
-        output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
-		output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + rs.getString(2) + "' /></div></div>";
-	    output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + rs.getString(3) + "' /></div></div>";
-		output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + rs.getString(5) + "' /></div></div>";
-		output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + rs.getString(7) + "' /></div></div>";
-		output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '" + rs.getString(6) + "' /></div></div>";
-	});
-}
-
-
-
-		
 function configureWidgetCarousel(){
     $('#widgetcarousel').carousel({
         interval: 4000
@@ -290,6 +273,118 @@ function widgetForecastChart(strData, dashboardwidgetid) {
         return chart;
     });
 }
+
+function showSettingsDialog(objData) {
+    var output = "<form class='form-horizontal'>";
+    output += "<input type='" + debugmode + "' value = '" + objData[0].USER_ID + "' id='userid' />";
+    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='controls'><input type='text' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    dialogConstructor("Edit Settings", false, true, output, 1, true, false);
+}
+
+
+
+function showProfileDialog(objData){
+    var output = "<form class='form-horizontal'>";
+    output += "<input type='" + debugmode + "' value = '" + objData[0].USER_ID + "' id='userid' name='userid'/>";
+    output += "<input type='" + debugmode + "' value = 'UpdateUser' name='service' id='service' />";
+	output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='controls'><input type='text' placeholder='First name' id='name' name='name' value = '" + objData[0].NAME + "' /></div></div>";
+	output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='controls'><input type='text' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + objData[0].LNAME + "' /></div></div>";
+	output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='controls'><input type='text' required='true' placeholder='Email Address' name='email' id='email' value = '" + objData[0].EMAIL + "' /></div></div>";
+	output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='controls'><input type='text' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='controls'><input type='password' required='true' placeholder='Password' name='password' id='password' value = '' /></div></div>";
+    dialogConstructor("Edit Profile", false, true, output, 1, true, false);
+}
+
+
+function showDashboardDialog(objData, edit){
+    var dashboardid = '';
+    var dashboardtitle = '';
+    
+    if (edit){
+        dashboardid = objData[0].DASHBOARD_ID;
+        dashboardtitle = objData[0].TITLE;
+    }
+    
+    var output = "<form class='form-horizontal' role='form'>";
+	output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
+	output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
+    output += "</form>";
+    
+    
+    if (edit){
+        dialogConstructor("Edit Dashboard", true, true, output, 1, true, false);
+    } else {
+        dialogConstructor("Add Dashboard", false, true, output, 1, true, false);
+    }
+}
+
+
+function showAlertOperatorDropdown(selected){
+    var output = '';
+	
+	output += selected == '>' ? "<option selected>></option>" : "<option>></option>";
+	output += selected == '<' ? "<option selected><</option>" : "<option><</option>";
+	output += selected == '<=' ? "<option selected><=</option>" : "<option><=</option>";
+	output += selected == '>=' ? "<option selected>>=</option>" : "<option>>=</option>";
+		
+	return output;
+}
+
+function showAlertWidgetNameDropDown(objWidgetList, dashboardwidgetid){
+    var strHTML = "<select id='widgetid'>";
+    var widgetList = jQuery.parseJSON(objWidgetList);
+    
+    $.each(widgetList, function(key, value) {
+    	strHTML += "<option ";
+		if (dashboardwidgetid == widgetList[key].DASHBOARD_WIDGET_ID){
+			strHTML += ' selected ';
+		}
+		strHTML += " value=" + widgetList[key].DASHBOARD_WIDGET_ID + ">" + widgetList[key].DTITLE + " - " + widgetList[key].TITLE + "</option>";
+	});
+	
+	strHTML += "</select>";
+	return strHTML;
+}
+
+function showAlertDialog(objData, edit){
+    var dashboardwidgetid = '';
+	var operator = '=';
+	var notify = '';
+	var value = '';
+	var cond = '';
+	var alertid = '';
+
+	if (edit){
+		//This is an edit
+		var alertDetail = jQuery.parseJSON(objData.alertDetail);
+		alertid = alertDetail[0].ALERT_ID;
+		dashboardwidgetid = alertDetail[0].DASHBOARD_WIDGET_ID;
+		cond = alertDetail[0].COND;
+		operator = alertDetail[0].OPERATOR;
+		notify = alertDetail[0].NOTIFY;
+		value = alertDetail[0].VALUE;
+	}
+	
+	var output = "<form class='form-horizontal'>";
+	output += "<input type='" + debugmode + "' value = 'value' id='condition' />";
+	output += "<input type='" + debugmode + "' value = '" + alertid + "' id='alertid' />";
+    output += "<div class='form-group'><label class='col-sm-3 control-label'>Widget: </label><div class='controls'>" + showAlertWidgetNameDropDown(objData.alertWidgets, dashboardwidgetid) + "</div></div>";
+    output += "<div class='form-group'><label for='operator' class='col-sm-3 control-label'>Operator:</label><div class='controls'><select id='operator' style='width: 100px;'>" + showAlertOperatorDropdown(operator) + "</select></div></div>";
+	output += "<div class='form-group'><label for='value' class='col-sm-3 control-label'>Value:</label><div class='controls'><input type='text' required='true' placeholder='Value' id='value' value = '" + value + "' /></div></div>";
+	output += "<div class='form-group'><label for='notify' class='col-sm-3 control-label'>Notify:</label><div class='controls'><input type='text' placeholder='Email' id='notify' value = '" + notify + "'/></div></div>";
+	
+	if (edit){
+        dialogConstructor("Edit Alert", true, true, output, 1, true, false);
+    } else {
+        dialogConstructor("Add Alert", false, true, output, 1, true, false);
+    }
+}
+
+
+
+
+
+
 
 
 
