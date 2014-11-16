@@ -341,7 +341,7 @@ function showClock(data) {
         seconds = "0" + seconds;
 
     var ctime = hours + ":" + minutes;
-    document.getElementById("t1-widget-container" + data).innerHTML = "<div class='t1-widget-text-big' style='top: 40%'>" + ctime + "</div><div class='t1-widget-datetime'>" + dateFormat(Digital, "dddd, mmmm dS") + "</div>";
+    $("#t1-widget-container" + data).html("<div class='t1-widget-text-big' style='top: 40%'>" + ctime + "</div><div class='t1-widget-datetime'>" + dateFormat(Digital, "dddd, mmmm dS") + "</div>");
 }
 
 
@@ -637,7 +637,7 @@ function widgetHistorySmall(data) {
 
         var html = "<div class='t1-widget-text-big' style='top: 55px;'><table style='width: 100%;'><tr>";
         if (imgURL) {
-            html += "<td><i class='fa fa-" + imgURL + "' style='margin: 15px;'></i></td>";
+            html += "<td><i class='fa fa-" + imgURL + "' style='margin: 15px; color: #ccc;'></i></td>";
         }
         html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
         html += "<div class='t1-widget-footer' style='text-align:center; margin-top: 0px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
@@ -667,7 +667,7 @@ function widgetProgressBar(data) {
         var html = "<table style='width: 100%;'><tr><td>";
 
         if (imgURL !== '') {
-            html += "<i class='fa fa-" + imgURL + "  fa-5x' style='margin: 15px;'></i>";
+            html += "<i class='fa fa-" + imgURL + "  fa-5x' style='margin: 15px; color: #ccc;'></i>";
         } else {
             html += "&nbsp;";
         }
@@ -742,9 +742,9 @@ function widgetBullet(data) {
         var logdisk = JSON.parse(data.SQL2);
         var tracedisk = JSON.parse(data.SQL3);
 
-        var data1 = '{"title": "Data Size", "subtitle": "' + datadisk[0].DATA_SIZE + ' Gb","ranges": [' + datadisk[0].USED_SIZE + ', ' + datadisk[0].DISK_SIZE + ', ' + datadisk[0].DISK_SIZE + '],"measures": [' + datadisk[0].DATA_SIZE + '],"markers": [' + datadisk[0].DISK_SIZE + ']}';
-        var data2 = '{"title": "Log Size", "subtitle": "' + logdisk[0].DATA_SIZE + ' Gb","ranges": [' + logdisk[0].USED_SIZE + ', ' + logdisk[0].DISK_SIZE + ', ' + logdisk[0].DISK_SIZE + '],"measures": [' + logdisk[0].DATA_SIZE + '],"markers": [' + logdisk[0].DISK_SIZE + ']}';
-        var data3 = '{"title": "Trace Size", "subtitle": "' + tracedisk[0].DATA_SIZE + ' Gb","ranges": [' + tracedisk[0].USED_SIZE + ', ' + tracedisk[0].DISK_SIZE + ', ' + tracedisk[0].DISK_SIZE + '],"measures": [' + tracedisk[0].DATA_SIZE + '],"markers": [' + tracedisk[0].DISK_SIZE + ']}';
+        var data1 = '{"title": "Data", "subtitle": "' + datadisk[0].DATA_SIZE + ' Gb","ranges": [' + datadisk[0].USED_SIZE + ', ' + datadisk[0].DISK_SIZE + ', ' + datadisk[0].DISK_SIZE + '],"measures": [' + datadisk[0].DATA_SIZE + '],"markers": [' + datadisk[0].DISK_SIZE + ']}';
+        var data2 = '{"title": "Log", "subtitle": "' + logdisk[0].DATA_SIZE + ' Gb","ranges": [' + logdisk[0].USED_SIZE + ', ' + logdisk[0].DISK_SIZE + ', ' + logdisk[0].DISK_SIZE + '],"measures": [' + logdisk[0].DATA_SIZE + '],"markers": [' + logdisk[0].DISK_SIZE + ']}';
+        var data3 = '{"title": "Trace", "subtitle": "' + tracedisk[0].DATA_SIZE + ' Gb","ranges": [' + tracedisk[0].USED_SIZE + ', ' + tracedisk[0].DISK_SIZE + ', ' + tracedisk[0].DISK_SIZE + '],"measures": [' + tracedisk[0].DATA_SIZE + '],"markers": [' + tracedisk[0].DISK_SIZE + ']}';
 
         var strContent = '<div id="bullet' + data.dwid + '1" class="diskbullet" style="margin-top:40px;"><svg></svg></div><div id="bullet' + data.dwid + '2" class="diskbullet"><svg></svg></div><div id="bullet' + data.dwid + '3" class="diskbullet"><svg></svg></div>';
         data1 = JSON.parse(data1);
