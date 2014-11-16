@@ -121,6 +121,10 @@ function configureClickEvents() {
     $('#btnModalDelete').click(function() {
         deleteDialog($('#modal-header').html());
     });
+    
+    $('#btnModalDeleteHistory').click(function() {
+        clearAlert($('#alertid').val());
+    });
 
     $('#btnModalSave').click(function(e) {
         saveDialog($('#modal-header').html());
@@ -250,6 +254,7 @@ function dashboardActive(boolState) {
         $('#btnEditDashboard').hide();
         $('#btnAddDashboard').removeClass('h-seperate');
         $('#dashboardname').html('');
+        clearTimers();
     }
 }
 
@@ -283,7 +288,7 @@ function closeSub() {
 function toggleStreaming() {
     if ($('#streaming').is(':checked')) {
         //Switch streaming on
-        loadDynamicJScript('script', '');
+        //loadDynamicJScript('script', '');
     } else {
         //Switch it off
         clearTimers();
@@ -339,7 +344,6 @@ function loadDashboards(objDashboards) {
 
     $("#dashboards").html('');
     $("ul:eq( 1 )").empty();
-
     $("ul:eq( 1 )").append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
 
     if (len > 0) {
@@ -387,24 +391,6 @@ function getContent(sId) {
     }
 }
 
-
-function loadDynamicJScript(elemName, elemID) {
-    if (elemID === '') {
-        clearTimers();
-
-        $("[name^=" + elemName + "]").each(function() {
-            eval(this.innerHTML);
-        });
-    } else {
-        var myScripts = document.getElementById(elemID).getElementsByTagName(elemName);
-        if (myScripts.length > 0) {
-            for (var i = 0; i < myScripts.length; i++) {
-                eval(myScripts[i].innerHTML);
-            }
-        }
-    }
-}
-
 function clearTimers() {
     for (var i = 0; i < timers.length; i++) {
         clearTimeout(timers[i]);
@@ -447,7 +433,7 @@ function loadClientMetrics(objData) {
         if (objData.widgetData[key].Alert) {
             addNotification(this.Alert, 1);
         }
-        if (objData.widgetData[key].refresh != 0) {
+        if (objData.widgetData[key].refresh !== 0) {
             timers.push(setTimeout(function() {
                 getDataSet({
                     strService: 'RefreshWidget',
@@ -468,7 +454,6 @@ function loadMetrics(objData) {
         if (typeof title === undefined) {
             title = '';
         }
-        //intWidgetCounter++;
         strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + objData.widgetData[key].height + "'>";
             strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
                 strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + title;
@@ -478,9 +463,7 @@ function loadMetrics(objData) {
                     strContent += "<img class='t1-editicon-img' id='editicon" + intDashboardWidgetID + "' src='img/settings-icon.png'>";
                 strContent += "</header>";
             strContent += "</div>";
-            strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'>";
-                //strContent += showWidgetContents(intDashboardWidgetID, rs.getString(9));
-            strContent += "</div>";
+            strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'></div>";
         strContent += "</li>";
     });
     strContent += "</ul></div>";
@@ -533,10 +516,7 @@ function getDataSet(options) {
                 if (objData.widgetCount === 0) {
                     $("#grid").html(strNoWidgetMsg);
                 } else {
-                    //$("#grid").html(objData.widgets);
                     loadMetrics(objData);
-                    loadDynamicJScript('script', ''); //must be before loading client metrics otherwise it clears its timers
-                    //load client side widget data (new style)
                     loadClientMetrics(objData);
                     loadGridster();
                 }
@@ -546,15 +526,11 @@ function getDataSet(options) {
                 var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 var objData = jQuery.parseJSON(data);
                 if (objData.widgets != '') {
-                    document.getElementById(elemID).innerHTML = objData.widgets;
+                    $(elemID).html(objData.widgets);
                 }
-                loadDynamicJScript('script', elemID);
                 loadClientMetrics(objData);
-
                 //Loop through object and check for any alerts to display
-
             } else if (options.strService == 'EditWidgetDialog') {
-                //dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn)
                 dialogConstructor("Edit Widget", true, true, data, 1, true, true);
             } else if (options.strService == 'NewWidgetDialog') {
                 dialogConstructor("New Widget", false, true, data, 3, true, false);
@@ -568,8 +544,8 @@ function getDataSet(options) {
                 widgetForecastChart(data, options.strDashboardWidgetID);
                 $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' Forecast (Avg/h)');
             } else if (options.strService == 'AlertHistoryDialog') {
-                dialogConstructor("Alert History", false, false, data, 2, true, false);
-                strHistoryTable = data; //Save for later
+                dialogConstructor("Alert History", false, false, data, 2, true, false, true);
+                strHistoryTable = data;
                 alertHistoryTable(1);
             } else if (options.strService == 'DeleteWidget') {
                 addNotification('Metric Deleted', 3);
@@ -620,7 +596,6 @@ function getDataSet(options) {
                 if ($("#grid").html().indexOf('looks like') > 0) {
                     $("#grid").html(strNoWidgetMsg);
                 }
-                //getContent($("#dashboards li:last").data("id"));
             } else if (options.strService == 'UpdateDashboard') {
                 getDataSet({
                     strService: 'Dashboards'
