@@ -1,6 +1,6 @@
 // -------------------------   Dialog Functions ----------------------- //
 	
-function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn){
+function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn, boolDeleteHistoryBtn){
     if (boolDeleteBtn){
         $('#btnModalDelete').show();
     } else {
@@ -17,6 +17,12 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
         $('#btnModalClone').show();
     } else {
         $('#btnModalClone').hide();
+    }
+    
+    if (boolDeleteHistoryBtn){
+        $('#btnModalDeleteHistory').show();
+    } else {
+        $('#btnModalDeleteHistory').hide();
     }
 
     $('#modal-header').html(strDialogTitle);
