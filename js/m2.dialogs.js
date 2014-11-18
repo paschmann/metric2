@@ -107,7 +107,8 @@ function loadAlertList(){
     }
 }
 
-function configureWidgetCarousel(){
+function configureWidgetCarousel(data){
+    dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
     $('#widgetcarousel').carousel({
         interval: 4000
     })
@@ -196,7 +197,8 @@ function showHist(dashboardwidgetid) {
 }
 
 function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
-
+    dialogConstructor("Widget History", true, false, null, 2, false, false);
+                
     $('#dialogHTML1').innerHTML = '';
     var maxval = -1000000;
     var minval = 1000000;
@@ -239,9 +241,15 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
         
         return chart;
     });
+    
+    $('#myModal').appendTo("body").modal('show');
+    $('#modal-header').html($('#widget-header' + dashboardwidgetid).text() + ' History');
 }
 
 function widgetForecastChart(strData, dashboardwidgetid) {
+    dialogConstructor("Widget Forecast (Avg/h)", false, false, null, 2, true, false);
+    $('#modal-header').html($('#widget-header' + dashboardwidgetid).text() + ' Forecast (Avg/h)');
+    
     var d = new Date();
     $('#dialogHTML1').innerHTML = '';
     var maxval = -1000000;
