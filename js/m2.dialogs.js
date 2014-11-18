@@ -161,7 +161,7 @@ function getNewWidgetHTML(objWidgets) {
     
     
     
-    var elem = document.getElementById('metriccount');
+    var elem = $('#metriccount');
     
     if (typeof elem !== 'undefined' && elem !== null) {
         elem.innerHTML = objWidgets.length + " Metrics";
@@ -197,7 +197,7 @@ function showHist(dashboardwidgetid) {
 
 function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
 
-    document.getElementById('dialogHTML1').innerHTML = '';
+    $('#dialogHTML1').innerHTML = '';
     var maxval = -1000000;
     var minval = 1000000;
 
@@ -243,7 +243,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
 
 function widgetForecastChart(strData, dashboardwidgetid) {
     var d = new Date();
-    document.getElementById('dialogHTML1').innerHTML = '';
+    $('#dialogHTML1').innerHTML = '';
     var maxval = -1000000;
     var minval = 1000000;
 
@@ -286,6 +286,127 @@ function showSettingsDialog(objData) {
     output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='controls'><input type='text' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
     dialogConstructor("Edit Settings", false, true, output, 1, true, false);
 }
+
+
+
+function showWidgetDialog(objData, edit){
+    var output = '';
+    
+    output += "<form class='form-horizontal' role='form'>";
+        output += "<input type='" + debugmode + "' value='newwidget' id='action' />";
+        output += "<input type='" + debugmode + "' value='" + intCurrentDashboardID + "' id='dashboardid' />";
+        output += "<input type='" + debugmode + "' value='" + objData.widgetid + "' id='widgetid' />";
+        output += "<input type='" + debugmode + "' value='" + objData.dashboardwidgetid + "' id='dashboardwidgetid' />";
+        output += "<div class='form-group'><label class='col-sm-3 control-label'>Type: </label><div class='col-sm-9'>" + objData.widgetname + "</div></div>";
+        output += "<div class='form-group'><label for='widgettitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Title' id='widgettitle' value = '" + objData.widgettitle + "' /></div></div>";
+	
+        output += "<div class='form-group'><label for='widgetwidth' class='col-sm-3 control-label'>Width</label><div class='col-sm-9'><select class='form-control' id='widgetwidth' style='width: 100px;'";
+        output += objData.defaultwidgetwidth ? ' disabled ' : '';
+        output += ">" + showWidgetSizeDropdown(objData.widgetwidth) + "</select></div></div>";
+    
+    	output += "<div class='form-group'><label for='widgetheight' class='col-sm-3 control-label'>Height</label><div class='col-sm-9'><select class='form-control' id='widgetheight' style='width: 100px;'";
+        output += objData.defaultwidgetheight ? ' disabled ' : '';
+        output += ">" + showWidgetSizeDropdown(objData.widgetheight) + "</select></div></div>";
+	
+	output += "<div class='form-group'><label for='refreshrate' class='col-sm-3 control-label'>Refresh Rate:</label><div class='col-sm-9'><div class='input-group'><input class='form-control' type='text' placeholder='0' id='refreshrate' value = '" + objData.widgetrefresh + "'  style='width: 90px;'>&nbsp;Secs</div></div></div>";
+	
+	for (var i = 0; i <= objData.param.length - 1; i++){
+	    var required = '';
+	    var value = objData.param[i].setvalue;
+	    
+        if (objData.param[i].required == '1'){
+            required = 'required="true"';
+        }
+		
+		if (objData.param[i].visible == 'true'){
+			output += "<div class='form-group'><label for='pid_" + objData.param[i].paramid + "' class='col-sm-3 control-label'>" + objData.param[i].displayname + "</label><div class='col-sm-9'>";
+			if (objData.param[i].type == 'OPTION'){
+				output += "<select class='form-control' id='pid_" + objData.param[i].paramid + "'>" + showParamOption('', value, objData.param[i].options) + "</select>";
+			} else {
+			    output += "<input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
+			}
+			output += "</div></div>";
+		} else {
+		    output += "<input class='form-control' type='" + debugmode + "' value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";    
+		}
+		
+    }
+
+	
+	if (objData.type == 'WebService'){
+		var serviceurl = 'lib/api.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&datapoint=0';
+		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
+	}
+    output += "</form>";
+    
+    if (edit){
+        dialogConstructor("Edit Widget", true, true, output, 1, true, true);
+    } else {
+        dialogConstructor("New Widget", false, true, output, 3, true, false);
+    }
+}
+
+
+function showWidgetSizeDropdown(selected){
+	var output = '';
+	output += selected == 1 ? "<option selected>1</option>" : "<option>1</option>";
+	output += selected == 2 ? "<option selected>2</option>" : "<option>2</option>";
+	output += selected == 3 ? "<option selected>3</option>" : "<option>3</option>";
+	output += selected == 4 ? "<option selected>4</option>" : "<option>4</option>";	
+	return output;
+}
+
+function showParamOption(optiongroup, value, objData){
+	var strHTML = '';
+	for (var i = 0; i <= objData.length - 1; i++){
+		var selected = objData[i].value == value ? ' selected ' : '';
+		strHTML += "<option value = '" + objData[i].value + "'" + selected + ">" + objData[i].display + "</option>";
+	}
+	return strHTML;
+}
+
+
+
+function showAlertHistoryDialog(arrData){
+    var alertid = arrData[0];
+    var strHTML = "<table class='w-histchart-table'><tr><td style='text-align: right;'>";
+	strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
+	strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
+	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
+	strHTML += "</td></tr></table>";
+	strHTML += "<div id='alerttable' style='margin-left: 0px;'>";
+		strHTML += "<table class='table table-striped' id='table2'>";
+			strHTML += "<thead><tr><th>Hour</th><th style='text-align: center;'>Monday</th><th style='text-align: center;'>Tuesday</th><th style='text-align: center;'>Wednesday</th>";
+			strHTML += "<th style='text-align: center;'>Thursday</th><th style='text-align: center;'>Friday</th><th style='text-align: center;'>Saturday</th><th style='text-align: center;'>Sunday</th></tr></thead><tbody>";
+				var hour = 0;
+				var rowcount = 0;
+				var daycounter = 1;
+				for (var i = 1; i <= arrData.length - 1; i++){
+				    if (daycounter == 1){
+					    strHTML += "<tr><th scope='row'>" + rowcount + ":00 - " + (rowcount + 2) + ":00</th>";
+					    rowcount = rowcount + 2;
+				    }
+					
+					strHTML += "<td style='text-align: center;'>" + arrData[i] + "</td>";
+
+                    if (daycounter == 7){
+				        strHTML += "</tr>";
+				        daycounter = 1;
+				    } else {
+					    daycounter ++;
+				    }
+				}
+			strHTML += "</tbody>";
+		strHTML += "</table>";
+		strHTML += "<input type='hidden' id='alertid' value='" + alertid + "' />"; //Used for deleting the history via the button
+	strHTML += "</div>";
+	
+	dialogConstructor("Alert History", false, false, strHTML, 2, true, false, true);
+    strHistoryTable = strHTML;
+    alertHistoryTable(1);
+}
+
+
 
 
 
@@ -386,21 +507,13 @@ function showAlertDialog(objData, edit){
     }
 }
 
-
-
-
-
-
-
-
-
 function alertHistory(alertid) {
     getDataSet({ strService: 'AlertHistoryDialog', strAlertID: alertid});
 }
 
 function alertHistoryTable(displaytype) {
 
-    document.getElementById('dialogHTML1').innerHTML = strHistoryTable;
+    $('#dialogHTML1').innerHTML = strHistoryTable;
 
     if (displaytype == 1) {
         $('#table2 td').wrapInner('<span/>').graphup({
@@ -458,9 +571,9 @@ function checkParamValidation(){
 
 function cloneMetric(){
     getDataSet({
-                strService: "CloneMetric",
-                strDashboardWidgetID: document.getElementById('dashboardwidgetid').value,
-                strReload: "dashboard"
+        strService: "CloneMetric",
+        strDashboardWidgetID: $('#dashboardwidgetid').value,
+        strReload: "dashboard"
     })
 }
 
@@ -471,12 +584,12 @@ function saveDialog(strFunction) {
     if (checkParams == "false"){
         if (strFunction == 'New Widget') {
             var paramCount = 0;
-            refreshrate = document.getElementById('refreshrate').value;
+            refreshrate = $('#refreshrate').value;
             if (refreshrate === '') refreshrate = 0;
             
             getDataSet({
                 strService: "Insert",
-                strSQL: "Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + intCurrentDashboardID + ", " + document.getElementById('widgetid').value + ",'" + document.getElementById('widgettitle').value + "'," + document.getElementById('widgetwidth').value + "," + document.getElementById('widgetheight').value + ",1,1," + refreshrate + ")"
+                strSQL: "Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + intCurrentDashboardID + ", " + $('#widgetid').value + ",'" + $('#widgettitle').value + "'," + $('#widgetwidth').value + "," + $('#widgetheight').value + ",1,1," + refreshrate + ")"
             })
             paramCount = $("[id^=pid_]").size();
             setTimeout(function() {
@@ -487,14 +600,14 @@ function saveDialog(strFunction) {
                     val = encodeURIComponent(val);
                     getDataSet({
                         strService: "Insert",
-                        strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + document.getElementById('widgetid').value + ", current_utcdate);",
+                        strSQL: "Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + this.id.substring(4) + ", '" + val + "'," + $('#widgetid').value + ", current_utcdate);",
                         strReload: "dashboard"
                     })
                 });
             }, 1000);
             getContent(intCurrentDashboardID);
         } else if (strFunction == 'Edit Widget') {
-            refreshrate = document.getElementById('refreshrate').value;
+            refreshrate = $('#refreshrate').value;
             var updateStatements = '';
             if (refreshrate === '') refreshrate = 0;
     
@@ -502,7 +615,7 @@ function saveDialog(strFunction) {
                 var val = replaceAll("'", "MET2", this.value);
                 val = replaceAll("%", "MET3", val);
                 val = encodeURIComponent(val);
-                updateStatements += "UPDATE metric2.m2_dashboard_widget_params SET value = '" + val + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value + " AND param_id =" + this.id.substring(4) + ";";
+                updateStatements += "UPDATE metric2.m2_dashboard_widget_params SET value = '" + val + "' WHERE dashboard_widget_id =" + $('#dashboardwidgetid').value + " AND param_id =" + this.id.substring(4) + ";";
             });
             
             getDataSet({
@@ -512,33 +625,33 @@ function saveDialog(strFunction) {
             
             getDataSet({
                 strService: "Update",
-                strSQL: "UPDATE metric2.m2_dashboard_widget SET width =" + document.getElementById('widgetwidth').value + ", height =" + document.getElementById('widgetheight').value + ", refresh_rate = " + refreshrate + ", title = '" + document.getElementById('widgettitle').value + "' WHERE dashboard_widget_id =" + document.getElementById('dashboardwidgetid').value,
+                strSQL: "UPDATE metric2.m2_dashboard_widget SET width =" + $('#widgetwidth').value + ", height =" + $('#widgetheight').value + ", refresh_rate = " + refreshrate + ", title = '" + $('#widgettitle').value + "' WHERE dashboard_widget_id =" + $('#dashboardwidgetid').value,
                 strReload: "dashboard"
             })
         } else if (strFunction == 'Add Dashboard') {
             getDataSet({
                 strService: "CreateDashboard",
-                strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + document.getElementById('dashboardtitle').value + "', '',999)",
+                strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + $('#dashboardtitle').value + "', '',999)",
                 strReload: "dashboards", 
-                strMisc: document.getElementById('dashboardtitle').value
+                strMisc: $('#dashboardtitle').value
             })
         } else if (strFunction == 'Edit Dashboard') {
             getDataSet({
                 strService: "UpdateDashboard",
-                strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
+                strSQL: "Update metric2.m2_dashboard SET title = '" + $('#dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + $('#dashboardid').value,
                 strReload: "dashboards"
             })
-            $('#dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
+            $('#dashboardname').html('<a href="#">' + $('#dashboardtitle').value + '</a>');
         } else if (strFunction == 'Add Alert') {
             getDataSet({
                 strService: "CreateAlert",
-                strSQL: "Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + document.getElementById('widgetid').value + ", '" + document.getElementById('condition').value + "', '" + document.getElementById('operator').value + "','" + document.getElementById('value').value + "', '" + document.getElementById('notify').value + "', current_timestamp, 999)",
+                strSQL: "Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + $('#widgetid').value + ", '" + $('#condition').value + "', '" + $('#operator').value + "','" + $('#value').value + "', '" + $('#notify').value + "', current_timestamp, 999)",
                 strReload: "alerts"
             })
         } else if (strFunction == 'Edit Alert') {
             getDataSet({
                 strService: "Update",
-                strSQL: "Update metric2.m2_alert SET cond = '" + document.getElementById('condition').value + "', operator = '" + document.getElementById('operator').value + "', value = '" + document.getElementById('value').value + "', notify = '" + document.getElementById('notify').value + "' WHERE alert_id = " + document.getElementById('alertid').value,
+                strSQL: "Update metric2.m2_alert SET cond = '" + $('$condition').value + "', operator = '" + $('$operator').value + "', value = '" + $('$value').value + "', notify = '" + $('$notify').value + "' WHERE alert_id = " + ('$alertid').value,
                 strReload: "alerts"
             })
         } else if (strFunction == 'Edit Profile') {
@@ -553,7 +666,7 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
                 strService: "Update",
-                strSQL: "Update metric2.m2_users SET email_domain = '" + document.getElementById('domain').value + "' WHERE user_id =" + document.getElementById('userid').value
+                strSQL: "Update metric2.m2_users SET email_domain = '" + $('#domain').value + "' WHERE user_id =" + $('#userid').value
             })
         } else {
             console.log("No Function Defined Yet");
@@ -572,7 +685,7 @@ function deleteDialog(strFunction) {
             strReload: 'true'
         })
     } else if (strFunction == 'Edit Widget') {
-       var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
+       var dashboardwidgetid = $('#dashboardwidgetid').value;
        getDataSet({
             strService: 'CallSP', 
             strSQL: "CALL METRIC2.M2_P_DELETE_WIDGET(" + dashboardwidgetid + ")",
@@ -580,13 +693,13 @@ function deleteDialog(strFunction) {
         });
         saveFeedEvent("Metric deleted", 3);
     } else if (strFunction == 'Edit Alert') {
-        var alertID = document.getElementById('alertid').value;
+        var alertID = $('#alertid').value;
         getDataSet({
             strService: 'DeleteAlert',
             strAlertID: alertID
         });
     }  else if (strFunction == 'Widget History') {
-       var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
+       var dashboardwidgetid = $('#dashboardwidgetid').value;
        getDataSet({
             strService: 'CallSP', 
             strSQL: "CALL METRIC2.M2_P_DELETE_WIDGET_HISTORY(" + dashboardwidgetid + ")"
