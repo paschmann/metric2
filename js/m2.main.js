@@ -353,6 +353,7 @@ function loadDashboards(objDashboards) {
             $("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html($(this).html());
+                intDashboardID = $(this).data('id');
                 return false;
             });
 
@@ -360,6 +361,7 @@ function loadDashboards(objDashboards) {
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 $('#dashboardname').html("<a href='#'>" + $(this).attr('title') + "</a>");
+                intDashboardID = $(this).data('id');
                 closeLeftMenu();
                 return false;
             });
@@ -408,17 +410,6 @@ function loadWidgetContent(objWidgets) {
         for (var i = 0; i < len; ++i) {
             ob = objWidgets[i];
             var url = 'js/widgets/' + ob.codetype + '.js';
-            /*
-            $("<link/>", {
-                rel: "stylesheet",
-                type: "text/css",
-                href: "js/widgets/" + ob.codetype + ".css"
-              
-            $.getScript( url, function() {
-                    window[ob.codetype](ob);
-                    timers.push(setTimeout(function() {getDataSet({strService: 'RefreshWidget', strDashboardWidgetID: ob.dwid});}, ob.refresh));
-            });
-            */
         }
     }
 }
@@ -521,7 +512,6 @@ function getDataSet(options) {
                     loadGridster();
                 }
                 dashboardActive(true);
-                //Loop through object and check for any alerts to display
             } else if (options.strService == 'RefreshWidget') {
                 var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 var objData = jQuery.parseJSON(data);
@@ -529,11 +519,12 @@ function getDataSet(options) {
                     $(elemID).html(objData.widgets);
                 }
                 loadClientMetrics(objData);
-                //Loop through object and check for any alerts to display
             } else if (options.strService == 'EditWidgetDialog') {
-                dialogConstructor("Edit Widget", true, true, data, 1, true, true);
+                var objData = jQuery.parseJSON(data);
+                showWidgetDialog(objData, true);
             } else if (options.strService == 'NewWidgetDialog') {
-                dialogConstructor("New Widget", false, true, data, 3, true, false);
+                var objData = jQuery.parseJSON(data);
+                showWidgetDialog(objData, false);
             } else if (options.strService == 'WidgetHistoryDialog') {
                 dialogConstructor("Widget History", true, false, data, 2, false, false);
                 widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
@@ -544,9 +535,7 @@ function getDataSet(options) {
                 widgetForecastChart(data, options.strDashboardWidgetID);
                 $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' Forecast (Avg/h)');
             } else if (options.strService == 'AlertHistoryDialog') {
-                dialogConstructor("Alert History", false, false, data, 2, true, false, true);
-                strHistoryTable = data;
-                alertHistoryTable(1);
+                showAlertHistoryDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'DeleteWidget') {
                 addNotification('Metric Deleted', 3);
             } else if (options.strService == 'CloneMetric') {
