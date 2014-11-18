@@ -166,6 +166,10 @@ a.logo {
     z-index: 2;
 }
 
+.modal-content {
+    border-radius: 0; 
+}
+
 .mm-menu {
   width: 250px;
   background-color: transparent;
@@ -795,6 +799,23 @@ margin-top: 10px;
     border-radius: 0;
     margin: 0;
 }
+
+.notification-background-Information{
+    background: rgba(255, 221, 114, .5);
+}
+
+.notification-background-Success{
+    background: rgba(91, 217, 147, .5);
+}
+
+.notification-background-Error{
+    background: rgba(245, 91, 76, .5);
+}
+
+.notification-background-Warning{
+    background: rgba(255, 221, 114, .5);
+}
+
 .widget-im.notification ul li .im-thumbnail {
     box-shadow: -3px 3px 20px rgba(0, 0, 0, 0.1) inset;
 }
