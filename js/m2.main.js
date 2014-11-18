@@ -526,14 +526,9 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 showWidgetDialog(objData, false);
             } else if (options.strService == 'WidgetHistoryDialog') {
-                dialogConstructor("Widget History", true, false, data, 2, false, false);
                 widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
-                $('#myModal').appendTo("body").modal('show');
-                $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' History');
             } else if (options.strService == 'WidgetForecastDialog') {
-                dialogConstructor("Widget Forecast (Avg/h)", false, false, data, 2, true, false);
                 widgetForecastChart(data, options.strDashboardWidgetID);
-                $('#modal-header').html($('#widget-header' + options.strDashboardWidgetID).text() + ' Forecast (Avg/h)');
             } else if (options.strService == 'AlertHistoryDialog') {
                 showAlertHistoryDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'DeleteWidget') {
@@ -553,8 +548,7 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 showSettingsDialog(objData);
             } else if (options.strService == 'GetWidgetTypes') {
-                dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
-                configureWidgetCarousel();
+                configureWidgetCarousel(data);
             } else if (options.strService == 'Alerts') {
                 $('#dashboardname').html("<a href='#'>Alerts</a>");
                 var objData = jQuery.parseJSON(data);
