@@ -101,7 +101,7 @@ function loadAlertList(){
         html += '<time class="timeago lasted" title="when you opened the page">' + jQuery.timeago(objAlert.timestamp) + '</time>';
         html += '</span></div>';
         html += '<h4>' +  note + '</h4>';
-        html += '<div class="im-thumbnail bg-theme-inverse"><i class="fa ' + type + '"></i></div>';
+        html += '<div class="im-thumbnail bg-theme-inverse><i class="fa ' + type + ' notification-background-' + note + '""></i></div>';
         html += '<div class="pre-text">' + objAlert.msg + '</div></section></li>';
         $('#alertdialoglist').append(html);
     }
