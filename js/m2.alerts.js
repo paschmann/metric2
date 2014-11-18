@@ -60,77 +60,80 @@ function saveFeedEvent(strText, intIcon) {
 
 function loadAlerts(objData){
     try{
-    var strHTML = "";
-    var userAlerts = jQuery.parseJSON(objData.userAlerts);
-    var arrAlertData = [];
-    if (userAlerts.length > 0){
-        strHTML += "<div class='row' style='margin-top: 60px;'>";
-            strHTML += "<div class='col-md-5'>";
-                strHTML += "<div id='statusChart' style='min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto'></div>";
-                    strHTML += "<h4 style='text-align: center; margin-top: 20px;'>Alert count by type</h4>";
-                    strHTML += "<span class='text-muted'></span>";
+        var strHTML = "";
+        var userAlerts = jQuery.parseJSON(objData.userAlerts);
+        var arrAlertData = [];
+        if (userAlerts.length > 0){
+            strHTML += "<div class='row' style='margin-top: 60px;'>";
+                strHTML += "<div class='col-md-5'>";
+                    strHTML += "<div id='statusChart' style='min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto'></div>";
+                        strHTML += "<h4 style='text-align: center; margin-top: 20px;'>Alert count by type</h4>";
+                        strHTML += "<span class='text-muted'></span>";
+                strHTML += "</div>";
+                strHTML += "<div class='col-md-5'>";
+                        strHTML += "<div id='monthChart' style='min-width: 310px; height: 400px; margin: 0 auto'></div>";
+                        strHTML += "<h4 style='text-align: center; margin-top: 20px;'>Alerts by month</h4>";
+                        strHTML += "<span class='text-muted'></span>";
+                strHTML += "</div>";
             strHTML += "</div>";
-            strHTML += "<div class='col-md-5'>";
-                    strHTML += "<div id='monthChart' style='min-width: 310px; height: 400px; margin: 0 auto'></div>";
-                    strHTML += "<h4 style='text-align: center; margin-top: 20px;'>Alerts by month</h4>";
-                    strHTML += "<span class='text-muted'></span>";
-            strHTML += "</div>";
-        strHTML += "</div>";
-        
-    	strHTML += "<div class='row' style='margin-top: 60px;'>";
-            strHTML += "<div class='col-md-12'>"
-            strHTML += "<div id='alerttable'>";
-            strHTML += "<h1>User Alerts</h1>";
-                strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Name</th><th>Trigger</th><th>Status</th><th>Action</th><th>Alert Count</th><th>Last Triggered</th><th>Next Check</th></tr></thead><tbody>";
-                $.each(userAlerts, function(key, value) {
-                    if (userAlerts[key].STATUS === '1') { strStatus = 'Enabled'; strSetStatus = 'Disable'; intStatus = 0;} else { strStatus = 'Disabled'; strSetStatus = 'Enable'; intStatus = 1;}
-                    var notify = userAlerts[key].NOTIFY === '' ? 'Display' : userAlerts[key].NOTIFY;
-                    var lasttriggered = userAlerts[key].LASTTRIGGERED === 'null' ? '-' : userAlerts[key].LASTTRIGGERED;
-                    var nextcheck = ''; //Timeago function
-                    strHTML += "<tr><td>" + userAlerts[key].DASHBOARDTITLE + "</td><td><a href='#' onclick='editAlert(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].TITLE + "</a></td><td>" + userAlerts[key].OPERATOR + " " + userAlerts[key].VALUE + "</td><td><a href='#' title='Click this link to stop, or start, this alert from being triggered' onclick='setAlert(" + userAlerts[key].ALERTID + ", " + intStatus + ");'>" + strStatus + "</a></td><td>" + notify + "</td><td><a href='#' id='alertID" + userAlerts[key].ALERTID + "' onclick='alertHistory(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].ALERTCOUNT + "</a></td><td>" + lasttriggered + "</td><td>" + nextcheck + "</td></tr>";
-                    var arrTmp = [];
-                    arrTmp.push(userAlerts[key].TITLE);
-                    arrTmp.push(parseInt(userAlerts[key].ALERTCOUNT));
-                    arrAlertData.push(arrTmp);
-                });
-                strHTML += "</tbody></table></div>";
-        
-        var userAlertStats = jQuery.parseJSON(objData.userAlertsStats);
-        var arrMonthData = [];
-        
-        for (var i = 1; i <= 12; i++){
-            var found = false;
-            for (var t = 0; t <= 11; t++){
-                try{
-                    if (userAlertStats[t].MONTH === i.toString()){
-                        arrMonthData.push(parseInt(userAlertStats[t].ALERTCOUNT));
-                        found = true;
+            
+        	strHTML += "<div class='row' style='margin-top: 60px;'>";
+                strHTML += "<div class='col-md-12'>"
+                strHTML += "<div id='alerttable'>";
+                strHTML += "<h1>User Alerts</h1>";
+                    strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Dashboard</th><th>Name</th><th>Trigger</th><th>Status</th><th>Action</th><th>Alert Count</th><th>Last Triggered</th><th>Next Check</th></tr></thead><tbody>";
+                    $.each(userAlerts, function(key, value) {
+                        if (userAlerts[key].STATUS === '1') { strStatus = 'Enabled'; strSetStatus = 'Disable'; intStatus = 0;} else { strStatus = 'Disabled'; strSetStatus = 'Enable'; intStatus = 1;}
+                        var notify = userAlerts[key].NOTIFY === '' ? 'Display' : userAlerts[key].NOTIFY;
+                        var lasttriggered = userAlerts[key].LASTTRIGGERED === 'null' ? '-' : userAlerts[key].LASTTRIGGERED;
+                        var nextcheck = ''; //Timeago function
+                        strHTML += "<tr><td>" + userAlerts[key].DASHBOARDTITLE + "</td><td><a href='#' onclick='editAlert(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].TITLE + "</a></td><td>" + userAlerts[key].OPERATOR + " " + userAlerts[key].VALUE + "</td><td><a href='#' title='Click this link to stop, or start, this alert from being triggered' onclick='setAlert(" + userAlerts[key].ALERTID + ", " + intStatus + ");'>" + strStatus + "</a></td><td>" + notify + "</td><td><a href='#' id='alertID" + userAlerts[key].ALERTID + "' onclick='alertHistory(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].ALERTCOUNT + "</a></td><td>" + lasttriggered + "</td><td>" + nextcheck + "</td></tr>";
+                        var arrTmp = [];
+                        arrTmp.push(userAlerts[key].TITLE);
+                        arrTmp.push(parseInt(userAlerts[key].ALERTCOUNT));
+                        arrAlertData.push(arrTmp);
+                    });
+                    strHTML += "</tbody></table></div>";
+            
+            var userAlertStats = jQuery.parseJSON(objData.userAlertsStats);
+            var arrMonthData = [];
+            var arrMonthNames = [];
+            
+            for (var i = 1; i <= 12; i++){
+                var found = false;
+                for (var t = 0; t <= 11; t++){
+                    try{
+                        if (userAlertStats[t].MONTH === i.toString()){
+                            arrMonthData.push(parseInt(userAlertStats[t].ALERTCOUNT));
+                            arrMonthNames.push(month[userAlertStats[t].MONTH]);
+                            found = true;
+                        }
+                    } catch (e) {
+                        
                     }
-                } catch (e) {
-                    
+                }
+                if (!found){
+                    //arrMonthData.push(0);
                 }
             }
-            if (!found){
-                arrMonthData.push(0);
-            }
         }
-    }
-        
-    var systemAlerts = jQuery.parseJSON(objData.sysAlerts);
-    if (systemAlerts.length > 0){
-        strHTML += "<div id='alerttable'>";
-        strHTML += "<h1>System Alerts</h1>";
-        strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Host</th><th>Rating</th><th>Alert Details</th><th>Last Check</th></tr></thead><tbody>";
-        $.each(systemAlerts, function(key, value) {
-            strHTML += "<tr><td>" + systemAlerts[key].HOST + "</td><td>" + systemAlerts[key].ALERTRATING + "</td><td>" + systemAlerts[key].ALERTDETAILS + "</td><td>" + systemAlerts[key].TIME + "</td></tr>";
-        });
-        
-        strHTML += "</tbody></table></div></div>";
-    }
+            
+        var systemAlerts = jQuery.parseJSON(objData.sysAlerts);
+        if (systemAlerts.length > 0){
+            strHTML += "<div id='alerttable'>";
+            strHTML += "<h1>System Alerts</h1>";
+            strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Host</th><th>Rating</th><th>Alert Details</th><th>Last Check</th></tr></thead><tbody>";
+            $.each(systemAlerts, function(key, value) {
+                strHTML += "<tr><td>" + systemAlerts[key].HOST + "</td><td>" + systemAlerts[key].ALERTRATING + "</td><td>" + systemAlerts[key].ALERTDETAILS + "</td><td>" + systemAlerts[key].TIME + "</td></tr>";
+            });
+            
+            strHTML += "</tbody></table></div></div>";
+        }
         $("#grid").html(strHTML);
         
         loadEventStatusPie(arrAlertData);
-        loadEventsbyMonth(arrMonthData);
+        loadEventsbyMonth(arrMonthData, arrMonthNames);
+    
     } catch (err) {
         $("#grid").html(strHTML);
         console.log(err);
@@ -175,7 +178,7 @@ function loadEventStatusPie(arrData){
     });
 }
 
-function loadEventsbyMonth(arrData){
+function loadEventsbyMonth(arrData, arrMonthNames){
     $('#monthChart').highcharts({
         chart: {
             type: 'column',
@@ -188,20 +191,7 @@ function loadEventsbyMonth(arrData){
             text: null
         },
         xAxis: {
-            categories: [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec'
-            ]
+            categories: arrMonthNames
         },
         yAxis: {
             min: 0,
