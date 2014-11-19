@@ -15,6 +15,7 @@ var tour;
 var debugmode = 'hidden';
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
+var strSQLInput = '';
 
 $(document).ready(function() {
     configureLeftMenu();
@@ -70,6 +71,23 @@ function configureClickEvents() {
     
     $('#btnAddAlert').click(function() {
         addAlert();
+    });
+    
+    $(document).on('click','#btnExecuteSQL',function(){
+        getDataSet({
+            strService: "Select",
+            strSQL: document.getElementById('txtSQL').value
+        })
+    })
+    
+    $(document).on('click','#btnShowSQLBuilder',function(){
+        var sql = $(this).offsetParent()[0].firstChild.value;
+        strSQLInput = $(this).offsetParent()[0].firstChild;
+        showSQLBuilder(sql, 'Single Value');
+    })
+    
+    $('#btnModalSQLSave').click(function(e) {
+        $("#" + strSQLInput.id).val($('#txtSQL').val());
     });
 
     $('#btnAddDashboard, #mnuAddDashboard').click(function() {
@@ -584,6 +602,8 @@ function getDataSet(options) {
                     strService: 'Dashboards'
                 });
                 saveFeedEvent("Dashboard updated", 0);
+            } else if (options.strService == 'Select') {
+                showSQLResults(data);
             }
 
             if (options.strReload == 'true') {
