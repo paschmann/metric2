@@ -27,37 +27,6 @@ function clearAlert(alertID){
     });
 }
 
-function saveFeedEvent(strText, intIcon) {
-    //Not being used
-    var strIcon = '';
-    switch (intIcon) {
-        case 0:
-            strIcon = 'ok-icon-small';
-            break;
-        case 1:
-            strIcon = 'info-icon-small';
-            break;
-        case 2:
-            strIcon = 'warning-icon-small';
-            break;
-        default:
-        case 3:
-            strIcon = 'error-icon-small';
-            break;
-    }
-
-    $.bootstrapGrowl(strText, {
-          ele: 'body', // which element to append to
-          type: 'success', // (null, 'info', 'danger', 'success')
-          offset: {from: 'top', amount: 5}, // 'top', or 'bottom'
-          align: 'center', // ('left', 'right', or 'center')
-          width: 350, // (integer, or 'auto')
-          delay: 2000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
-          allow_dismiss: true, // If true then will display a cross to close the popup.
-          stackup_spacing: 10 // spacing between consecutively stacked growls.
-    });
-}
-
 function loadAlerts(objData){
     try{
         var strHTML = "";
@@ -65,7 +34,7 @@ function loadAlerts(objData){
         var arrAlertData = [];
         if (userAlerts.length > 0){
             strHTML += "<div class='row' style='margin-top: 60px;'>";
-                strHTML += "<div class='col-md-5'>";
+                strHTML += "<div class='col-md-5 col-md-offset-1'>";
                     strHTML += "<div id='statusChart' style='min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto'></div>";
                         strHTML += "<h4 style='text-align: center; margin-top: 20px;'>Alert count by type</h4>";
                         strHTML += "<span class='text-muted'></span>";
@@ -222,7 +191,7 @@ function loadEventsbyMonth(arrData, arrMonthNames){
 
 
 
-function addNotification(strMsg, i) {
+function addNotification(strMsg, i, display) {
     var type = '';
     switch (i) {
         case 0:
@@ -242,16 +211,19 @@ function addNotification(strMsg, i) {
             break;
     }
     
-    $.bootstrapGrowl(strMsg, {
-          ele: 'body', // which element to append to
-          type: type, // (null, 'info', 'danger', 'success')
-          offset: {from: 'top', amount: 5}, // 'top', or 'bottom'
-          align: 'center', // ('left', 'right', or 'center')
-          width: 350, // (integer, or 'auto')
-          delay: 2000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
-          allow_dismiss: true, // If true then will display a cross to close the popup.
-          stackup_spacing: 10 // spacing between consecutively stacked growls.
-    });
+    if (display) {
+        $.bootstrapGrowl(strMsg, {
+              ele: 'body', // which element to append to
+              type: type, // (null, 'info', 'danger', 'success')
+              offset: {from: 'top', amount: 5}, // 'top', or 'bottom'
+              align: 'center', // ('left', 'right', or 'center')
+              width: 350, // (integer, or 'auto')
+              delay: 2000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
+              allow_dismiss: true, // If true then will display a cross to close the popup.
+              stackup_spacing: 10 // spacing between consecutively stacked growls.
+        });
+    }
+    
     var objAlert = [];
     objAlert.msg = strMsg;
     objAlert.type = i;
