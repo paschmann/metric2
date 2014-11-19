@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="css/bootstrap-tour.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/metrics.css">
+        <link rel="stylesheet" href="css/vendor/jquery.dataTables.css">
         <link rel="stylesheet" href="css/media.css"> <!-- Important its last! -->
         
         <!-- JS CDN -->
@@ -38,6 +39,7 @@
         <script src="js/vendor/bootstrap-datepicker.js"></script>
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script src="js/vendor/bootstrap-tour.min.js"></script>
+        <script src="js/vendor/jquery.dataTables.min.js" type="text/javascript"></script>
         
         <!-- gridster plugins-->
         <script src="js/vendor/jquery.gridster2.js" type="text/javascript" charset="utf-8"></script>
@@ -61,6 +63,7 @@
         <script src="js/m2.tour.js"></script>
         <script src="js/m2.metrics.js"></script>
         <script src="js/m2.main.js"></script>
+        <script src="js/m2.sqlbuilder.js"></script>
         
     </head>
     
@@ -229,6 +232,25 @@
                             <div class="widget-im notification">
 								<ul id="alertdialoglist"></ul>
 						</div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- //myModal -->
+            
+            <!-- Generic modal box used for Data Builder -->
+            <div id="modaldialog" style="bottom: 0;"></div>
+            <div id="mySQLBuilderModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-header" aria-hidden="true">
+                <div id="modalsqldlg" class="modal-dialog">
+                    <div class="modal-content" style="height: 100%; width: 100%;">
+                        <div class="modal-header">
+                            <button id="btnModalX" type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
+                            <h4 class="modal-title" id="modal-sql-header"></h4>
+                        </div>
+                        <div id="dialogSQLHTML" class="modal-body"></div>
+                        <div class="modal-footer">
+                            <label id="lblFooterLeft" class="pull-left"></label>
+                            <button id="btnModalClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="btnModalSQLSave" type="button" class="btn btn-primary" data-dismiss="modal" >Save</button>
                         </div>
                     </div>
                 </div>
