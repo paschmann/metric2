@@ -518,7 +518,7 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
             } else if (options.strService == 'Position') {
-                //addNotification('Positions updated', 0);
+                //addNotification('Positions updated', 0, true);
             } else if (options.strService == 'Widgets') {
                 var objData = jQuery.parseJSON(data);
 
@@ -538,11 +538,9 @@ function getDataSet(options) {
                 }
                 loadClientMetrics(objData);
             } else if (options.strService == 'EditWidgetDialog') {
-                var objData = jQuery.parseJSON(data);
-                showWidgetDialog(objData, true);
+                showWidgetDialog(jQuery.parseJSON(data), true);
             } else if (options.strService == 'NewWidgetDialog') {
-                var objData = jQuery.parseJSON(data);
-                showWidgetDialog(objData, false);
+                showWidgetDialog(jQuery.parseJSON(data), false);
             } else if (options.strService == 'WidgetHistoryDialog') {
                 widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
             } else if (options.strService == 'WidgetForecastDialog') {
@@ -550,50 +548,40 @@ function getDataSet(options) {
             } else if (options.strService == 'AlertHistoryDialog') {
                 showAlertHistoryDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'DeleteWidget') {
-                addNotification('Metric Deleted', 3);
+                addNotification('Metric Deleted', 3, true);
             } else if (options.strService == 'CloneMetric') {
-                addNotification('Metric Cloned', 0);
+                addNotification('Metric Cloned', 0, true);
             } else if (options.strService == 'AddDashboardDialog') {
-                var objData = jQuery.parseJSON(data);
-                showDashboardDialog(objData, false);
+                showDashboardDialog(jQuery.parseJSON(data), false);
             } else if (options.strService == 'EditDashboardDialog') {
-                var objData = jQuery.parseJSON(data);
-                showDashboardDialog(objData, true);
+                showDashboardDialog(jQuery.parseJSON(data), true);
             } else if (options.strService == 'EditProfileDialog') {
-                var objData = jQuery.parseJSON(data);
-                showProfileDialog(objData);
+                showProfileDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'EditSettingsDialog') {
-                var objData = jQuery.parseJSON(data);
-                showSettingsDialog(objData);
+                showSettingsDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'GetWidgetTypes') {
                 configureWidgetCarousel(data);
             } else if (options.strService == 'Alerts') {
                 $('#dashboardname').html("<a href='#'>Alerts</a>");
-                var objData = jQuery.parseJSON(data);
-                loadAlerts(objData);
+                loadAlerts(jQuery.parseJSON(data));
             } else if (options.strService == 'AddAlert') {
-                var objData = jQuery.parseJSON(data);
-                showAlertDialog(objData, false);
+                showAlertDialog(jQuery.parseJSON(data), false);
             } else if (options.strService == 'EditAlert') {
-                var objData = jQuery.parseJSON(data);
-                showAlertDialog(objData, true);
+                showAlertDialog(jQuery.parseJSON(data), true);
             } else if (options.strService == 'DeleteAlert') {
-                var objData = jQuery.parseJSON(data);
-                loadAlerts(objData);
-                addNotification('Alert Deleted', 0);
+                loadAlerts(jQuery.parseJSON(data));
+                addNotification('Alert Deleted', 0, false);
             } else if (options.strService == 'SetAlert') {
-                var objData = jQuery.parseJSON(data);
-                loadAlerts(objData);
-                addNotification('Alert Status Set', 0);
+                loadAlerts(jQuery.parseJSON(data));
+                addNotification('Alert Status Set', 0, false);
             } else if (options.strService == 'ClearAlert') {
-                var objData = jQuery.parseJSON(data);
-                loadAlerts(objData);
-                addNotification('Alert History Cleared', 0);
+                loadAlerts(jQuery.parseJSON(data));
+                addNotification('Alert History Cleared', 0, true);
             } else if (options.strService == 'CreateDashboard') {
                 getDataSet({
                     strService: 'Dashboards'
                 });
-                saveFeedEvent("Dashboard created", 0);
+                addNotification("Dashboard created", 0);
                 if ($("#grid").html().indexOf('looks like') > 0) {
                     $("#grid").html(strNoWidgetMsg);
                 }
@@ -601,7 +589,7 @@ function getDataSet(options) {
                 getDataSet({
                     strService: 'Dashboards'
                 });
-                saveFeedEvent("Dashboard updated", 0);
+                addNotification("Dashboard updated", 0, false);
             } else if (options.strService == 'Select') {
                 showSQLResults(data);
             }
