@@ -446,55 +446,64 @@ function metricGauge(data) {
 
 function widgetTable(data) {
     //Requires data.dwid, data.SQL1
+    var intRecCount = 0;
+    var objData = jQuery.parseJSON(data.SQL1);
     var html = "<table style='text-align: left; margin: 10px; width: inherit;' class='table table-striped'>";
-    try {
-        if (data.SQL1 != '[]') {
-            var resp = JSON.parse(data.SQL1);
-            $.each(resp, function(key, val) {
-                try {
-                    if (typeof val === 'object') {
-                        $.each(val, function(key1, val1) {
-                            html += "<tr><td>" + key1 + "</td><td>" + val1 + "</td></tr>";
-                        });
-                    } else {
-                        html += "<tr><td>" + key + "</td><td>" + val + "</td></tr>";
-                    }
-                } catch (err) {
-
+    $.each(objData, function(key, val) {
+        try {
+            if (typeof val === 'object') {
+                if (intRecCount === 0){
+                    html += "<thead><tr>";
+                    $.each(val, function(key1, val1) {
+                        html += "<th>" + key1 + "</th>";
+                    });
+                    html += "</tr></thead><tbody>";
                 }
-            });
-            html += "</table>";
+                html += "<tr>";
+                $.each(val, function(key1, val1) {
+                    html += "<td>" + val1 + "</td>";
+                });
+                html += "</tr>";
+            }
+                
+            intRecCount++;
+        } catch (err) {
+    
         }
-    } catch (err) {
-        html = 'Error';
-    }
+    });
+    html += "</tbody></table>";
+
     $('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetList(data) {
     //Requires data.dwid, data.SQL1
+    var intRecCount = 0;
+    var objData = jQuery.parseJSON(data.SQL1);
     var html = "<table style='text-align: left; margin: 10px; width: inherit;' class='table table-striped'>";
-    try {
-        if (data.SQL1 != '[]') {
-            var resp = JSON.parse(data.SQL1);
-            $.each(resp, function(key, val) {
-                try {
-                    if (typeof val === 'object') {
-                        $.each(val, function(key1, val1) {
-                            html += "<tr><td>" + key1 + "</td><td>" + val1 + "</td></tr>";
-                        });
-                    } else {
-                        html += "<tr><td>" + key + "</td><td>" + val + "</td></tr>";
-                    }
-                } catch (err) {
-
+    $.each(objData, function(key, val) {
+        try {
+            if (typeof val === 'object') {
+                if (intRecCount === 0){
+                    html += "<thead><tr>";
+                    $.each(val, function(key1, val1) {
+                        html += "<th>" + key1 + "</th>";
+                    });
+                    html += "</tr></thead><tbody>";
                 }
-            });
-            html += "</table>";
+                html += "<tr>";
+                $.each(val, function(key1, val1) {
+                    html += "<td>" + val1 + "</td>";
+                });
+                html += "</tr>";
+            }
+                
+            intRecCount++;
+        } catch (err) {
+    
         }
-    } catch (err) {
-        html = 'Error';
-    }
+    });
+    html += "</tbody></table>";
     $('#t1-widget-container' + data.dwid).html(html);
 }
 
