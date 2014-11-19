@@ -331,7 +331,11 @@ function showWidgetDialog(objData, edit){
 			if (objData.param[i].type == 'OPTION'){
 				output += "<select class='form-control' id='pid_" + objData.param[i].paramid + "'>" + showParamOption('', value, objData.param[i].options) + "</select>";
 			} else {
-			    output += "<input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
+			    output += "<div class='input-group'><input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
+			    if (objData.param[i].displayname.indexOf("QL") > 0){
+			        output += " <span class='input-group-addon' id='btnShowSQLBuilder'><i class='fa fa-table'></i></span>"
+			    }
+			    output += "</div>";
 			}
 			output += "</div></div>";
 		} else {
