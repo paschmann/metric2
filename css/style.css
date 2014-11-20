@@ -156,6 +156,16 @@ a.logo {
   border-color: #f6f6f6;
 }
 
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+    /* Hide datatables borders */
+    border-bottom: 1px solid #DDD;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+    /* Hide datatables borders */
+    border-bottom: 1px solid #DDD;
+}
+
 #nav {
     background-color: #1b1e24;
     height: 100%;
