@@ -398,7 +398,6 @@ function showAlertHistoryDialog(arrData){
 					    strHTML += "<tr><th scope='row'>" + rowcount + ":00 - " + (rowcount + 2) + ":00</th>";
 					    rowcount = rowcount + 2;
 				    }
-					
 					strHTML += "<td style='text-align: center;'>" + arrData[i] + "</td>";
 
                     if (daycounter == 7){
@@ -525,7 +524,7 @@ function alertHistory(alertid) {
 
 function alertHistoryTable(displaytype) {
 
-    $('#dialogHTML1').innerHTML = strHistoryTable;
+    $('#dialogHTML1').html(strHistoryTable);
 
     if (displaytype == 1) {
         $('#table2 td').wrapInner('<span/>').graphup({
