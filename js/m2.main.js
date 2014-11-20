@@ -1,8 +1,8 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
 var userToken = 0;
 var intCurrentDashboardID = 1;
-var timers = new Array();
-var alertlist = new Array();
+var arrActiveTimers = [];
+var alertlist = [];
 var gridsterloaded = 0;
 var strNotificationTable = '';
 var strCarousel = '';
@@ -16,6 +16,7 @@ var debugmode = 'hidden';
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
 var strSQLInput = '';
+var objWidgets = {};
 
 $(document).ready(function() {
     configureLeftMenu();
@@ -126,10 +127,7 @@ function configureClickEvents() {
     });
 
     $('#btnShowAlerts, #mnuShowAlerts').click(function() {
-        dashboardActive(false);
-        getDataSet({
-            strService: 'Alerts'
-        });
+        loadAlertScreen();
     });
 
     $('#chkStreaming').click(function() {
@@ -281,6 +279,14 @@ function closeLeftMenu() {
 }
 
 
+function loadAlertScreen(){
+    $('#myAlertModal').modal('hide');
+    dashboardActive(false);
+    getDataSet({
+        strService: 'Alerts'
+    });
+}
+
 function toggleFullscreen() {
     $(document).toggleFullScreen();
 }
@@ -304,13 +310,26 @@ function closeSub() {
 }
 
 function toggleStreaming() {
-    if ($('#streaming').is(':checked')) {
+    if ($('#chkStreaming').is(':checked')) {
         //Switch streaming on
-        //loadDynamicJScript('script', '');
+        loadTimers();
     } else {
         //Switch it off
         clearTimers();
     }
+}
+
+function loadTimers(){
+    $.each(objWidgets, function(key, value) {
+        if (objWidgets[key].refresh !== 0) {
+            arrActiveTimers.push(setTimeout(function() {
+                getDataSet({
+                    strService: 'RefreshWidget',
+                    strDashboardWidgetID: objWidgets[key].dwid
+                });
+            }, objWidgets[key].refresh));
+        }
+    });
 }
 
 
@@ -412,38 +431,19 @@ function getContent(sId) {
 }
 
 function clearTimers() {
-    for (var i = 0; i < timers.length; i++) {
-        clearTimeout(timers[i]);
+    for (var i = 0; i < arrActiveTimers.length; i++) {
+        clearTimeout(arrActiveTimers[i]);
     }
 }
-
-
-function loadWidgetContent(objWidgets) {
-    var len = objWidgets.length;
-    var ob;
-    $.ajaxSetup({
-        cache: false
-    });
-    if (len > 0) {
-        for (var i = 0; i < len; ++i) {
-            ob = objWidgets[i];
-            var url = 'js/widgets/' + ob.codetype + '.js';
-        }
-    }
-}
-
-
-
-
 
 function loadClientMetrics(objData) {
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
         if (objData.widgetData[key].Alert) {
-            addNotification(this.Alert, 1);
+            addNotification(this.Alert, 1, true);
         }
         if (objData.widgetData[key].refresh !== 0) {
-            timers.push(setTimeout(function() {
+            arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
                     strService: 'RefreshWidget',
                     strDashboardWidgetID: objData.widgetData[key].dwid
@@ -451,6 +451,7 @@ function loadClientMetrics(objData) {
             }, objData.widgetData[key].refresh));
         }
     });
+    objWidgets = objData.widgetData;
 }
 
 function loadMetrics(objData) {
@@ -611,7 +612,7 @@ function getDataSet(options) {
             $("#loadspinner").css('display', 'none');
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            addNotification('Error', 3);
+            addNotification('Error', 3, true);
             console.log(textStatus);
             $("#loadspinner").css('display', 'none');
         }
