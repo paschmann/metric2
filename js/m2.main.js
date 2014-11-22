@@ -113,7 +113,7 @@ function configureClickEvents() {
             strService: 'EditSettingsDialog'
         });
     });
-
+    
     $('#btnShowHelp').click(function() {
         tour.restart();
     });
@@ -381,6 +381,7 @@ function loadDashboards(objDashboards) {
 
     $("#dashboards").html('');
     $("ul:eq( 1 )").empty();
+    //$("ul:eq( 1 )").append("<li class='mm-subtitle'><a href='#mm-0' class='mm-subclose' onclick='closeSubmenu();'> My Dashboards</a></li>");
     $("ul:eq( 1 )").append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
 
     if (len > 0) {
