@@ -386,7 +386,7 @@ function showAlertHistoryDialog(arrData){
 	strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
 	strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
 	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
-	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='showSQLBuilder(&quot;" + strSQL + "&quot;, &quot;Single Value&quot;);' />";
+	strHTML += "<img src='img/hist-icon-data.png' class='alert-menu-img' onClick='showSQLBuilder(&quot;" + strSQL + "&quot;, &quot;Single Value&quot;);' />";
 	strHTML += "</td></tr></table>";
 	strHTML += "<div id='alerttable' style='margin-left: 0px;'>";
 		strHTML += "<table class='table table-striped' id='table2'>";
