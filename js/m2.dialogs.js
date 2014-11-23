@@ -381,10 +381,12 @@ function showParamOption(optiongroup, value, objData){
 
 function showAlertHistoryDialog(arrData){
     var alertid = arrData[0];
+    var strSQL = "SELECT * FROM METRIC2.M2_ALERT_HISTORY WHERE ALERT_ID = " + alertid + " ORDER BY ADDED DESC LIMIT 100";
     var strHTML = "<table class='w-histchart-table'><tr><td style='text-align: right;'>";
 	strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
 	strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
 	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
+	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='showSQLBuilder(&quot;" + strSQL + "&quot;, &quot;Single Value&quot;);' />";
 	strHTML += "</td></tr></table>";
 	strHTML += "<div id='alerttable' style='margin-left: 0px;'>";
 		strHTML += "<table class='table table-striped' id='table2'>";
@@ -662,7 +664,7 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Edit Alert') {
             getDataSet({
                 strService: "Update",
-                strSQL: "Update metric2.m2_alert SET cond = '" + $('$condition').value + "', operator = '" + $('$operator').value + "', value = '" + $('$value').value + "', notify = '" + $('$notify').value + "' WHERE alert_id = " + ('$alertid').value,
+                strSQL: "Update metric2.m2_alert SET cond = '" + document.getElementById('condition').value + "', operator = '" + document.getElementById('operator').value + "', value = '" + document.getElementById('value').value + "', notify = '" + document.getElementById('notify').value + "' WHERE alert_id = " + document.getElementById('alertid').value,
                 strReload: "alerts"
             })
         } else if (strFunction == 'Edit Profile') {
