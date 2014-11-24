@@ -625,35 +625,8 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
     margin: -14px 0 0 -14px;
     display: none;
 }
- 
-/* Spinning circle (inner circle) */
-.loading .maskedCircle {
-    width: 20px;
-    height: 20px;
-    border-radius: 12px;
-    border: 3px solid white;
-}
- 
-/* Spinning circle mask */
-.loading .mask {
-    width: 12px;
-    height: 12px;
-    overflow: hidden;
-}
- 
-/* Spinner */
-.loading .spinner {
-    position: absolute;
-    left: 1px;
-    top: 1px;
-    width: 26px;
-    height: 26px;
-    animation: spin 1s infinite linear;
-}
-
 
 /* Carousel */
-
 #widgetcarousel {
     margin-left: 35px;
     margin-right: 35px;
