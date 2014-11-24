@@ -290,11 +290,11 @@ function widgetJSONService(data) {
                 }
             });
             html = "<div class='t1-widget-text-small' style='margin-top: 35%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+            $('#t1-widget-container' + data.dwid).html(html);
         });
     } catch (err) {
-        html = 'Error';
+        $('#t1-widget-container' + data.dwid).html(err);
     }
-    $('#t1-widget-container' + data.dwid).html(html);
 }
 
 
@@ -1072,8 +1072,22 @@ function widgetSensorAPI(data) {
     try {
         var html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
         html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";
-        $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
-        $('#t1-widget-container' + data.dwid).html(err);
+        html = err;
     }
+    $('#t1-widget-container' + data.dwid).html(html);
+}
+
+
+function metricHANAOverview(data) {
+    //Requires data.dwid
+    try {
+        var html = "<div class='t1-widget-text-big'>" + data.VALUE + "</div>";
+        html += "<div class='t1-widget-footer'>";
+        html += "<div class='t1-widget-percent-medium-grey'>" + data.TEST + "</div>";
+        html += "</div>";
+    } catch (err) {
+        html = err;
+    }
+    $('#t1-widget-container' + data.dwid).html(html);
 }
