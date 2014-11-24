@@ -335,6 +335,9 @@ function showWidgetDialog(objData, edit){
 			    if (objData.param[i].displayname.indexOf("QL") > 0){
 			        output += " <span class='input-group-addon' id='btnShowSQLBuilder'><i class='fa fa-table'></i></span>"
 			    }
+			    if (objData.param[i].displayname.indexOf("RL") > 0){
+			        output += " <span class='input-group-addon' id='btnShowWSBuilder'><i class='fa fa-file-code-o'></i></span>"
+			    }
 			    output += "</div>";
 			}
 			output += "</div></div>";
@@ -386,7 +389,7 @@ function showAlertHistoryDialog(arrData){
 	strHTML += "<img src='img/hist-icon-table.png' class='alert-menu-img' onClick='alertHistoryTable(1);' />";
 	strHTML += "<img src='img/hist-icon-bubble.png' class='alert-menu-img' onClick='alertHistoryTable(2);' />";
 	strHTML += "<img src='img/hist-icon-expand.png' class='alert-menu-img' onClick='alertHistoryTable(3);' />";
-	strHTML += "<img src='img/hist-icon-data.png' class='alert-menu-img' onClick='showSQLBuilder(&quot;" + strSQL + "&quot;, &quot;Single Value&quot;);' />";
+	strHTML += "<img src='img/hist-icon-data.png' class='alert-menu-img' onClick='showSQLBuilder(&quot;" + strSQL + "&quot;, &quot;Single Value&quot;, &quot;&quot;, &quot;&quot;);' />";
 	strHTML += "</td></tr></table>";
 	strHTML += "<div id='alerttable' style='margin-left: 0px;'>";
 		strHTML += "<table class='table table-striped' id='table2'>";
