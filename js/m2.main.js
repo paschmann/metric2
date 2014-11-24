@@ -379,7 +379,7 @@ function loadUserData(arrData) {
 function loadDashboards(objDashboards) {
     var len = objDashboards.length;
 
-    $("#dashboards").html('');
+    $("#dashboards").empty();
     $("ul:eq( 1 )").empty();
     //$("ul:eq( 1 )").append("<li class='mm-subtitle'><a href='#mm-0' class='mm-subclose' onclick='closeSubmenu();'> My Dashboards</a></li>");
     $("ul:eq( 1 )").append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
@@ -387,6 +387,7 @@ function loadDashboards(objDashboards) {
     if (len > 0) {
         for (var i = 0; i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
+            //Load top menu bar with dashboards
             $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
@@ -394,7 +395,7 @@ function loadDashboards(objDashboards) {
                 intDashboardID = $(this).data('id');
                 return false;
             });
-
+            //Load left menu with dashboards
             $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
@@ -405,6 +406,9 @@ function loadDashboards(objDashboards) {
             });
         }
     }
+    
+    //Append spinner
+    $("#dashboards").append("<div class='loading pull-right'><a href='#'><i class='fa fa-spinner fa-spin'></i></a></div>");
 
     $('#mnuAddDashboard').click(function() {
         getDataSet({
@@ -486,7 +490,7 @@ function loadMetrics(objData) {
 // -------------------------   Server side processesing ----------------------- //
 
 function getDataSet(options) {
-    $("#loadspinner").css('display', 'block');
+    $(".loading").css('display', 'block');
     var html = '';
     var jURL = 'lib/api.xsjs';
 
@@ -610,12 +614,12 @@ function getDataSet(options) {
                 });
             }
 
-            $("#loadspinner").css('display', 'none');
+            $(".loading").css('display', 'none');
         },
         error: function(jqXHR, textStatus, errorThrown) {
             addNotification('Error', 3, true);
             console.log(textStatus);
-            $("#loadspinner").css('display', 'none');
+            $(".loading").css('display', 'none');
         }
     });
 }
