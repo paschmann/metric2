@@ -79,13 +79,30 @@ function configureClickEvents() {
             strService: "Select",
             strSQL: document.getElementById('txtSQL').value
         })
-    })
+    });
+    
+    $(document).on('click','#btnExecuteOData',function(){
+        executeODataRequest();
+    });
+    
+    $(document).on('click','#btnExecuteWS',function(){
+        executeWSRequest();
+    });
     
     $(document).on('click','#btnShowSQLBuilder',function(){
         var sql = $(this).offsetParent()[0].firstChild.value;
-        strSQLInput = $(this).offsetParent()[0].firstChild;
-        showSQLBuilder(sql, 'Single Value');
-    })
+        showSQLBuilder(sql, 'Single Value','','');
+    });
+    
+    $(document).on('click','#btnShowODataBuilder',function(){
+        var odata = $(this).offsetParent()[0].firstChild.value;
+        showSQLBuilder('', 'Single Value', odata, '');
+    });
+    
+    $(document).on('click','#btnShowWSBuilder',function(){
+        var ws = $(this).offsetParent()[0].firstChild.value;
+        showSQLBuilder('', 'Single Value', '', ws);
+    });
     
     $('#btnModalSQLSave').click(function(e) {
         $("#" + strSQLInput.id).val($('#txtSQL').val());
@@ -408,7 +425,7 @@ function loadDashboards(objDashboards) {
     }
     
     //Append spinner
-    $("#dashboards").append("<div class='loading pull-right'><a href='#'><i class='fa fa-spinner fa-spin'></i></a></div>");
+    $("#dashboards").append("<div class='loading pull-right'><a href='#' id='loading-text'><i class='fa fa-spinner fa-spin'></i></a></div>");
 
     $('#mnuAddDashboard').click(function() {
         getDataSet({
@@ -442,6 +459,7 @@ function clearTimers() {
 }
 
 function loadClientMetrics(objData) {
+    showLoadingSpinner(true, 'Loading metrics');
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
         if (objData.widgetData[key].Alert) {
@@ -457,11 +475,12 @@ function loadClientMetrics(objData) {
         }
     });
     objWidgets = objData.widgetData;
+    showLoadingSpinner(false, '');
 }
 
 function loadMetrics(objData) {
     var strContent = "<div class='gridster' id='gridster'><ul id='gridtiles'>";
-
+    showLoadingSpinner(true, 'Loading metrics');
     $.each(objData.widgetData, function(key, value) {
         var intDashboardWidgetID = objData.widgetData[key].dwid;
         var title = objData.widgetData[key].title;
@@ -483,18 +502,30 @@ function loadMetrics(objData) {
     });
     strContent += "</ul></div>";
     $("#grid").html(strContent);
+    showLoadingSpinner(false, '');
 }
 
+function showLoadingSpinner(visible, strText){
+    if (visible){
+        $(".loading").css('display', 'block');
+        if (debugmode !== 'hidden'){
+            $("#loading-text").html("<i class='fa fa-spinner fa-spin'></i>  " + strText);
+        }
+    } else {
+        $("#loading-text").html("<i class='fa fa-spinner fa-spin'></i>");
+        $(".loading").css('display', 'none');
+    }
+}
 
 
 // -------------------------   Server side processesing ----------------------- //
 
 function getDataSet(options) {
-    $(".loading").css('display', 'block');
+    showLoadingSpinner(true, 'Loading ' + options.strService);
     var html = '';
     var jURL = 'lib/api.xsjs';
 
-    jQuery.ajax({
+    $.ajax({
         url: jURL,
         type: 'GET',
         data: {
@@ -614,12 +645,12 @@ function getDataSet(options) {
                 });
             }
 
-            $(".loading").css('display', 'none');
+            showLoadingSpinner(false, '');
         },
         error: function(jqXHR, textStatus, errorThrown) {
             addNotification('Error', 3, true);
             console.log(textStatus);
-            $(".loading").css('display', 'none');
+            showLoadingSpinner(false, '');
         }
     });
 }
