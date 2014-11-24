@@ -23,7 +23,6 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
         output += "<div class='tab-content'>";
             output += "<div role='tabpanel' class='tab-pane " + sqlqueryactive + "' id='SQL'>";
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='SQL'>";
-                    output += "<input type='" + debugmode + "' value='" + "" + "' id='dashboardwidgetid' />";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>SQL Statement: </label>";
                         output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtSQL'>" + sqlquery + "</textarea></div>"
@@ -35,7 +34,6 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
             output += "</div>";
             output += "<div role='tabpanel' class='tab-pane " + odataqueryactive + "' id='OData'>";
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='OData'>";
-                    output += "<input type='" + debugmode + "' value='" + "" + "' id='dashboardwidgetid' />";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>OData Query: </label>";
                         output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtOData'>" + odataquery + "</textarea></div>"
@@ -47,7 +45,6 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
             output += "</div>";
             output += "<div role='tabpanel' class='tab-pane " + wsqueryactive + "' id='WS'>";
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='WS'>";
-                    output += "<input type='" + debugmode + "' value='" + "" + "' id='dashboardwidgetid' />";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Web Service Query: </label>";
                         output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtWS'>" + wsquery + "</textarea></div>"
