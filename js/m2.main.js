@@ -15,7 +15,8 @@ var tour;
 var debugmode = 'hidden';
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
-var strSQLInput = '';
+var strInputControl = '';
+
 var objWidgets = {};
 
 $(document).ready(function() {
@@ -91,21 +92,31 @@ function configureClickEvents() {
     
     $(document).on('click','#btnShowSQLBuilder',function(){
         var sql = $(this).offsetParent()[0].firstChild.value;
+        strInputControl = $(this).offsetParent()[0].firstChild;
         showSQLBuilder(sql, 'Single Value','','');
     });
     
     $(document).on('click','#btnShowODataBuilder',function(){
         var odata = $(this).offsetParent()[0].firstChild.value;
+        strInputControl = $(this).offsetParent()[0].firstChild;
         showSQLBuilder('', 'Single Value', odata, '');
     });
     
     $(document).on('click','#btnShowWSBuilder',function(){
         var ws = $(this).offsetParent()[0].firstChild.value;
+        strInputControl = $(this).offsetParent()[0].firstChild;
         showSQLBuilder('', 'Single Value', '', ws);
     });
     
     $('#btnModalSQLSave').click(function(e) {
-        $("#" + strSQLInput.id).val($('#txtSQL').val());
+        var $tab = $('#tabs'), $active = $tab.find('.active > a');
+        if ($active.text() === 'SQL'){
+            $("#" + strInputControl.id).val($('#txtSQL').val());
+        } else if ($active.text() === 'OData'){
+            $("#" + strInputControl.id).val($('#txtOData').val());
+        } else if ($active.text() === 'Web Service'){
+            $("#" + strInputControl.id).val($('#txtWS').val());
+        }
     });
 
     $('#btnAddDashboard, #mnuAddDashboard').click(function() {
