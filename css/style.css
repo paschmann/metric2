@@ -609,20 +609,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 }
 
 /* Loading animation */
-/* Animation keyframes - you need to add prefixes */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
- 
-/* Loading animation container */
 .loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 28px;
-    height: 28px;
-    margin: -14px 0 0 -14px;
     display: none;
 }
 
