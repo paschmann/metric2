@@ -318,7 +318,7 @@ function showWidgetDialog(objData, edit){
         output += objData.defaultwidgetheight ? ' disabled ' : '';
         output += ">" + showWidgetSizeDropdown(objData.widgetheight) + "</select></div></div>";
 	
-	output += "<div class='form-group'><label for='refreshrate' class='col-sm-3 control-label'>Refresh Rate:</label><div class='col-sm-9'><div class='input-group'><input class='form-control' type='text' placeholder='0' id='refreshrate' value = '" + objData.widgetrefresh + "'  style='width: 90px;'>&nbsp;Secs</div></div></div>";
+	output += "<div class='form-group'><label for='refreshrate' class='col-sm-3 control-label'>Refresh Rate:</label><div class='col-sm-4'><div class='input-group'><input class='form-control' type='text' placeholder='0' id='refreshrate' value = '" + objData.widgetrefresh + "'><div class='input-group-addon'>Seconds</div></div></div></div>";
 	
 	for (var i = 0; i <= objData.param.length - 1; i++){
 	    var required = '';
