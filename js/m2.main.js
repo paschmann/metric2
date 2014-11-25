@@ -453,7 +453,10 @@ function loadDashboards(objDashboards) {
 
 function getContent(sId) {
     intCurrentDashboardID = sId;
-
+    
+    $("li.active").removeClass("active"); 
+    $("li[data-id='" + sId +"']").addClass('active');
+    
     if (typeof sId != 'undefined') {
         getDataSet({
             strService: 'Widgets',
