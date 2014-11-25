@@ -186,17 +186,21 @@ function configureClickEvents() {
         $('nav#menu').trigger('open.mm');
     });
 
-    $('#btnSideBar').click(function(e) {
-        if ($('#logoarea').css("display") == "block") {
-            $('#logoarea').css("display", "none");
-            $('#main').css("margin-left", "0");
-            /*$('#header .tools-bar').css("margin-left","0");*/
-        } else {
-            $('#logoarea').css("display", "block");
-            $('#main').css("margin-left", "270px");
-            /*$('#header .tools-bar').css("margin-left","250px");*/
-        }
+    $('#btnSideBar, #btnShowSideBar').click(function(e) {
+        toggleSideBar();
     });
+}
+
+function toggleSideBar(){
+    if ($('#logoarea').css("display") == "block") {
+        $('#logoarea').css("display", "none");
+        $('#main').css("margin-left", "0");
+        /*$('#header .tools-bar').css("margin-left","0");*/
+    } else {
+        $('#logoarea').css("display", "block");
+        $('#main').css("margin-left", "270px");
+        /*$('#header .tools-bar').css("margin-left","250px");*/
+    }
 }
 
 function configureGristerClickEvents() {
