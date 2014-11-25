@@ -1,4 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
+var m2version = 'Version 2.3.1';
 var userToken = 0;
 var intCurrentDashboardID = 1;
 var arrActiveTimers = [];
