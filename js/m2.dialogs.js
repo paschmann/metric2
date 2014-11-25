@@ -291,8 +291,8 @@ function widgetForecastChart(strData, dashboardwidgetid) {
 function showSettingsDialog(objData) {
     var output = "<form class='form-horizontal'>";
     output += "<input type='" + debugmode + "' value = '" + objData[0].USER_ID + "' id='userid' />";
-    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='controls'><input type='text' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version:</label><div class='controls'><p class='form-control-static'>" + m2version + "</p></div></div>";
+    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version:</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
     
     dialogConstructor("Edit Settings", false, true, output, 1, true, false);
 }
