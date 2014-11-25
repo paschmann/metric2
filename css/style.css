@@ -583,15 +583,43 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 
 
 /* Bootstrap Overrides */
+
 .breadcrumb {
     margin-bottom: 0px;
     border-radius: 0px;
 }
 
+/* Breadcrumb simple
 
 .breadcrumb > li + li:before {
     content: " | ";
+} */
+
+
+/* Breadcrumb Tabs */
+
+.breadcrumb > li.active {
+    background-color: #E5E9EC;
 }
+
+.breadcrumb > li + li:before {
+    content: none;
+}
+
+.breadcrumb > li {
+    cursor: pointer;
+    background-color: #fff;
+    border-right: 1px solid #E5E9EC;
+    padding: 10px;
+    width: 180px;
+}
+
+.breadcrumb {
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+
 
 /* Alert History Dialog */
 .alert-menu-img {
@@ -611,6 +639,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 /* Loading animation */
 .loading {
     display: none;
+    padding: 8px;
 }
 
 /* Carousel */
