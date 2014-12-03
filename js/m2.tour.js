@@ -7,7 +7,7 @@ function configureTour(){
                 strHTML += "<div class='popover-navigation'>";
                     strHTML += "<div class='btn-group'>";
                     strHTML += "<button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>";
-                    strHTML += "<button class='btn btn-sm btn-default' data-role='next'>Next »</button>";
+                    strHTML += "<button class='btn btn-sm btn-primary' data-role='next'>Next »</button>";
                 strHTML += "</div>";
             strHTML += "<button class='btn btn-sm btn-default' data-role='end'>Close</button>";
             strHTML += "</nav>";
