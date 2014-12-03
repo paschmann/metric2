@@ -627,16 +627,19 @@ function widgetHistChart(data) {
 
         html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
         html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
+        
+        $('#t1-widget-container' + data.dwid).html(html);
+
+        $('.peity' + data.dwid).peity(strChartType, {
+            width: parseInt(data.width) * 200,
+            height: '75%',
+            fill: ["#C6D9FD"]
+        });
     } catch (err) {
-        html = 'Error';
+        $('#t1-widget-container' + data.dwid).html('Error');
     }
 
-    $('#t1-widget-container' + data.dwid).html(html);
-
-    $('.peity' + data.dwid).peity(strChartType, {
-        width: parseInt(data.width) * 200,
-        height: '75%'
-    });
+    
 }
 
 
@@ -676,7 +679,7 @@ function widgetHistorySmall(data) {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
         strokeColor: strSparkColor,
-        fill: '#FFFFFF'
+        fill: ["#FFFFFF"]
     });
 }
 
@@ -1240,8 +1243,8 @@ function metricHANAOverview(data) {
         $('.disk' + data.dwid).peity('line', {
                 width: parseInt(data.width) * 175,
                 height: parseInt(data.height) * 40,
-                fill: '#1B6FA7',
-                stroke: '#EEF2F6',
+                fill: ['#1B6FA7'],
+                stroke: ['#EEF2F6'],
                 strokeWidth: 2
         });
         
@@ -1288,6 +1291,14 @@ function metricHANAOverview(data) {
             strokeWidth: 1
     });
     */
+}
 
-    
+function metricLabel(data) {
+    //Requires data.dwid, data.TEXT
+    try {
+        var html = "<p class='metric-label' style='color: " + data.FONTCOLOR + "; font-size: " + data.FONTSIZE + "; text-align: " + data.FONTALIGN + ";'>" + data.TEXT1 + "</p>";
+    } catch (err) {
+        strContent = 'Error';
+    }
+    $('#t1-widget-container' + data.dwid).html(html);
 }
