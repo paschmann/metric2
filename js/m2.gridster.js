@@ -2,7 +2,7 @@ function loadGridster(){
     var gridster = $(".gridster ul").gridster({
         widget_margins: [10, 10],
         widget_selector: '[id^=tile_]',
-        widget_base_dimensions: [230, 230],
+        widget_base_dimensions: [230, 105],
         min_cols: 10,
         min_rows: 15,
         max_size_x: 7,
