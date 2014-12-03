@@ -17,6 +17,7 @@
         <link rel="stylesheet" href="css/bootstrap-tour.css">
         <link rel="stylesheet" href="css/metrics.css">
         <link rel="stylesheet" href="css/vendor/jquery.dataTables.css">
+        <link rel="stylesheet" href="css/vendor/rickshaw.min.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/media.css"> <!-- Important its last! -->
         
@@ -52,6 +53,7 @@
         <script src="js/vendor/jquery.peity.js"></script>
         <script src="js/vendor/d3.min.js"></script>
         <script src="js/vendor/nv.d3.min.js"></script>
+        <script src="js/vendor/rickshaw.min.js"></script>
         <script src="js/vendor/FeedEk.js"></script>
         <script src="js/vendor/justgage.1.0.1.min.js"></script>
         <script src="js/vendor/us-map-svg.js"></script>
@@ -74,16 +76,17 @@
             		<a href="index.html" class="logo"></a>
     	        </div>
                 <div class="tools-bar">
-    		        <ul class="nav navbar-nav nav-main-xs">
-                       <!--  <li><a href="#menu" class="icon-toolsbar"><i class="fa fa-bars"></i></a></li> -->
+    		        <ul class="nav navbar-nav nav-main-xs" id="dashboards">
                         <li><a href="#sidebar" id="btnSideBar" class="icon-toolsbar"><i class="fa fa-bars"></i></a></li>
-                        <li><span id="dashboardname"></span></li>
+                        <li><a href="#adddashboard" id="btnAddDashboardTab" class="icon-toolsbar"><i class="fa fa-plus"></a></i></li>
                     </ul>
+                    
 
                     <ul class="nav navbar-nav navbar-right tooltip-area">
-            			<li><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-tachometer"></i></a></li>
+                        <li class="loading"><a href="#"><i class='fa fa-spinner fa-spin'></i></a></li>
+                        <li><a href="#" id="btnAddWidget" title="Add a new Metric"><i class="fa fa-tachometer"></i></a></li>
             			<li><a href="#" id="btnAddAlert" title="Add a new Alert"><i class="fa fa-plus-square"></i></a></li>
-            			<li><a href="#" id="btnAddDashboard" class="h-seperate" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
+            			<li><a href="#" id="btnAddDashboardTab" class="h-seperate" title="Add a new Dashboard"><i class="fa fa-plus"></i></a></li>
             			<li><a href="#" id="btnEditDashboard" title="Edit this Dashboard"><i class="fa fa-edit"></i></a></li>
             			<li><a href="#" id="btnShowAlerts" class="h-seperate" title="Display System and User Alerts"><i class="icon fa fa-flag"></i></a></li>
                         <li><a href="#" id="btnShowHelp" class="h-seperate" title="Help Tutorial"><i class="icon fa fa-life-ring"></i></a></li>
@@ -164,17 +167,14 @@
     	    </div> <!-- //nav-->
             
             
-            <div id="main">            
-    	        <ol id="dashboards" class="breadcrumb hidden-xs hidden-sm"></ol>
-            
+            <div id="main">
                 <div id="content">
                     <div id="grid" class="row"></div>
     	        </div> <!-- //content-->
             </div> <!-- /main -->
             
             <nav id="menu">
-                <ul>
-                    <li><span><i class="icon fa fa-th"></i> My Dashboards</span>
+                <ul><li><span><i class="icon fa fa-th"></i> My Dashboards</span>
                         <ul><li><a href="#" id="mnuAddDashboard"><i class="icon fa fa-plus"></i> Add a Dashboard </a></li></ul>
                     </li>
                     <li><span><i class="icon fa fa-bar-chart-o"></i> Metrics</span>
