@@ -41,24 +41,29 @@ function widgetJSONServiceTable(data) {
                     }
                 });
                 html += "</table>";
-                $('#t1-widget-container' + data.dwid).html(html);
+                
             }
         });
     } catch (err) {
-        $('#t1-widget-container' + data.dwid).html('Error');
+        html = 'Error';
     }
+    $('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetDateTime(data) {
     //Requires data.dwid
-    showClock(data.dwid);
-    timer = $.timer(function() {
+    try {
         showClock(data.dwid);
-    });
-    timer.set({
-        time: 1000,
-        autostart: true
-    });
+        var timer = $.timer(function() {
+            showClock(data.dwid);
+        });
+        timer.set({
+            time: 1000,
+            autostart: true
+        });
+    } catch (err) {
+        
+    }
 }
 
 function metricClock(data) {
@@ -293,13 +298,14 @@ function widgetJSONService(data) {
             $('#t1-widget-container' + data.dwid).html(html);
         });
     } catch (err) {
-        $('#t1-widget-container' + data.dwid).html(err);
+        $('#t1-widget-container' + data.dwid).html("Error");
     }
 }
 
 
 function widgetWeather(data) {
     //Requires data.dwid, data.ZIPCODE
+    var html;
     $.simpleWeather({
         zipcode: data.ZIPCODE,
         woeid: data.ZIPCODE,
@@ -311,13 +317,13 @@ function widgetWeather(data) {
             html += '<div class="t1-widget-datetime">';
             html += '<br /><img src="' + weather.thumbnail + '" /></div>';
             html += '</div>';
-
             $('#t1-widget-container' + data.dwid).html(html);
         },
         error: function(error) {
-            $('#t1-widget-container' + data.dwid).html('<p>' + error + '</p>');
+            $('#t1-widget-container' + data.dwid).html("Error");
         }
     });
+    
 }
 
 
@@ -347,13 +353,15 @@ function showClock(data) {
 
 function widgetTwitter(data) {
     //Requires data.dwid, data.HANDLE, data.NUMTWEETS
+    var html;
     try {
-        var html = "<a style='margin: 5px;' class='twitter-timeline' href='https://twitter.com/" + data.HANDLE + "' width='450' height='420'  data-tweet-limit='" + data.NUMTWEETS + "' data-chrome='nofooter noheader transparent' data-widget-id='" + data.WIDID + "'>Tweets by " + data.HANDLE + "</a>";
+        html = "<a style='margin: 5px;' class='twitter-timeline' href='https://twitter.com/" + data.HANDLE + "' width='450' height='420'  data-tweet-limit='" + data.NUMTWEETS + "' data-chrome='nofooter noheader transparent' data-widget-id='" + data.WIDID + "'>Tweets by " + data.HANDLE + "</a>";
     } catch (err) {
         html = 'Error';
     }
 
     $('#t1-widget-container' + data.dwid).html(html);
+    
     ! function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0],
             p = /^http:/.test(d.location) ? 'http' : 'https';
@@ -364,7 +372,7 @@ function widgetTwitter(data) {
             fjs.parentNode.insertBefore(js, fjs);
         }
     }(document, "script", "twitter-wjs");
-    twttr.widgets.load()
+    twttr.widgets.load();
 }
 
 
@@ -377,8 +385,12 @@ function widgetPing(data) {
     //		type: 'POST',
     //		success: function(data) {
     //			ping = new Date - ping;
-    var html = '<div class="t1-widget-text-medium" style="margin-top: 60px;">' + Math.floor(Math.random() * (300 - 50) + 50) + '<sup>ms</sup></div>';
-    $('#t1-widget-container' + data.dwid).html(html);
+    try {
+        var html = '<div class="t1-widget-text-medium" style="margin-top: 60px;">' + Math.floor(Math.random() * (300 - 50) + 50) + '<sup>ms</sup></div>';
+        $('#t1-widget-container' + data.dwid).html(html);
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html(err);
+    }
     //		}
     //	});
 }
@@ -509,8 +521,9 @@ function widgetList(data) {
 
 function widgetNumberAndText(data) {
     //Requires data.dwid, data.SQL1 (VALUE)
+    var html;
     try {
-        var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE');
+        html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE');
         html += "<p class='t1-widget-text-small'>" + data.TEXT1 + "</p></div>";
     } catch (err) {
         html = 'Error';
@@ -521,8 +534,9 @@ function widgetNumberAndText(data) {
 function widgetIcon(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.TEXT1, data.ICONURL
     //var html = "<img class='w-icon-img' src='" + data.ICONURL + "' >";
+    var html;
     try {
-        var html = "<i class='fa fa-" + data.ICONURL + "  fa-5x' style='margin: 15px;'></i>"
+        html = "<i class='fa fa-" + data.ICONURL + "  fa-5x' style='margin: 15px;'></i>";
         html += "<p class='w-icon-datapoint'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</p>";
         html += "<p class='w-icon-text1'>" + data.TEXT1 + "</p>";
     } catch (err) {
@@ -533,8 +547,9 @@ function widgetIcon(data) {
 
 function widgetAllServicesStarted(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (STATUS)
+    var html;
     try {
-        var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div><br />";
+        html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div><br />";
         html += "<div class='t1-widget-footer'>";
         html += "<div class='t1-widget-percent-medium-grey'>" + getScalarVal(data, 'SQL2', 'STATUS') + "</div>";
         html += "</div>";
@@ -546,8 +561,9 @@ function widgetAllServicesStarted(data) {
 
 function widgetImageBox(data) {
     //Requires data.dwid, data.URL
+    var html;
     try {
-        var html = "<img class='' style='width: 100%; height: 100%; padding: 5px;' src='" + data.URL + "' >";
+        html = "<img class='' style='width: 100%; height: 100%; padding: 5px;' src='" + data.URL + "' >";
     } catch (err) {
         html = 'Error';
     }
@@ -558,6 +574,7 @@ function widgetImageBox(data) {
 
 function widgetNumberChange(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.UOM1, data.DECPLACE
+    var html;
     try {
         var fltPrevValue = parseInt($('#t1-widget-container' + data.dwid + ' .t1-widget-text-big').html());
         if (isNaN(fltPrevValue)) {
@@ -566,19 +583,19 @@ function widgetNumberChange(data) {
         var strUOM = data.UOM1;
         var intDecPlace = parseInt(data.DECPLACE);
 
-        var html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div>";
+        html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div>";
         var fltCurValuedata = parseFloat(getScalarVal(data, 'SQL1', 'VALUE'));
-        var strFooter = "";
-
         var fltChangeValue = (fltCurValuedata - fltPrevValue);
         fltChangeValue = fltChangeValue.toFixed(intDecPlace);
+        var strFooter = "";
+        
         html += "<div class='t1-widget-footer' style='margin-top: 30px;'>";
         if (fltChangeValue > 0) {
             strFooter = "<div class='t1-widget-percent-medium-green'>&#9650 " + fltChangeValue + " " + strUOM + "</div>";
-        } else if (data.SQL1 == fltPrevValue) {
+        } else if (fltCurValuedata == fltPrevValue) {
             strFooter = "<div class='t1-widget-percent-medium-grey'>&#9668 " + strUOM + "</div>";
         } else {
-            strFooter = "<div class='t1-widget-percent-medium-red'>&#9660" + fltChangeValue + " " + strUOM + "</div>";
+            strFooter = "<div class='t1-widget-percent-medium-red'>&#9660 " + fltChangeValue + " " + strUOM + "</div>";
         }
     } catch (err) {
         strFooter = err;
@@ -591,6 +608,7 @@ function widgetNumberChange(data) {
 
 function widgetHistChart(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.SQL1_Hist (VALUE), data.CHARTTYPE, data.UOM1, data.RECLIMIT
+    var html;
     try {
         var strHistData = new Array([]);
         var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //last value?
@@ -607,7 +625,7 @@ function widgetHistChart(data) {
         }
         strData = strData.substring(0, strData.length - 1);
 
-        var html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
+        html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
         html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
     } catch (err) {
         html = 'Error';
@@ -617,18 +635,16 @@ function widgetHistChart(data) {
 
     $('.peity' + data.dwid).peity(strChartType, {
         width: parseInt(data.width) * 200,
-        height: parseInt(data.height) * 130
+        height: '75%'
     });
-
-
-
 }
 
 
 function widgetHistorySmall(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.SQL1_Hist (VALUE), data.CHARTTYPE, data.UOM1, data.RECLIMIT,  data.ICONURL, data.LINECOL
+    var html;
     try {
-        var strHistData = new Array([]);
+        var strHistData = [];
         var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //just the last point?
         var reclimit = data.RECLIMIT;
         var uom = data.UOM1;
@@ -644,7 +660,7 @@ function widgetHistorySmall(data) {
         }
         strData = strData.substring(0, strData.length - 1);
 
-        var html = "<div class='t1-widget-text-big' style='top: 55px;'><table style='width: 100%;'><tr>";
+        html = "<div class='t1-widget-text-big' style='top: 55px;'><table style='width: 100%;'><tr>";
         if (imgURL) {
             html += "<td><i class='fa fa-" + imgURL + "' style='margin: 15px; color: #ccc;'></i></td>";
         }
@@ -659,21 +675,19 @@ function widgetHistorySmall(data) {
     $('.peity' + data.dwid).peity('line', {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
-        strokeColour: strSparkColor,
-        colour: '#FFFFFF'
+        strokeColor: strSparkColor,
+        fill: '#FFFFFF'
     });
-
-
-
 }
 
 
 function widgetProgressBar(data) {
+    var html;
     //Requires data.dwid, data.SQL1 (VALUE, LABEL), data.ICONURL
     try {
         var datapoints = JSON.parse(data.SQL1);
         var imgURL = data.ICONURL;
-        var html = "<table style='width: 100%;'><tr><td>";
+        html = "<table style='width: 100%;'><tr><td>";
 
         if (imgURL !== '') {
             html += "<i class='fa fa-" + imgURL + "  fa-5x' style='margin: 15px; color: #ccc;'></i>";
@@ -687,7 +701,7 @@ function widgetProgressBar(data) {
         html += "<tr><td class='widget-progressbar-td' style='background-color: #DDD; width:" + datapoints[0].VALUE + "%;'>&nbsp;</td><td></td></tr>";
         html += "</table></div>";
     } catch (err) {
-        html = 'Error';
+        html = err;
     }
     $('#t1-widget-container' + data.dwid).html(html);
 
@@ -697,16 +711,20 @@ function widgetProgressBar(data) {
 
 function widgetRSSFeed(data) {
     //Requires data.dwid, data.FEEDCOUNT, data.URL
-    var html = "<div id='rss'></div>";
-    $('#t1-widget-container' + data.dwid).html(html);
-    $('#rss').FeedEk({
-        FeedUrl: data.URL,
-        MaxCount: data.FEEDCOUNT,
-        ShowDesc: true,
-        ShowPubDate: true,
-        DescCharacterLimit: 100,
-        TitleLinkTarget: '_blank'
-    });
+    try {
+        var html = "<div id='rss'></div>";
+        $('#t1-widget-container' + data.dwid).html(html);
+        $('#rss').FeedEk({
+            FeedUrl: data.URL,
+            MaxCount: data.FEEDCOUNT,
+            ShowDesc: true,
+            ShowPubDate: true,
+            DescCharacterLimit: 100,
+            TitleLinkTarget: '_blank'
+        });
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html(err);
+    }
 }
 
 
@@ -715,8 +733,9 @@ function widgetRSSFeed(data) {
 
 function widgetRecentUnConnections(data) {
     //Requires data.dwid, data.SQL1 (VALUE)
+    var html;
     try {
-        var html = "<div class='iconframe'><img src='img/icon-lock.png' class='w-unsuccesfulconns-img'>";
+        html = "<div class='iconframe'><img src='img/icon-lock.png' class='w-unsuccesfulconns-img'>";
         html += "<p class='w-unsuccesfulconns-datapoint'>" + getScalarVal(data, 'SQL1', 'VALUE') + " Attempts</p></div>";
     } catch (err) {
         html = 'Error';
@@ -726,8 +745,9 @@ function widgetRecentUnConnections(data) {
 
 function widgetIconDistributed(data) {
     //Requires data.dwid, data.SQL1 (VALUE)
+    var html;
     try {
-        var html = "<div class='iconframe'>";
+        html = "<div class='iconframe'>";
         var strText = '';
         if (getScalarVal(data, 'SQL1', 'VALUE') == 'Yes') {
             html += "<img src='img/distributedicon.png' class='w-distributed-img' />";
@@ -746,6 +766,7 @@ function widgetIconDistributed(data) {
 
 function widgetBullet(data) {
     //Requires data.dwid, data.SQL1, SQL2, SQL3 (VALUE, datadisk[0].DATA_SIZE, datadisk[0].USED_SIZE)
+    var html;
     try {
         var datadisk = JSON.parse(data.SQL1);
         var logdisk = JSON.parse(data.SQL2);
@@ -755,7 +776,7 @@ function widgetBullet(data) {
         var data2 = '{"title": "Log", "subtitle": "' + logdisk[0].DATA_SIZE + ' Gb","ranges": [' + logdisk[0].USED_SIZE + ', ' + logdisk[0].DISK_SIZE + ', ' + logdisk[0].DISK_SIZE + '],"measures": [' + logdisk[0].DATA_SIZE + '],"markers": [' + logdisk[0].DISK_SIZE + ']}';
         var data3 = '{"title": "Trace", "subtitle": "' + tracedisk[0].DATA_SIZE + ' Gb","ranges": [' + tracedisk[0].USED_SIZE + ', ' + tracedisk[0].DISK_SIZE + ', ' + tracedisk[0].DISK_SIZE + '],"measures": [' + tracedisk[0].DATA_SIZE + '],"markers": [' + tracedisk[0].DISK_SIZE + ']}';
 
-        var strContent = '<div id="bullet' + data.dwid + '1" class="diskbullet" style="margin-top:40px;"><svg></svg></div><div id="bullet' + data.dwid + '2" class="diskbullet"><svg></svg></div><div id="bullet' + data.dwid + '3" class="diskbullet"><svg></svg></div>';
+        html = '<div id="bullet' + data.dwid + '1" class="diskbullet" style="margin-top:40px;"><svg></svg></div><div id="bullet' + data.dwid + '2" class="diskbullet"><svg></svg></div><div id="bullet' + data.dwid + '3" class="diskbullet"><svg></svg></div>';
         data1 = JSON.parse(data1);
         data2 = JSON.parse(data2);
         data3 = JSON.parse(data3);
@@ -777,9 +798,9 @@ function widgetBullet(data) {
             return chart;
         });
     } catch (err) {
-        strContent = 'Error';
+        html = 'Error';
     }
-    $('#t1-widget-container' + data.dwid).html(strContent);
+    $('#t1-widget-container' + data.dwid).html(html);
 }
 
 function widgetInstanceDetails(data) {
@@ -797,27 +818,24 @@ function widgetInstanceDetails(data) {
 
 function widgetUsedMemoryPie(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (VALUE)
+    var html = "";
     try {
         var intPhysicalMem = getScalarVal(data, 'SQL1', 'VALUE');
         var intFreePhysicalMem = getScalarVal(data, 'SQL2', 'VALUE');
-        var html = "";
         html += "<div class='t1-widget-peity'>";
-        html += "<table width='100%'><tr>";
-        html += "<td><span class='pie-memory' data-diameter='120'>" + intFreePhysicalMem + "/" + intPhysicalMem + "</span></td>";
-        html += "</tr><tr>";
-        html += "<td class='w-usedmem-datapoint'><br />" + intFreePhysicalMem + " of " + intPhysicalMem + "Gb</td>";
-        html += "</tr></table>";
+        //html += "<table width='100%'><tr>";
+        html += "<span class='pie-memory' id='pie" + data.dwid + "'>" + intFreePhysicalMem + "/" + intPhysicalMem + "</span>";
+        html += "<span class='w-usedmem-datapoint'><br />" + intFreePhysicalMem + " of " + intPhysicalMem + "Gb</span>";
         html += "</div>";
+        $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
-        html = 'Error';
+        $('#t1-widget-container' + data.dwid).html('Error');
     }
 
-    $('#t1-widget-container' + data.dwid).html(html);
-
-    $('.pie-memory').peity('pie', {
-        colours: function(_, i, all) {
+    $('#pie' + data.dwid).peity('pie', {
+        fill: function(_, i, all) {
             var col = '';
-            if (i == 0) {
+            if (i === 0) {
                 if (parseInt(all[i]) >= parseInt(all[all.length - 1])) {
                     col = '#009DE0';
                 } else if ((parseInt(all[i]) / parseInt(all[all.length - 1]) * 100) > 90) {
@@ -829,15 +847,18 @@ function widgetUsedMemoryPie(data) {
                 col = '#D4D4D4';
             }
             return col;
-        }
+        },
+        height: 90,
+        width: 90
     });
 }
 
 function widgetComponentOverview(data) {
     //Requires data.dwid, data.SQL1 (STATUS)
+    var html;
     try {
         var datapoints = JSON.parse(data.SQL1);
-        var html = "<table width='100%'><tr>";
+        html = "<table width='100%'><tr>";
 
         html += "<td><div class='t1-widget-icon'>" + getIconForStatus(datapoints[0].STATUS) + "</div><br />";
         html += "<p class='t1-widget-icon-text'>CPU</p></td>";
@@ -873,8 +894,9 @@ function getIconForStatus(strStatus) {
 
 function widgetSystemOverview(data) {
     //Requires data.dwid, data.SQL1 (SM), data.SQL2 (SM), data.SQL3 (VALUE), data.SQL4 (VALUE)
+    var html;
     try {
-        var html = "<table class='w-misc-table'>";
+        html = "<table class='w-misc-table'>";
         
         html += "<tr><td><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL1', 'SM') + "%</div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL2', 'SM') + "GB</div></td>";
@@ -895,9 +917,10 @@ function widgetSystemOverview(data) {
 
 function widgetTableSizes(data) {
     //Requires data.dwid, data.SQL1 (ROWS, COLS)
+    var html;
     try {
         var datapoints = JSON.parse(data.SQL1);
-        var html = "<table class='w-misc-table' style='margin-top: 25px;'>";
+        html = "<table class='w-misc-table' style='margin-top: 25px;'>";
     
         html += "<tr><td><div class='t1-widget-text-medium'>" + datapoints[0].rows + "<sup>GB</sup></div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + datapoints[0].cols + "<sup>GB</sup></div></td>";
@@ -914,9 +937,10 @@ function widgetTableSizes(data) {
 
 function widgetDBMemoryOverview(data) {
     //Requires data.dwid, data.SQL1 (ALLOCATION_LIMIT, PEAK, TOTAL_MEMORY_USED_SIZE)
+    var html;
     try {
         var datapoints = JSON.parse(data.SQL1);
-        var html = "<table width='100%' style='align: center;'>";
+        html = "<table width='100%' style='align: center;'>";
     
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].ALLOCATION_LIMIT + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Allocated</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].PEAK + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Peak</td></tr>";
@@ -931,9 +955,10 @@ function widgetDBMemoryOverview(data) {
 
 function widgetResMemoryOverview(data) {
     //Requires data.dwid, data.SQL1 (TOTAL_PHYSICAL_MEMORY, TOTAL_MEMORY, PHYSICAL_MEMORY)
+    var html;
     try {
         var datapoints = JSON.parse(data.SQL1);
-        var html = "<table width='100%' style='align: center;'>";
+        html = "<table width='100%' style='align: center;'>";
     
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].TOTAL_PHYSICAL_MEMORY + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Physical</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].TOTAL_MEMORY + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Total Resident</td></tr>";
@@ -948,9 +973,10 @@ function widgetResMemoryOverview(data) {
 
 function widgetFunnel(data) {
     //Requires data.dwid, data.SQL1 (STATUS)
+    var html;
     try {
         var datapoints = JSON.parse(data.SQL1);
-        var html = "<table class='w-funnel-table'>";
+        html = "<table class='w-funnel-table'>";
     
         var itemmax = datapoints[0].STATUS;
         var itemmid = Math.round(((datapoints[1].STATUS / itemmax) * 100));
@@ -973,9 +999,9 @@ function widgetFunnel(data) {
 
 function widgetSystemAlerts(data) {
     //Requires data.dwid,
+    var html;
     try {
         var arrAlerts = new Array([]);
-        var html;
         arrAlerts = JSON.parse(data.SQL1);
     
         //"[{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.STAT_VIEW_HOST_BLOCKED_TRANSACTIONS (139 current operation cancelled by request and transaction rolled back:  [2625] execution plan aborted (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:32:01.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"1 new runtime dump file(s) found on host saphana","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 13:31:33.0000000","HOST":"*","ALERT_ID":"46","ALERT_NAME":"RTEdump files","ALERT_DESCRIPTION":"Identifies new runtime dump files (*rtedump*) have been generated in the trace directory of the system. These contain information about, for example, build, loaded modules, running threads, CPU, and so on.","ALERT_USERACTION":"Check the contents of the dump files."},{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.HOST_VOLUME_IO_DETAILED_STATISTICS (3584 distributed SQL error:  [2617] executor: plan operation execution failed with an exception (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:31:32.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"There are currently 502 diagnosis files. This might indicate a problem with trace file rotation, a high number of crashes, or another issue.","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"50","ALERT_NAME":"Number of diagnosis files","ALERT_DESCRIPTION":"Determines the number of diagnosis files written by the system. An unusually large number of files can indicate a problem with the database (for example, problem with trace file rotation or a high number of crashes).","ALERT_USERACTION":"Investigate the diagnosis files."},{"ALERT_DETAILS":"The SAP_INTERNAL_HANA_SUPPORT role is currently granted to 1 user(s).","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"63","ALERT_NAME":"Granting of SAP_INTERNAL_HANA_SUPPORT role","ALERT_DESCRIPTION":"Determines if the internal support role (SAP_INTERNAL_HANA_SUPPORT) is currently granted to any database users.","ALERT_USERACTION":"Check if the corresponding users still need the role. If not, revoke the role from them."},{"ALERT_DETAILS":"Data backup does not exist. Without a data backup, your database cannot be recovered.","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 08:16:31.0000000","HOST":"*","ALERT_ID":"35","ALERT_NAME":"Existence of data backup","ALERT_DESCRIPTION":"Determines whether or not a data backup exists. Without a data backup, your database cannot be recovered.","ALERT_USERACTION":"Perform a data backup as soon as possible."},{"ALERT_DETAILS":"Your license will expire in 14 days. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_RATING":"3","ALERT_TIMESTAMP":"2014-09-23 20:00:14.0000000","HOST":"*","ALERT_ID":"31","ALERT_NAME":"License expiry","ALERT_DESCRIPTION":"Determines how many days until your license expires. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_USERACTION":"Obtain a valid license and install it. For the exact expiration date, see the monitoring view M_LICENSE."}]"
@@ -1025,9 +1051,9 @@ function widgetSystemAlerts(data) {
 
 function widgetUserAlerts(data) {
     //Requires data.dwid, 
+    var html;
     try {
         var arrAlerts = new Array([]);
-        var html;
         arrAlerts = JSON.parse(data.SQL1);
     
         //"[{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/05/14 12:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/04/14 10:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 12:08:24","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:08","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:13","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"}]"
@@ -1069,8 +1095,9 @@ function widgetUserAlerts(data) {
 
 function widgetSensorAPI(data) {
     //Requires data.dwid, data.VALUE, data.UOM1, data.TEXT1
+    var html;
     try {
-        var html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
+       html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
         html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";
     } catch (err) {
         html = err;
@@ -1082,12 +1109,185 @@ function widgetSensorAPI(data) {
 function metricHANAOverview(data) {
     //Requires data.dwid
     try {
-        var html = "<div class='t1-widget-text-big'>" + data.VALUE + "</div>";
-        html += "<div class='t1-widget-footer'>";
-        html += "<div class='t1-widget-percent-medium-grey'>" + data.TEST + "</div>";
-        html += "</div>";
+        
+        if (typeof window.m2DiskData === 'undefined') {
+            window.m2DiskData = [];
+            window.m2RAMData = [];
+            window.m2CPUData = [];
+            window.m2ConnectionsData = [];
+        }
+        
+        var datapoint1 = getScalarVal(data, 'SQL1', 'DATA_SIZE'); //just the last point?
+        window.m2DiskData.push(datapoint1);
+        window.m2RAMData.push(Math.floor((Math.random() * 10) + 1));
+        var point = {};
+        point.x = new Date() / 1000;
+        point.y = Math.floor((Math.random() * 10) + 1);
+        window.m2CPUData.push(point);
+        window.m2ConnectionsData.push(Math.floor((Math.random() * 10) + 1));
+        
+        //Trim large graphs to length
+        if (window.m2DiskData.length > 50){
+            window.m2DiskData.splice(0, 1);
+            window.m2RAMData.splice(0, 1);
+            window.m2CPUData.splice(0, 1);
+        }
+        
+        //Trim background/small graphs to length
+        if (window.m2ConnectionsData.length > 10){
+            window.m2ConnectionsData.splice(0, 1);
+        }
+    
+    
+        var html = "<div class='col-md-3' style='margin-top: 15px;'>";
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
+                                html += "<span class='connections" + data.dwid + "'>" + window.m2ConnectionsData.toString() + "</span>";
+                            html += "</div>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>Connections</div>";
+                                html += "<div class='huge'>26</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>Active Users</div>";
+                                html += "<div class='huge'>321</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>All Services Started</div>";
+                                html += "<div class='huge'>OK</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>Blocked Transactions</div>";
+                                html += "<div class='huge'>0</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>Unsuccessful Connection Attemps</div>";
+                                html += "<div class='huge'>2</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+                html += "<div class='panel panel-primary'>";
+                    html += "<div class='panel-heading'>";
+                        html += "<div class='row'>";
+                            html += "<div class='col-xs-9 text-left'>";
+                                html += "<div>System Type</div>";
+                                html += "<div class='huge'>Single</div>";
+                            html += "</div>";
+                        html += "</div>";
+                    html += "</div>";
+                html += "</div>";
+                
+            html += "</div>";
+            
+            html += "<div class='col-md-9' style='padding-right: 60px;'>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9990;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
+                    html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
+                html += "</div>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9992;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1].y + "%</span>";
+                    html += "<div id='cpu12'></div>";
+                html += "</div>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9994'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
+                    html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
+                html += "</div>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<div id='slider'></div>";
+                html += "</div>";
+            html += "</div>";
+            
+        $('#t1-widget-container' + data.dwid).html(html);
+    
+        $('.ram' + data.dwid).peity('bar', {
+                width: parseInt(data.width) * 175,
+                height: parseInt(data.height) * 40,
+                fill: ["#D9D9D9"]
+        });
+        
+        $('.disk' + data.dwid).peity('line', {
+                width: parseInt(data.width) * 175,
+                height: parseInt(data.height) * 40,
+                fill: '#1B6FA7',
+                stroke: '#EEF2F6',
+                strokeWidth: 2
+        });
+        
+        $('.connections' + data.dwid).peity('bar', {
+                width: $("#connGraph").width(),
+                height: 40,
+                fill: ["#F7F7F7"]
+        });
+        
+        
+        $("#cpu12").empty();
+        
+        var graph = new Rickshaw.Graph({
+                element: document.querySelector("#cpu12"),
+                renderer: 'bar',
+                series: [{
+                        data: window.m2CPUData,
+                        color: 'steelblue'
+                }]
+        });
+        
+        var xAxis = new Rickshaw.Graph.Axis.Time({
+            graph: graph,
+            timeFixture: new Rickshaw.Fixtures.Time()
+        });
+    
+        xAxis.render();
+    
+    
+        graph.render();
+            
+        
     } catch (err) {
         html = err;
     }
-    $('#t1-widget-container' + data.dwid).html(html);
+    
+    
+    /*
+    $('.cpu' + data.dwid).peity('line', {
+            width: parseInt(data.width) * 175,
+            height: parseInt(data.height) * 40,
+            fill: ["#689BBF"],
+            stroke: '#EEF2F6',
+            strokeWidth: 1
+    });
+    */
+
+    
 }
