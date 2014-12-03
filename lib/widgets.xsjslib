@@ -45,7 +45,7 @@ function showWidgetDiv(intDashboardWidgetID){
     try {
         var data = {};
         var code = getWidgetCode(intDashboardWidgetID);
-        var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled, WP.type, WP.HIST_DATAPOINT, DW.title, DW.width, DW.height, DW.col_pos, DW.row_pos, W.hist_enabled FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.param_id = DWP.param_id INNER JOIN metric2.m2_dashboard_widget DW ON DWP.dashboard_widget_id = DW.dashboard_widget_id INNER JOIN metric2.m2_widget W ON W.widget_id = DW.widget_id WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
+        var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled, WP.type, WP.HIST_DATAPOINT, DW.title, DW.width, DW.height, DW.col_pos, DW.row_pos, W.hist_enabled, W.type FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.param_id = DWP.param_id INNER JOIN metric2.m2_dashboard_widget DW ON DWP.dashboard_widget_id = DW.dashboard_widget_id INNER JOIN metric2.m2_widget W ON W.widget_id = DW.widget_id WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
         data.dwid = intDashboardWidgetID;
         data.code = code;
         data.refresh = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
@@ -58,6 +58,7 @@ function showWidgetDiv(intDashboardWidgetID){
             data.height = rs.getString(8);
             data.colpos = rs.getString(9);
             data.rowpos = rs.getString(10);
+            data.type = rs.getString(12);
             data.histEnabled =  rs.getString(11);
             var datapoint = '';
             if (rs.getString(1).indexOf('SQL') >= 0){
