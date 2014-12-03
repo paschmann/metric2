@@ -141,7 +141,7 @@ function loadEventStatusPie(arrData){
         series: [{
             type: 'pie',
             name: 'Events',
-            innerSize: '60%',
+            innerSize: '50%',
             data: arrData
         }]
     });
