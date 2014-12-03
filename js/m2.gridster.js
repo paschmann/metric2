@@ -5,6 +5,7 @@ function loadGridster(){
         widget_base_dimensions: [230, 230],
         min_cols: 10,
         min_rows: 15,
+        max_size_x: 7,
     	avoid_overlapped_widgets: true,
         serialize_params: function($w, wgd) {
             return {
