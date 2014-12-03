@@ -50,29 +50,11 @@ table{
     width: 15px;
 }
 
-.t1-historyicon-img {
+.t1-modify-icon {
 	float: right;
     opacity: 0;
 	padding-left: 8px;
-	padding-top: 1px;
-    /*height: 15px; 
-    width: 15px;*/
-}
-
-.t1-editicon-img {
-	float: right;
-	opacity: 0; 
-	/*
-	padding-right: 8px;
-	height: 15px; 
-    width: 15px; */
-}
-.t1-deleteicon-img {
-	float: right;
-    opacity: 0; 
-	/*
-    height: 15px; 
-    width: 15px; */
+	cursor: pointer;
 }
 
 .t1-widget-div{
@@ -85,9 +67,6 @@ table{
 .t1-widget-container{
    text-align: center;
    vertical-align: middle;
-   height: -moz-calc(100% - 36px); /* Firefox */
-   height: -webkit-calc(100% - 36px); /* Chrome, Safari */
-   height: calc(100% - 36px); /* IE9+ and future browsers */
    border-top: 1px solid #EEE;
 }
 
@@ -259,7 +238,7 @@ canvas.peity {
     color: #CCC; 
     padding-bottom: 0px;
     padding-right: 10px;
-	font-size: 32px;
+	font-size: 30px;
 	text-align: center;
     bottom: 0;
     text-align: right;
