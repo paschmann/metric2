@@ -515,17 +515,25 @@ function loadMetrics(objData) {
         if (typeof title === undefined) {
             title = '';
         }
-        strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + objData.widgetData[key].height + "'>";
-            strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
-                strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + title;
-                    if (objData.widgetData[key].histEnabled == '1') {
-                        strContent += "<i class='fa fa-history t1-modify-icon' id='historyicon" + intDashboardWidgetID + "'></i>";
-                    }
-                    strContent += "<i class='fa fa-edit t1-modify-icon' id='editicon" + intDashboardWidgetID + "'></i>";
-                strContent += "</header>";
-            strContent += "</div>";
-            strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'></div>";
-        strContent += "</li>";
+        
+        if (objData.widgetData[key].type == 'Label') {
+            strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + objData.widgetData[key].height + "'>";
+                strContent += "<i class='fa fa-edit t1-modify-icon-label' id='editicon" + intDashboardWidgetID + "'></i>";
+                strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-metric-label'></div>";
+            strContent += "</li>";
+        } else {
+            strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + parseInt(objData.widgetData[key].height) * 2 + "'>";
+                strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
+                    strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + title;
+                        if (objData.widgetData[key].histEnabled == '1') {
+                            strContent += "<i class='fa fa-history t1-modify-icon' id='historyicon" + intDashboardWidgetID + "'></i>";
+                        }
+                        strContent += "<i class='fa fa-edit t1-modify-icon' id='editicon" + intDashboardWidgetID + "'></i>";
+                    strContent += "</header>";
+                strContent += "</div>";
+                strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'></div>";
+            strContent += "</li>";
+        }
     });
     strContent += "</ul></div>";
     $("#grid").html(strContent);
