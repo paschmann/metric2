@@ -27,8 +27,6 @@ $(document).ready(function () {
         
         $("#createform").submit(function (e) {
             //Check if 2 passwords match/strength
-            
-            
             $.ajax({
                 url: "lib/api.xsjs",
                 type: "POST",
@@ -46,7 +44,7 @@ $(document).ready(function () {
                 	} else if (data == '0') {
                 	    $('#msg').html('Error creating the account');
                 	} else if (data == '1') {
-                	    $('#msg').html('Account created, please login');
+                	    window.location = 'login.html?created=true';
                 	}
                 }, error: function(XMLHttpRequest, textStatus, errorThrown) { 
                     $('#msg').html('Status: ' + textStatus + " Error: " + errorThrown);
