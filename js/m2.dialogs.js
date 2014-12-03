@@ -184,7 +184,7 @@ function getNewWidgetHTML(objWidgets) {
 
 
 function showPred(dashboardwidgetid) {
-    $("#dialogHTML1").innerHTML = '<img src="img/loaging.gif" />';
+    $("#dialogHTML1").innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
     getDataSet({ strService: 'WidgetForecastDialog', strDashboardWidgetID : dashboardwidgetid});
 }
 
@@ -192,7 +192,7 @@ function showHist(dashboardwidgetid) {
     var startdt = typeof($("#startdt").val()) === 'undefined' ? getDate() : $("#startdt").val();
     var enddt = typeof($("#enddt").val()) === 'undefined' ? getDate() : $("#enddt").val();
 
-    $("#dialogHTML1").innerHTML = '<img src="img/loaging.gif" />';
+    $("#dialogHTML1").innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
     getDataSet({ strService: 'WidgetHistoryDialog', strDashboardWidgetID : dashboardwidgetid, strStartDt: startdt, strEndDt: enddt});
 }
 
@@ -301,6 +301,7 @@ function showSettingsDialog(objData) {
 
 function showWidgetDialog(objData, edit){
     var output = '';
+    var webserviceparamid = '';
     
     output += "<form class='form-horizontal' role='form'>";
         output += "<input type='" + debugmode + "' value='newwidget' id='action' />";
@@ -327,31 +328,30 @@ function showWidgetDialog(objData, edit){
         if (objData.param[i].required == '1'){
             required = 'required="true"';
         }
-		
-		if (objData.param[i].visible == 'true'){
+        
+        if (objData.param[i].visible == 'true'){
 			output += "<div class='form-group'><label for='pid_" + objData.param[i].paramid + "' class='col-sm-3 control-label'>" + objData.param[i].displayname + "</label><div class='col-sm-9'>";
 			if (objData.param[i].type == 'OPTION'){
 				output += "<select class='form-control' id='pid_" + objData.param[i].paramid + "'>" + showParamOption('', value, objData.param[i].options) + "</select>";
 			} else {
-			    output += "<div class='input-group'><input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
-			    if (objData.param[i].displayname.indexOf("QL") > 0){
-			        output += " <span class='input-group-addon' id='btnShowSQLBuilder'><i class='fa fa-table'></i></span>"
-			    }
-			    if (objData.param[i].displayname.indexOf("RL") > 0){
-			        output += " <span class='input-group-addon' id='btnShowWSBuilder'><i class='fa fa-file-code-o'></i></span>"
-			    }
-			    output += "</div>";
+                output += "<div class='input-group'><input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
+                if (objData.param[i].displayname.indexOf("QL") > 0){
+                    output += " <span class='input-group-addon' id='btnShowSQLBuilder'><i class='fa fa-table'></i></span>"
+                }
+                if (objData.param[i].displayname.indexOf("RL") > 0){
+                    output += " <span class='input-group-addon' id='btnShowWSBuilder'><i class='fa fa-file-code-o'></i></span>"
+                }
+                output += "</div>";
 			}
 			output += "</div></div>";
 		} else {
-		    output += "<input class='form-control' type='" + debugmode + "' value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";    
+            output += "<input class='form-control' type='" + debugmode + "' value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";    
 		}
-		
     }
 
 	
 	if (objData.type == 'WebService'){
-		var serviceurl = 'lib/api.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid) + '&datapoint=0';
+		var serviceurl = 'lib/api.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + objData.dashboardwidgetparamid + '&datapoint=0';
 		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
 	}
     output += "</form>";
@@ -369,7 +369,10 @@ function showWidgetSizeDropdown(selected){
 	output += selected == 1 ? "<option selected>1</option>" : "<option>1</option>";
 	output += selected == 2 ? "<option selected>2</option>" : "<option>2</option>";
 	output += selected == 3 ? "<option selected>3</option>" : "<option>3</option>";
-	output += selected == 4 ? "<option selected>4</option>" : "<option>4</option>";	
+	output += selected == 4 ? "<option selected>4</option>" : "<option>4</option>";
+	output += selected == 5 ? "<option selected>5</option>" : "<option>5</option>";	
+	output += selected == 6 ? "<option selected>6</option>" : "<option>6</option>";	
+	output += selected == 7 ? "<option selected>7</option>" : "<option>7</option>";	
 	return output;
 }
 
@@ -446,8 +449,8 @@ function showDashboardDialog(objData, edit){
     var dashboardtitle = '';
     
     if (edit){
-        dashboardid = objData[0].DASHBOARD_ID;
-        dashboardtitle = objData[0].TITLE;
+        dashboardid = objData.DASHBOARD_ID;
+        dashboardtitle = objData.TITLE;
     }
     
     var output = "<form class='form-horizontal' role='form'>";
@@ -659,7 +662,7 @@ function saveDialog(strFunction) {
                 strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
                 strReload: "dashboards"
             })
-            document.getElementById('dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
+            //document.getElementById('dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
         } else if (strFunction == 'Add Alert') {
             getDataSet({
                 strService: "CreateAlert",
@@ -709,9 +712,9 @@ function deleteDialog(strFunction) {
             strSQL: "CALL METRIC2.M2_P_DELETE_WIDGET(" + dashboardwidgetid + ")",
             strReload: 'dashboard'
         });
-        saveFeedEvent("Metric deleted", 3);
+        addNotification("Metric deleted", 3, true);
     } else if (strFunction == 'Edit Alert') {
-        var alertID = $('#alertid').value;
+        var alertID = $('#alertid').val();
         getDataSet({
             strService: 'DeleteAlert',
             strAlertID: alertID
@@ -722,6 +725,6 @@ function deleteDialog(strFunction) {
             strService: 'CallSP', 
             strSQL: "CALL METRIC2.M2_P_DELETE_WIDGET_HISTORY(" + dashboardwidgetid + ")"
         });
-        saveFeedEvent("History deleted", 3);
+        addNotification("History deleted", 3, true);
     }
 } 
