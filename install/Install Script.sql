@@ -1,8 +1,12 @@
+-- ********** IMPORTANT ***********
+-- You need to decide if you will use the metric2 service account created below or if you will use your own account (e.g. SYSTEM)
+
 DROP SCHEMA METRIC2 CASCADE;
 CREATE SCHEMA METRIC2;
 
+-- ********** M2 Service Account ***********
 CREATE USER M2_SVC_ACCOUNT PASSWORD 7Ag6w612auiY881;
--- NB, after the user is created, you may need to log in using the user account to set the password for the first time
+-- NB, after the user is created, you may need to log in using the user account to set the password for the first time (this depends on your instance password policy requirements)
 
 CREATE ROLE M2_SERVICE;
 GRANT INSERT, SELECT, UPDATE, DELETE, DROP, CREATE ANY, ALTER, EXECUTE ON SCHEMA metric2 TO M2_SERVICE;
@@ -13,7 +17,15 @@ GRANT EXECUTE ON system.afl_wrapper_eraser to M2_SERVICE;
 GRANT EXECUTE ON system.afl_wrapper_generator to M2_SERVICE;
 GRANT EXECUTE ON _SYS_AFL.PAL_TS_S to M2_SERVICE;
 
+
+-- ********** Application service account **********
+-- If you would prefer to use your own account, set the username to that account below.
+
 UPDATE "_SYS_XS" ."SQL_CONNECTIONS" SET username = 'M2_SVC_ACCOUNT' WHERE name = 'lilabs.metric2.lib::metricuser';
+
+-- *******************************************************************************
+
+
 
 --Sequences
 CREATE SEQUENCE "METRIC2"."ALERT_HISTORY_ID" START WITH 1;
@@ -82,6 +94,7 @@ CREATE VIEW "METRIC2"."M2_WIDGET_SYSOVERVIEW" ( "STATUS" ) AS SELECT STATUS FROM
 CREATE VIEW "METRIC2"."M2_WIDGET_TOTAL_CPU" ( "SM" ) AS  select ROUND(ABS(SUM(TOTAL_CPU) / COUNT(TOTAL_CPU)), 0)  AS SM from sys.m_service_statistics WITH READ ONLY;
 CREATE VIEW "METRIC2"."M2_WIDGET_TRACEDISK" ( "DISK_SIZE", "DATA_SIZE", "USED_SIZE" ) AS select ROUND(d.total_size/1024/1024/1024,2) disk_size, ROUND(sum(t.file_size)/1024/1024/1024,2) data_size, ROUND(d.used_size/1024/1024/1024,2) used_size from ( m_tracefiles as t right outer join m_disks as d on d.host = t.host ) where d.usage_type like '%TRACE%' group by d.host, d.usage_type, d.total_size,d.device_id, d.path, d.used_size order by d.device_id,d.host WITH READ ONLY;
 CREATE VIEW "METRIC2"."M2_WIDGET_USERALERTS" ( "ALERT_ID", "OPERATOR", "V1", "ACTUAL", "ALERT_TIMESTAMP", "VALUE", "NOTIFY", "COND", "TITLE" ) AS SELECT metric2.m2_alert_history.alert_id, metric2.m2_alert_history.operator, metric2.m2_alert.value v1, metric2.m2_alert_history.actual, TO_CHAR(metric2.m2_alert_history.added, 'MM/DD/YY HH:MM:SS'), metric2.m2_alert_history.value, metric2.m2_alert_history.notify, metric2.m2_alert.cond, metric2.m2_dashboard_widget.title FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id  INNER JOIN metric2.m2_alert_history ON  metric2.m2_alert_history.dashboard_widget_id = metric2.m2_alert.dashboard_widget_id  WHERE metric2.m2_alert_history.alert_hist_id IN (Select distinct metric2.m2_alert_history.alert_hist_id from metric2.m2_alert_history order by alert_hist_id desc LIMIT 5) WITH READ ONLY; 
+CREATE VIEW "METRIC2"."M2_WIDGET_HANAOVERVIEW" AS SELECT CPU.SM AS CPU, MEM.SM AS MEM, CONS.CNT AS RUNNING, DIST.VALUE AS DISTRIBUTED, BLOCKED.CNT AS BLOCKED, ACTIVE.STATUS AS ACTIVE, INVALID.CNT AS INVALID_CONS, DATA.DISK_SIZE AS DATA_DISK_SIZE, DATA.DATA_SIZE AS DATA_DATA_SIZE, DATA.USED_SIZE AS DATA_USED_SIZE, LOG.DISK_SIZE AS LOG_DISK_SIZE, LOG.DATA_SIZE AS LOG_DATA_SIZE, LOG.USED_SIZE AS LOG_USED_SIZE FROM METRIC2.M2_WIDGET_TOTAL_CPU "CPU", METRIC2.M2_WIDGET_SYS_MEM "MEM", METRIC2.M2_WIDGET_RUNNINGCONNETIONS "CONS", METRIC2.M2_WIDGET_DISTRIBUTED_VALUE "DIST", METRIC2.M2_WIDGET_BLOCKEDTRANS "BLOCKED", METRIC2.M2_WIDGET_CONNECTIONS "ACTIVE", METRIC2.M2_WIDGET_INVALID_CONS "INVALID", METRIC2.M2_WIDGET_DATADISK "DATA", METRIC2.M2_WIDGET_LOGDISK "LOG" LIMIT 1 WITH READ ONLY;
 
 -- Procedures
 CREATE PROCEDURE METRIC2.M2_P_WIDGET_HISTORY(v_dwid INT, v_startdt VARCHAR(30), v_enddt VARCHAR(30)) LANGUAGE SQLSCRIPT AS BEGIN SELECT TO_CHAR(metric2.m2_dwp_history.dt_added, 'YYYY') as year, TO_CHAR(metric2.m2_dwp_history.dt_added, 'MM') as month, TO_CHAR(metric2.m2_dwp_history.dt_added, 'DD') as day, TO_CHAR(metric2.m2_dwp_history.dt_added, 'HH24') as hour, TO_CHAR(metric2.m2_dwp_history.dt_added, 'MI') as min, '00' as secs, TO_DECIMAL(AVG(TO_INT(metric2.m2_dwp_history.value)),2,2) as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id = :v_dwid AND (TO_DATE(TO_CHAR(metric2.m2_dwp_history.dt_added, 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE(:v_startdt,'MM/DD/YYYY')  AND TO_DATE(:v_enddt,'MM/DD/YYYY')) GROUP BY TO_CHAR(metric2.m2_dwp_history.dt_added, 'YYYY'), TO_CHAR(metric2.m2_dwp_history.dt_added, 'MM'), TO_CHAR(metric2.m2_dwp_history.dt_added, 'DD'), TO_CHAR(metric2.m2_dwp_history.dt_added, 'HH24'), TO_CHAR(metric2.m2_dwp_history.dt_added, 'MI') ORDER BY day desc, hour desc, min desc; END;
@@ -112,7 +125,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (11,'Blocked Transaction List','11.png'
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (12,'Component Overview','12.png','Query','widgetComponentOverview','Client','A summary of the status of each core system component',1,0,1,3);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (13,'Memory Used','13.png','Query','widgetUsedMemoryPie','Client','A pie chart showing the used and available memory',1,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (14,'Resident Memory Usage History','14.png','Query','widgetHistChart','Client','A line chart showing the memory usage history',1,1,1,1);
-INSERT INTO "METRIC2"."M2_WIDGET" VALUES (15,'Date and Time','15.png','Static','widgetDateTime','Client','A Date and Time Widget',1,0,null,null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (15,'Date and Time','15.png','Static','widgetDateTime','Client','A Date and Time Widget',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (16,'Connection History','16.png','Query','widgetHistChart','Client','A historical chart showing the recent connection count',1,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (17,'Weather','17.png','Service','widgetWeather','Client','A weather display',7,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (18,'Disk Usage','18.png','Query','widgetBullet','Client','A bullet chart showing data, trace and log disk usage, volume size and disk size',1,0,2,2);
@@ -140,6 +153,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (41,'RSS Feed','41.png','Service','widg
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (42,'Image Box','42.png','Static','widgetImageBox','Client','Displays a Image using the supplied URL',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (43,'Gauge','43.png','Query','metricGauge','Client','Displays a gauge with a numeric value',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (44,'Clock','44.png','Query','metricClock','Client','Displays a clock',2,0,2,2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (45,'HANA Overview','45.png','Query','metricHANAOverview','Client','Displays a HANA Instance overview',1,0,6,4);
 
 
 -- Widget Params
@@ -216,7 +230,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (59,14,'RECLIMIT','Static','20',3
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (60,14,'CHARTTYPE','OPTION','line',400,1,'Required: line or bar','Chart Type','true',1,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (57,14,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
 
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (152,15,'TimeZone','Static','',100,0,'Time Zone of Clock','Javascript TZ Code','false',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (152,15,'TimeZone','Static','',100,0,'Time Zone of Clock','Javascript TZ Code','true',null,0, null);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (63,16,'SQL1','RANGE','SELECT CNT AS VALUE FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS',200,0,'SQL Statement to retrieve current connections','SQL Query','false',null,1, 'VALUE');
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (154,16,'UOM1','Static','',300,1,'Required, Unit of measure','Text','false',2,0, null);
@@ -309,6 +323,11 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (151,43,'Server Connection','OPTI
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (150,43,'SQL1','SQL','SELECT 1 as min, 10 as max, 5 as value, MET2SpeedMET2 as Label, MET2Motor 1MET2 as Title FROM DUMMY',500,0,'SQL Statement for values, requires min, max, value, Label and Title','SQL Query','true',null,0, 'VALUE');
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (153,44,'TimeZone','Static','',100,0,'Time Zone of Clock','Javascript TZ Code','false',null,0, null);
+
+-- HANA Overview
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (170,45,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_HANAOVERVIEW',200,0,'SQL Query for details','SQL Query','false',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (171,45,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
+
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
