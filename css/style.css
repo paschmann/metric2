@@ -136,9 +136,15 @@ a.logo {
   line-height: 50px;
   padding: 0 15px;
 }
+
 #header .tools-bar ul.nav li a:hover {
   color: #C1C1C1;
 }
+
+#header .tools-bar ul.nav li a:hover .active {
+  color: #fff;
+}
+
 #header .tools-bar ul li a.h-seperate:before {
   border-left: 1px solid #62707D;
   content: "";
@@ -571,7 +577,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
     margin: 0 5px;
     transition: all 0.25s ease 0s;
 }
-.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+.dropdown-menu > li > a:hover {
     background-color: #f7f6f1 !important;
     color: #a1a1a1 !important;
     text-decoration: none;
@@ -581,7 +587,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
     color: #a1a1a1 !important;
     text-decoration: none;
 }
-.dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+.dropdown-menu > .active > a:hover {
     background-color: #f7f6f1 !important;
     color: #a1a1a1 !important;
     text-decoration: none;
@@ -589,16 +595,10 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 
 
 /* Bootstrap Overrides */
-
-.breadcrumb {
-    margin-bottom: 0px;
-    border-radius: 0px;
-    padding: 0px;
-    border-left: 25px solid #f5f5f5; /* Dashboard tabs */
-}
-
 .panel {
     border-radius: 0px;
+    border-bottom: 1px solid #999;
+    box-shadow: none;
 }
 
 .panel-heading {
@@ -607,38 +607,34 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 }
 
 .panel-primary > .panel-heading{
-    background-color: #999999;
-    border-color: #999999;
-    color: #fff;
+    background-color: #fff;
+    border-color: #EEE;
+    color: #999;
 }
 
 .panel-primary {
-    border-color: #888;
+    border: none;
 }
 
-/* Breadcrumb simple
+/* Dashboard Tabs */
 
-.breadcrumb > li + li:before {
-    content: " | ";
-} */
-
-
-/* Breadcrumb Tabs */
-
-.breadcrumb > li.active {
-    background-color: #E5E9EC;
+#dashboards > li:first-child {
+    border-left: 1px solid #E5E9EC;
 }
 
-.breadcrumb > li + li:before {
+#dashboards > li.active {
+    background-color: #EEEEEE;
+    color: #fff;
+}
+
+#dashboards > li + li:before {
     content: none;
 }
 
-.breadcrumb > li {
+#dashboards > li {
     cursor: pointer;
     background-color: #fff;
     border-right: 1px solid #E5E9EC;
-    padding: 10px;
-    width: 180px;
 }
 
 
@@ -660,7 +656,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 /* Loading animation */
 .loading {
     display: none;
-    padding: 8px;
+    color: #2A89C1;
 }
 
 /* Carousel */
@@ -1038,7 +1034,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
     overflow: hidden;
     margin: 0; }
   .jsonview .collapsible.collapsed:before {
-    content: "…";
+    content: "â¦";
     width: 1em;
     margin-left: .2em; }
   .jsonview .collapser.collapsed {
