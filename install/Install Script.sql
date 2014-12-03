@@ -13,8 +13,8 @@ GRANT INSERT, SELECT, UPDATE, DELETE, DROP, CREATE ANY, ALTER, EXECUTE ON SCHEMA
 GRANT MONITORING TO M2_SERVICE WITH ADMIN OPTION;
 GRANT M2_SERVICE TO M2_SVC_ACCOUNT WITH ADMIN OPTION;
 GRANT AFL__SYS_AFL_AFLPAL_EXECUTE TO M2_SERVICE;
-GRANT EXECUTE ON system.afl_wrapper_eraser to M2_SERVICE;
-GRANT EXECUTE ON system.afl_wrapper_generator to M2_SERVICE;
+GRANT EXECUTE ON SYSTEM.AFL_WRAPPER_ERASER to M2_SERVICE;
+GRANT EXECUTE ON SYSTEM.AFL_WRAPPER_GENERATOR to M2_SERVICE;
 GRANT EXECUTE ON _SYS_AFL.PAL_TS_S to M2_SERVICE;
 
 
@@ -154,6 +154,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (42,'Image Box','42.png','Static','widg
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (43,'Gauge','43.png','Query','metricGauge','Client','Displays a gauge with a numeric value',2,1,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (44,'Clock','44.png','Query','metricClock','Client','Displays a clock',2,0,2,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (45,'HANA Overview','45.png','Query','metricHANAOverview','Client','Displays a HANA Instance overview',1,0,6,4);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (46,'Label','46.png','Label','metricLabel','Client','Displays a dashboard label',2,0,null,null);
 
 
 -- Widget Params
@@ -328,6 +329,11 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (153,44,'TimeZone','Static','',10
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (170,45,'SQL1','SQL','SELECT * FROM METRIC2.M2_WIDGET_HANAOVERVIEW',200,0,'SQL Query for details','SQL Query','false',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (171,45,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
 
+-- Label Widget
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (172,46,'TEXT1','Static','',100,1,'Any form of Static Text','Text','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (173,46,'FONTSIZE','Static','',200,1,'Font size in px','Font Size','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (174,46,'FONTCOLOR','Static','',300,1,'Font color in Hex (e.g #333333)','Font Color','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','Static','',400,1,'Font alignment (e.g left, center, right)','Font Alignment','true',null,0,null);
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
