@@ -3,6 +3,7 @@ var m2version = 'Version 2.3.1';
 var userToken = 0;
 var intCurrentDashboardID = 1;
 var arrActiveTimers = [];
+var arrActiveTimersIDList = [];
 var alertlist = [];
 var gridsterloaded = 0;
 var strNotificationTable = '';
@@ -15,7 +16,7 @@ var showTour = true;
 var tour;
 var debugmode = 'hidden';
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
-var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-plus-circle fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
+var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-tachometer fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
 var strInputControl = '';
 
 var objWidgets = {};
@@ -120,15 +121,11 @@ function configureClickEvents() {
         }
     });
 
-    $('#btnAddDashboard, #mnuAddDashboard').click(function() {
-        showDashboardDialog(null, false);
-    });
-
     $('#btnEditDashboard').click(function() {
-        getDataSet({
-            strService: 'EditDashboardDialog',
-            strDashboardID: intCurrentDashboardID
-        });
+        var objData = {};
+        objData.DASHBOARD_ID = $("li.active").data('id');
+        objData.TITLE = $("li.active").attr('title');
+        showDashboardDialog(objData, true);
     });
 
     $('#mnuProfile, btnProfile').click(function() {
@@ -302,7 +299,7 @@ function dashboardActive(boolState) {
         $('#btnAddWidget').hide();
         $('#btnEditDashboard').hide();
         $('#btnAddDashboard').removeClass('h-seperate');
-        $('#dashboardname').html('');
+        $("li.active").removeClass("active");
         clearTimers();
     }
 }
@@ -355,6 +352,7 @@ function toggleStreaming() {
 function loadTimers(){
     $.each(objWidgets, function(key, value) {
         if (objWidgets[key].refresh !== 0) {
+            arrActiveTimersIDList.push(objWidgets[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
                     strService: 'RefreshWidget',
@@ -412,11 +410,11 @@ function loadUserData(arrData) {
 function loadDashboards(objDashboards) {
     var len = objDashboards.length;
 
+    $("ul:eq(1)").empty();
+    $("ul:eq(1)").append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
     $("#dashboards").empty();
-    $("ul:eq( 1 )").empty();
-    //$("ul:eq( 1 )").append("<li class='mm-subtitle'><a href='#mm-0' class='mm-subclose' onclick='closeSubmenu();'> My Dashboards</a></li>");
-    $("ul:eq( 1 )").append("<li><a href='#' id='mnuAddDashboard'><i class='icon fa fa-plus'></i> Add a Dashboard </a></li>");
-
+    $("#dashboards").append("<li><a href='#sidebar' id='btnSideBar' class='icon-toolsbar'><i class='fa fa-bars'></i></a></li>");
+    
     if (len > 0) {
         for (var i = 0; i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
@@ -424,7 +422,6 @@ function loadDashboards(objDashboards) {
             $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
-                $('#dashboardname').html($(this).html());
                 intDashboardID = $(this).data('id');
                 return false;
             });
@@ -432,7 +429,6 @@ function loadDashboards(objDashboards) {
             $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
-                $('#dashboardname').html("<a href='#'>" + $(this).attr('title') + "</a>");
                 intDashboardID = $(this).data('id');
                 closeLeftMenu();
                 return false;
@@ -440,25 +436,27 @@ function loadDashboards(objDashboards) {
         }
     }
     
-    //Append spinner
-    $("#dashboards").append("<div class='loading pull-right'><a href='#' id='loading-text'><i class='fa fa-spinner fa-spin'></i></a></div>");
-
-    $('#mnuAddDashboard').click(function() {
-        getDataSet({
-            strService: 'AddDashboardDialog'
-        });
+    //$("#dashboards").append("<li><a href='#adddashboard' id='btnAddDashboardTab' class='icon-toolsbar'><i class='fa fa-plus'></a></i></li>");
+    
+    $('#btnSideBar, #btnShowSideBar').click(function(e) {
+        toggleSideBar();
     });
-
+    
+    $('#mnuAddDashboard, #btnAddDashboardTab').click(function() {
+        showDashboardDialog(null, false);
+    });
+    
     if (intCurrentDashboardID == 1) {
-        getContent($("#dashboards li:first").data("id"));
-        $('#dashboardname').html($("#dashboards li:first").html());
+        getContent($("#dashboards li:eq(1)").data("id"));
+    } else if (intCurrentDashboardID !== '') {
+        $("li[data-id='" + intCurrentDashboardID +"']").addClass('active');
     }
 }
 
 function getContent(sId) {
     intCurrentDashboardID = sId;
     
-    $("li.active").removeClass("active"); 
+    $("li.active").removeClass("active");
     $("li[data-id='" + sId +"']").addClass('active');
     
     if (typeof sId != 'undefined') {
@@ -475,6 +473,8 @@ function clearTimers() {
     for (var i = 0; i < arrActiveTimers.length; i++) {
         clearTimeout(arrActiveTimers[i]);
     }
+    arrActiveTimersIDList = [];
+    arrActiveTimers = [];
 }
 
 function loadClientMetrics(objData) {
@@ -484,7 +484,15 @@ function loadClientMetrics(objData) {
         if (objData.widgetData[key].Alert) {
             addNotification(this.Alert, 1, true);
         }
+        
+        var itemidx = arrActiveTimersIDList.indexOf(objData.widgetData[key].dwid);
+        if (itemidx > -1){
+            arrActiveTimersIDList.splice(itemidx, 1);
+            arrActiveTimers.splice(itemidx, 1);
+        }
+        
         if (objData.widgetData[key].refresh !== 0) {
+            arrActiveTimersIDList.push(objData.widgetData[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
                     strService: 'RefreshWidget',
@@ -511,9 +519,9 @@ function loadMetrics(objData) {
             strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
                 strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + title;
                     if (objData.widgetData[key].histEnabled == '1') {
-                        strContent += "<img class='t1-historyicon-img' id='historyicon" + intDashboardWidgetID + "' src='img/history-icon.png'>";
+                        strContent += "<i class='fa fa-history t1-modify-icon' id='historyicon" + intDashboardWidgetID + "'></i>";
                     }
-                    strContent += "<img class='t1-editicon-img' id='editicon" + intDashboardWidgetID + "' src='img/settings-icon.png'>";
+                    strContent += "<i class='fa fa-edit t1-modify-icon' id='editicon" + intDashboardWidgetID + "'></i>";
                 strContent += "</header>";
             strContent += "</div>";
             strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-widget-container'></div>";
@@ -528,10 +536,9 @@ function showLoadingSpinner(visible, strText){
     if (visible){
         $(".loading").css('display', 'block');
         if (debugmode !== 'hidden'){
-            $("#loading-text").html("<i class='fa fa-spinner fa-spin'></i>  " + strText);
+            $("#loading-text").html(strText);
         }
     } else {
-        $("#loading-text").html("<i class='fa fa-spinner fa-spin'></i>");
         $(".loading").css('display', 'none');
     }
 }
@@ -573,11 +580,9 @@ function getDataSet(options) {
             } else if (options.strService == 'Dashboards') {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
-            } else if (options.strService == 'Position') {
-                //addNotification('Positions updated', 0, true);
             } else if (options.strService == 'Widgets') {
                 var objData = jQuery.parseJSON(data);
-
+                clearTimers();
                 if (objData.widgetCount === 0) {
                     $("#grid").html(strNoWidgetMsg);
                 } else {
@@ -607,10 +612,6 @@ function getDataSet(options) {
                 addNotification('Metric Deleted', 3, true);
             } else if (options.strService == 'CloneMetric') {
                 addNotification('Metric Cloned', 0, true);
-            } else if (options.strService == 'AddDashboardDialog') {
-                showDashboardDialog(jQuery.parseJSON(data), false);
-            } else if (options.strService == 'EditDashboardDialog') {
-                showDashboardDialog(jQuery.parseJSON(data), true);
             } else if (options.strService == 'EditProfileDialog') {
                 showProfileDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'EditSettingsDialog') {
@@ -618,7 +619,6 @@ function getDataSet(options) {
             } else if (options.strService == 'GetWidgetTypes') {
                 configureWidgetCarousel(data);
             } else if (options.strService == 'Alerts') {
-                $('#dashboardname').html("<a href='#'>Alerts</a>");
                 loadAlerts(jQuery.parseJSON(data));
             } else if (options.strService == 'AddAlert') {
                 showAlertDialog(jQuery.parseJSON(data), false);
@@ -662,6 +662,7 @@ function getDataSet(options) {
                 getDataSet({
                     strService: 'Dashboards'
                 });
+                
             }
 
             showLoadingSpinner(false, '');
