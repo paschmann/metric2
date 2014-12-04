@@ -436,12 +436,6 @@ function loadDashboards(objDashboards) {
         }
     }
     
-    //$("#dashboards").append("<li><a href='#adddashboard' id='btnAddDashboardTab' class='icon-toolsbar'><i class='fa fa-plus'></a></i></li>");
-    
-    $('#btnSideBar, #btnShowSideBar').click(function(e) {
-        toggleSideBar();
-    });
-    
     $('#mnuAddDashboard, #btnAddDashboardTab').click(function() {
         showDashboardDialog(null, false);
     });

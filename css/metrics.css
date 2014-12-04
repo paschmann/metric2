@@ -4,6 +4,14 @@ table{
 	width: 100%;
 }
 
+.metric-label{
+    color: #666;
+    font-size: 60px;
+    text-align: left;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    width: 100%;
+}
+
 #map{
     margin-top: 50px;
 }
@@ -57,6 +65,13 @@ table{
 	cursor: pointer;
 }
 
+.t1-modify-icon-label {
+	float: right;
+    opacity: 0;
+	margin: 20px;
+	cursor: pointer;
+}
+
 .t1-widget-div{
     border-radius: 1px;
     margin: 0.6em;
@@ -70,6 +85,10 @@ table{
    border-top: 1px solid #EEE;
 }
 
+.t1-metric-label{
+    border-top: none; 
+    margin: 0.6em;
+}
 
 .node {
   border: solid 1px white;
