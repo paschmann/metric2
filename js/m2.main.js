@@ -176,15 +176,15 @@ function configureClickEvents() {
     $('#btnModalClone').click(function(e) {
         cloneMetric();
     });
+    
+    $('#btnShowSideBar').click(function(e) {
+        toggleSideBar();
+    });
 
     $('body').on("click", ".toggle-menu", function(e) {
         e.stopImmediatePropagation();
         e.preventDefault();
         $('nav#menu').trigger('open.mm');
-    });
-
-    $('#btnSideBar, #btnShowSideBar').click(function(e) {
-        toggleSideBar();
     });
 }
 
@@ -435,6 +435,10 @@ function loadDashboards(objDashboards) {
             });
         }
     }
+    
+    $('#btnSideBar').click(function(e) {
+        toggleSideBar();
+    });
     
     $('#mnuAddDashboard, #btnAddDashboardTab').click(function() {
         showDashboardDialog(null, false);
