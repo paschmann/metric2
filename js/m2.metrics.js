@@ -106,7 +106,7 @@ function metricClock(data) {
         var hdegree = hours * 30 + (mins / 2);
         var hrotate = "rotate(" + hdegree + "deg)";
 
-        $("#clock-time").html(hours + ":" + mins);
+        $("#clock-time").html(hours + ":" + (mins<10?'0':'') + mins);
         $("#clock-dt").html(new Date().toDateString());
 
         $("#clock-tz1").html(calcTime(+2) + "<br /><b>Cape Town</b>");
@@ -149,8 +149,10 @@ function calcTime(offset) {
     // using supplied offset
     nd = new Date(utc + (3600000 * offset));
 
+    return nd.toLocaleFormat("%c");
+
     // return time as a string
-    return nd.toLocaleString();
+    //return nd.toLocaleString();
 
 }
 
@@ -850,9 +852,7 @@ function widgetUsedMemoryPie(data) {
                 col = '#D4D4D4';
             }
             return col;
-        },
-        height: 90,
-        width: 90
+        }
     });
 }
 
@@ -1118,27 +1118,29 @@ function metricHANAOverview(data) {
             window.m2RAMData = [];
             window.m2CPUData = [];
             window.m2ConnectionsData = [];
+            window.m2ActiveUsers = [];
+            window.m2Timestamps = [];
         }
         
-        var datapoint1 = getScalarVal(data, 'SQL1', 'DATA_SIZE'); //just the last point?
-        window.m2DiskData.push(datapoint1);
-        window.m2RAMData.push(Math.floor((Math.random() * 10) + 1));
-        var point = {};
-        point.x = new Date() / 1000;
-        point.y = Math.floor((Math.random() * 10) + 1);
-        window.m2CPUData.push(point);
-        window.m2ConnectionsData.push(Math.floor((Math.random() * 10) + 1));
-        
+        window.m2Timestamps.push(moment().format('ll h:mm:ss a')); // Peity
+        window.m2DiskData.push(getScalarVal(data, 'SQL1', 'DATA_DISK_SIZE')); // Peity
+        window.m2RAMData.push(getScalarVal(data, 'SQL1', 'MEM')); // Peity
+        window.m2ConnectionsData.push(getScalarVal(data, 'SQL1', 'RUNNING'));  // Peity
+        window.m2ActiveUsers.push(getScalarVal(data, 'SQL1', 'ACTIVE'));
+        window.m2CPUData.push(getScalarVal(data, 'SQL1', 'CPU')); // Peity
+    
         //Trim large graphs to length
         if (window.m2DiskData.length > 50){
             window.m2DiskData.splice(0, 1);
             window.m2RAMData.splice(0, 1);
             window.m2CPUData.splice(0, 1);
+            window.m2Timestamps.splice(0,1);
         }
         
         //Trim background/small graphs to length
         if (window.m2ConnectionsData.length > 10){
             window.m2ConnectionsData.splice(0, 1);
+            window.m2ActiveUsers.splice(0, 1);
         }
     
     
@@ -1149,9 +1151,9 @@ function metricHANAOverview(data) {
                             html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
                                 html += "<span class='connections" + data.dwid + "'>" + window.m2ConnectionsData.toString() + "</span>";
                             html += "</div>";
-                            html += "<div class='col-xs-9 text-left'>";
+                            html += "<div class='col-xs-12 text-left'>";
                                 html += "<div>Connections</div>";
-                                html += "<div class='huge'>26</div>";
+                                html += "<div class='huge'>" + window.m2ConnectionsData[window.m2ConnectionsData.length - 1] + "</div>";
                             html += "</div>";
                         html += "</div>";
                     html += "</div>";
@@ -1160,9 +1162,12 @@ function metricHANAOverview(data) {
                 html += "<div class='panel panel-primary'>";
                     html += "<div class='panel-heading'>";
                         html += "<div class='row'>";
-                            html += "<div class='col-xs-9 text-left'>";
+                            html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
+                                html += "<span class='activeusers" + data.dwid + "'>" + window.m2ActiveUsers.toString() + "</span>";
+                            html += "</div>";
+                            html += "<div class='col-xs-12 text-left'>";
                                 html += "<div>Active Users</div>";
-                                html += "<div class='huge'>321</div>";
+                                html += "<div class='huge'>" + window.m2ActiveUsers[window.m2ActiveUsers.length - 1] + "</div>";
                             html += "</div>";
                         html += "</div>";
                     html += "</div>";
@@ -1171,7 +1176,7 @@ function metricHANAOverview(data) {
                 html += "<div class='panel panel-primary'>";
                     html += "<div class='panel-heading'>";
                         html += "<div class='row'>";
-                            html += "<div class='col-xs-9 text-left'>";
+                            html += "<div class='col-xs-12 text-left'>";
                                 html += "<div>All Services Started</div>";
                                 html += "<div class='huge'>OK</div>";
                             html += "</div>";
@@ -1182,9 +1187,9 @@ function metricHANAOverview(data) {
                 html += "<div class='panel panel-primary'>";
                     html += "<div class='panel-heading'>";
                         html += "<div class='row'>";
-                            html += "<div class='col-xs-9 text-left'>";
+                            html += "<div class='col-xs-12 text-left'>";
                                 html += "<div>Blocked Transactions</div>";
-                                html += "<div class='huge'>0</div>";
+                                html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'BLOCKED') + "</div>";
                             html += "</div>";
                         html += "</div>";
                     html += "</div>";
@@ -1193,9 +1198,9 @@ function metricHANAOverview(data) {
                 html += "<div class='panel panel-primary'>";
                     html += "<div class='panel-heading'>";
                         html += "<div class='row'>";
-                            html += "<div class='col-xs-9 text-left'>";
-                                html += "<div>Unsuccessful Connection Attemps</div>";
-                                html += "<div class='huge'>2</div>";
+                            html += "<div class='col-xs-12 text-left'>";
+                                html += "<div>Unsuccessful Connections</div>";
+                                html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'INVALID_CONS') + "</div>";
                             html += "</div>";
                         html += "</div>";
                     html += "</div>";
@@ -1204,7 +1209,7 @@ function metricHANAOverview(data) {
                 html += "<div class='panel panel-primary'>";
                     html += "<div class='panel-heading'>";
                         html += "<div class='row'>";
-                            html += "<div class='col-xs-9 text-left'>";
+                            html += "<div class='col-xs-12 text-left'>";
                                 html += "<div>System Type</div>";
                                 html += "<div class='huge'>Single</div>";
                             html += "</div>";
@@ -1216,15 +1221,18 @@ function metricHANAOverview(data) {
             
             html += "<div class='col-md-9' style='padding-right: 60px;'>";
                 html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9990;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
+                    html += "<span class='pull-right'><h4 id='dt'>" + moment().format('ll h:mm:ss a') + "</h4></span>";
+                html += "</div>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9992;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
+                    html += "<span class='cpu" + data.dwid + "'>" + window.m2CPUData.toString() + "</span>";
+                html += "</div>";
+                html += "<div class='row' style='margin-top: 30px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9990;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
                     html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
                 html += "</div>";
                 html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9992;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1].y + "%</span>";
-                    html += "<div id='cpu12'></div>";
-                html += "</div>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; position: absolute; z-index: 9994'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9994'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
                     html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
                 html += "</div>";
                 html += "<div class='row' style='margin-top: 30px;'>";
@@ -1233,64 +1241,51 @@ function metricHANAOverview(data) {
             html += "</div>";
             
         $('#t1-widget-container' + data.dwid).html(html);
-    
-        $('.ram' + data.dwid).peity('bar', {
-                width: parseInt(data.width) * 175,
-                height: parseInt(data.height) * 40,
-                fill: ["#D9D9D9"]
-        });
         
-        $('.disk' + data.dwid).peity('line', {
-                width: parseInt(data.width) * 175,
-                height: parseInt(data.height) * 40,
-                fill: ['#1B6FA7'],
-                stroke: ['#EEF2F6'],
-                strokeWidth: 2
-        });
-        
+        //Small background charts
         $('.connections' + data.dwid).peity('bar', {
                 width: $("#connGraph").width(),
                 height: 40,
                 fill: ["#F7F7F7"]
         });
         
-        
-        $("#cpu12").empty();
-        
-        var graph = new Rickshaw.Graph({
-                element: document.querySelector("#cpu12"),
-                renderer: 'bar',
-                series: [{
-                        data: window.m2CPUData,
-                        color: 'steelblue'
-                }]
+        $('.activeusers' + data.dwid).peity('bar', {
+                width: $("#connGraph").width(),
+                height: 40,
+                fill: ["#F7F7F7"]
         });
         
-        var xAxis = new Rickshaw.Graph.Axis.Time({
-            graph: graph,
-            timeFixture: new Rickshaw.Fixtures.Time()
+        
+        //Larger Charts
+        $('.cpu' + data.dwid).peity('bar', {
+                width: parseInt(data.width) * 175,
+                height: 200,
+                fill: ["#2A89C1"]
         });
-    
-        xAxis.render();
-    
-    
-        graph.render();
-            
+        
+        $('.ram' + data.dwid).peity('bar', {
+                width: parseInt(data.width) * 175,
+                height: 200,
+                fill: ["#8FBC8F"]
+        });
+        
+        $('.disk' + data.dwid).peity('line', {
+                width: parseInt(data.width) * 175,
+                height: 200,
+                fill: ["#778899"]
+        });
+        
+        $('rect').hover(
+            function(){
+                $("#dt").html(window.m2Timestamps[$(this).index()]);
+            }
+        );
+        
         
     } catch (err) {
         html = err;
     }
     
-    
-    /*
-    $('.cpu' + data.dwid).peity('line', {
-            width: parseInt(data.width) * 175,
-            height: parseInt(data.height) * 40,
-            fill: ["#689BBF"],
-            stroke: '#EEF2F6',
-            strokeWidth: 1
-    });
-    */
 }
 
 function metricLabel(data) {
