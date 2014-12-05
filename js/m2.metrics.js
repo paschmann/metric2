@@ -1223,20 +1223,17 @@ function metricHANAOverview(data) {
                 html += "<div class='row' style='margin-top: 30px;'>";
                     html += "<span class='pull-right'><h4 id='dt'>" + moment().format('ll h:mm:ss a') + "</h4></span>";
                 html += "</div>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9992;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
+                html += "<div class='row' style='margin-top: 50px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9992; margin-bottom: 10px;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
                     html += "<span class='cpu" + data.dwid + "'>" + window.m2CPUData.toString() + "</span>";
                 html += "</div>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9990;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
+                html += "<div class='row' style='margin-top: 50px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9990; margin-bottom: 10px;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
                     html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
                 html += "</div>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9994'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
+                html += "<div class='row' style='margin-top: 50px;'>";
+                    html += "<h3 class='pull-left' style='color: #999; z-index: 9994; margin-bottom: 10px;'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
                     html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
-                html += "</div>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<div id='slider'></div>";
                 html += "</div>";
             html += "</div>";
             
