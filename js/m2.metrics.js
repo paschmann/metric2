@@ -41,7 +41,7 @@ function widgetJSONServiceTable(data) {
                     }
                 });
                 html += "</table>";
-                
+
             }
         });
     } catch (err) {
@@ -62,7 +62,7 @@ function widgetDateTime(data) {
             autostart: true
         });
     } catch (err) {
-        
+
     }
 }
 
@@ -106,7 +106,7 @@ function metricClock(data) {
         var hdegree = hours * 30 + (mins / 2);
         var hrotate = "rotate(" + hdegree + "deg)";
 
-        $("#clock-time").html(hours + ":" + (mins<10?'0':'') + mins);
+        $("#clock-time").html(hours + ":" + (mins < 10 ? '0' : '') + mins);
         $("#clock-dt").html(new Date().toDateString());
 
         $("#clock-tz1").html(calcTime(+2) + "<br /><b>Cape Town</b>");
@@ -205,9 +205,9 @@ function widgetDataMap(data) {
     //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
     try {
         var objDataSet = JSON.parse(data.SQL1);
-        $('#t1-widget-container' + data.dwid).html('<div id="map"></div>');
+        $('#t1-widget-container' + data.dwid).html('<div id="map' + data.dwid + '" class="map"></div>');
 
-        var R = Raphael("map", 400, 300),
+        var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
                 "fill": "#d3d3d3",
                 "stroke": "#fff",
@@ -225,6 +225,8 @@ function widgetDataMap(data) {
             usRaphael[state] = R.path(usMap[state]).attr(attr);
             states.push(usRaphael[state]);
         }
+
+
         states.scale("0.5,0.5 0,0");
 
         R.getXY = function(lat, lon) {
@@ -283,6 +285,67 @@ function widgetDataMap(data) {
 }
 
 
+function metricDataByState(data) {
+    //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
+    try {
+        var objDataSet = JSON.parse(data.SQL1);
+        $('#t1-widget-container' + data.dwid).html('<div id="maplabel' + data.dwid + '">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
+
+        var R = Raphael("map" + data.dwid, 400, 300),
+            attr = {
+                "fill": "#FFF9F4",
+                "stroke": "#fff",
+                "stroke-opacity": "1",
+                "stroke-linejoin": "round",
+                "stroke-miterlimit": "4",
+                "stroke-width": "0.75",
+                "stroke-dasharray": "none"
+            },
+            usRaphael = {},
+            states = R.set();
+
+        //Draw Map and store Raphael paths
+        for (var state in usMap) {
+            usRaphael[state] = R.path(usMap[state]).attr(attr);
+            states.push(usRaphael[state]);
+        }
+
+        //Color States
+        for (var state in usRaphael) {
+            (function (st, state) {
+                for (var i = 0; i <= objDataSet.length - 1; i++){
+                    st[0].style.cursor = "pointer";
+                    if (objDataSet[i].STATE === state){
+                        var len = objDataSet[i].VALUE.length;
+                        var val = parseFloat(objDataSet[i].VALUE);
+                        var value = objDataSet[i].VALUE;
+                        for (var t = 1; t <= len; t++){
+                            val = val / 10;
+                        }
+                        st[0].style.fill = "rgba(252,143,42, " + val + ")";
+                        
+                        st[0].onmouseover = function () {
+                            $("#maplabel" + data.dwid).html(state + " " + parseFloat(value));
+                        };
+                        
+                        st[0].onmouseout = function () {
+                            $("#maplabel" + data.dwid).html('&nbsp;');
+                        };
+                    }
+                }
+            })(usRaphael[state], state);
+        }
+
+
+        states.scale("0.5,0.5 0,0");
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html('Error');
+    }
+}
+
+
+
+
 
 function widgetJSONService(data) {
     //Requires data.dwid, data.URL, data.OBJKEY, data.TEXT1
@@ -325,7 +388,7 @@ function widgetWeather(data) {
             $('#t1-widget-container' + data.dwid).html("Error");
         }
     });
-    
+
 }
 
 
@@ -363,7 +426,7 @@ function widgetTwitter(data) {
     }
 
     $('#t1-widget-container' + data.dwid).html(html);
-    
+
     ! function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0],
             p = /^http:/.test(d.location) ? 'http' : 'https';
@@ -466,7 +529,7 @@ function widgetTable(data) {
     $.each(objData, function(key, val) {
         try {
             if (typeof val === 'object') {
-                if (intRecCount === 0){
+                if (intRecCount === 0) {
                     html += "<thead><tr>";
                     $.each(val, function(key1, val1) {
                         html += "<th>" + key1 + "</th>";
@@ -479,10 +542,10 @@ function widgetTable(data) {
                 });
                 html += "</tr>";
             }
-                
+
             intRecCount++;
         } catch (err) {
-    
+
         }
     });
     html += "</tbody></table>";
@@ -498,7 +561,7 @@ function widgetList(data) {
     $.each(objData, function(key, val) {
         try {
             if (typeof val === 'object') {
-                if (intRecCount === 0){
+                if (intRecCount === 0) {
                     html += "<thead><tr>";
                     $.each(val, function(key1, val1) {
                         html += "<th>" + key1 + "</th>";
@@ -511,10 +574,10 @@ function widgetList(data) {
                 });
                 html += "</tr>";
             }
-                
+
             intRecCount++;
         } catch (err) {
-    
+
         }
     });
     html += "</tbody></table>";
@@ -590,7 +653,7 @@ function widgetNumberChange(data) {
         var fltChangeValue = (fltCurValuedata - fltPrevValue);
         fltChangeValue = fltChangeValue.toFixed(intDecPlace);
         var strFooter = "";
-        
+
         html += "<div class='t1-widget-footer' style='margin-top: 30px;'>";
         if (fltChangeValue > 0) {
             strFooter = "<div class='t1-widget-percent-medium-green'>&#9650 " + fltChangeValue + " " + strUOM + "</div>";
@@ -629,7 +692,7 @@ function widgetHistChart(data) {
 
         html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
         html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
-        
+
         $('#t1-widget-container' + data.dwid).html(html);
 
         $('.peity' + data.dwid).peity(strChartType, {
@@ -641,7 +704,7 @@ function widgetHistChart(data) {
         $('#t1-widget-container' + data.dwid).html('Error');
     }
 
-    
+
 }
 
 
@@ -900,17 +963,17 @@ function widgetSystemOverview(data) {
     var html;
     try {
         html = "<table class='w-misc-table'>";
-        
+
         html += "<tr><td><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL1', 'SM') + "%</div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL2', 'SM') + "GB</div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL3', 'VALUE') + "</div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + getScalarVal(data, 'SQL4', 'VALUE') + "</div></td></tr>";
-    
+
         html += "<tr><td class='t1-widget-text-table'>Total CPU</td>";
         html += "<td class='t1-widget-text-table'>Memory</td>";
         html += "<td class='t1-widget-text-table'>Services Started</td>";
         html += "<td class='t1-widget-text-table'>Distributed</td></tr>";
-    
+
         html += "</table>";
     } catch (err) {
         html = 'Error';
@@ -924,13 +987,13 @@ function widgetTableSizes(data) {
     try {
         var datapoints = JSON.parse(data.SQL1);
         html = "<table class='w-misc-table' style='margin-top: 25px;'>";
-    
+
         html += "<tr><td><div class='t1-widget-text-medium'>" + datapoints[0].rows + "<sup>GB</sup></div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + datapoints[0].cols + "<sup>GB</sup></div></td>";
-    
+
         html += "<tr><td class='t1-widget-text-table'><img src='img/row-tables.png' />&nbsp;&nbsp;Rows</td>";
         html += "<td class='t1-widget-text-table'><img src='img/col-tables.png' />&nbsp;&nbsp;Columns</td>";
-    
+
         html += "</table>";
     } catch (err) {
         html = 'Error';
@@ -944,11 +1007,11 @@ function widgetDBMemoryOverview(data) {
     try {
         var datapoints = JSON.parse(data.SQL1);
         html = "<table width='100%' style='align: center;'>";
-    
+
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].ALLOCATION_LIMIT + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Allocated</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].PEAK + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Peak</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].TOTAL_MEMORY_USED_SIZE + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Used</td></tr>";
-    
+
         html += "</table>";
     } catch (err) {
         html = 'Error';
@@ -962,11 +1025,11 @@ function widgetResMemoryOverview(data) {
     try {
         var datapoints = JSON.parse(data.SQL1);
         html = "<table width='100%' style='align: center;'>";
-    
+
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].TOTAL_PHYSICAL_MEMORY + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Physical</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].TOTAL_MEMORY + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB Total Resident</td></tr>";
         html += "<tr><td><div class='w-mem-td t1-widget-text-medium' style='text-align:right; line-height: 1.05;'>" + datapoints[0].PHYSICAL_MEMORY + "</div></td><td class='t1-widget-text-table w-memtext-td' style='text-align: left;'>&nbsp;GB DB Resident</td></tr>";
-    
+
         html += "</table>";
     } catch (err) {
         html = 'Error';
@@ -980,17 +1043,17 @@ function widgetFunnel(data) {
     try {
         var datapoints = JSON.parse(data.SQL1);
         html = "<table class='w-funnel-table'>";
-    
+
         var itemmax = datapoints[0].STATUS;
         var itemmid = Math.round(((datapoints[1].STATUS / itemmax) * 100));
         var itemmin = Math.round((datapoints[2].STATUS / itemmax) * 100);
         var permax = (100 - (itemmid + itemmin));
-    
+
         html += "<tr><td style='background-color: #f55b4c; width: 50px;'></td><td class='t1-widget-text-table' style='width: 50px; text-align:left; width: 70px; color: #f55b4c;padding-left: 10px; height: " + permax + "%;'>" + datapoints[0].STATUS + " Connections</td>";
         html += "<td rowspan='3' style='width: 200px;'><img src='img/funnel-summary.png' /><font style='font-size: 40px; color: #CCC;'>&nbsp;&nbsp;" + (parseInt(datapoints[0].STATUS) + parseInt(datapoints[1].STATUS) + parseInt(datapoints[2].STATUS)) + "</font></td><td rowspan='3'></td></tr>";
         html += "<tr><td style='background-color: #FFDD72; width: 50px;'></td><td class='t1-widget-text-table' style='text-align:left; padding-left: 10px; color: #FFDD72; height: " + itemmid + "%'>" + datapoints[1].STATUS + " Idle</td></tr>";
         html += "<tr><td style='background-color: #5BD993; width: 50px;'></td></td><td class='t1-widget-text-table' style='text-align:left; padding-left: 10px; color: #5BD993; height: " + itemmin + "%'>" + datapoints[2].STATUS + " Running</td></tr>";
-    
+
         html += "</table>";
     } catch (err) {
         html = 'Error';
@@ -1006,11 +1069,11 @@ function widgetSystemAlerts(data) {
     try {
         var arrAlerts = new Array([]);
         arrAlerts = JSON.parse(data.SQL1);
-    
+
         //"[{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.STAT_VIEW_HOST_BLOCKED_TRANSACTIONS (139 current operation cancelled by request and transaction rolled back:  [2625] execution plan aborted (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:32:01.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"1 new runtime dump file(s) found on host saphana","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 13:31:33.0000000","HOST":"*","ALERT_ID":"46","ALERT_NAME":"RTEdump files","ALERT_DESCRIPTION":"Identifies new runtime dump files (*rtedump*) have been generated in the trace directory of the system. These contain information about, for example, build, loaded modules, running threads, CPU, and so on.","ALERT_USERACTION":"Check the contents of the dump files."},{"ALERT_DETAILS":"Error reading data from table STATISTICSSERVER.HOST_VOLUME_IO_DETAILED_STATISTICS (3584 distributed SQL error:  [2617] executor: plan operation execution failed with an exception (HY000))","ALERT_RATING":"5","ALERT_TIMESTAMP":"2014-09-24 13:31:32.0000000","HOST":"*","ALERT_ID":"0","ALERT_NAME":"Internal statistics server problem","ALERT_DESCRIPTION":"Identifies internal statistics server problem.","ALERT_USERACTION":"Resolve the problem. For more information, see the trace files. You may need to activate tracing first."},{"ALERT_DETAILS":"There are currently 502 diagnosis files. This might indicate a problem with trace file rotation, a high number of crashes, or another issue.","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"50","ALERT_NAME":"Number of diagnosis files","ALERT_DESCRIPTION":"Determines the number of diagnosis files written by the system. An unusually large number of files can indicate a problem with the database (for example, problem with trace file rotation or a high number of crashes).","ALERT_USERACTION":"Investigate the diagnosis files."},{"ALERT_DETAILS":"The SAP_INTERNAL_HANA_SUPPORT role is currently granted to 1 user(s).","ALERT_RATING":"2","ALERT_TIMESTAMP":"2014-09-24 13:16:46.0000000","HOST":"*","ALERT_ID":"63","ALERT_NAME":"Granting of SAP_INTERNAL_HANA_SUPPORT role","ALERT_DESCRIPTION":"Determines if the internal support role (SAP_INTERNAL_HANA_SUPPORT) is currently granted to any database users.","ALERT_USERACTION":"Check if the corresponding users still need the role. If not, revoke the role from them."},{"ALERT_DETAILS":"Data backup does not exist. Without a data backup, your database cannot be recovered.","ALERT_RATING":"4","ALERT_TIMESTAMP":"2014-09-24 08:16:31.0000000","HOST":"*","ALERT_ID":"35","ALERT_NAME":"Existence of data backup","ALERT_DESCRIPTION":"Determines whether or not a data backup exists. Without a data backup, your database cannot be recovered.","ALERT_USERACTION":"Perform a data backup as soon as possible."},{"ALERT_DETAILS":"Your license will expire in 14 days. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_RATING":"3","ALERT_TIMESTAMP":"2014-09-23 20:00:14.0000000","HOST":"*","ALERT_ID":"31","ALERT_NAME":"License expiry","ALERT_DESCRIPTION":"Determines how many days until your license expires. Once your license expires, you can no longer use the system, except to install a new license.","ALERT_USERACTION":"Obtain a valid license and install it. For the exact expiration date, see the monitoring view M_LICENSE."}]"
-    
+
         html = "<div id='w-sysalerts-rotator'>";
-    
+
         for (var i = 0; i < arrAlerts.length; i++) {
             var img;
             if (arrAlerts[i].ALERT_RATING === '4') {
@@ -1020,7 +1083,7 @@ function widgetSystemAlerts(data) {
             } else {
                 img = '<img src="img/OKIcon.png">';
             }
-    
+
             html += "<div id='sysalert" + i + "'>";
             html += "<table class='w-sysalerts-table'>";
             html += "<tr>";
@@ -1030,7 +1093,7 @@ function widgetSystemAlerts(data) {
             html += "</table>";
             html += "</div>";
         }
-    
+
         if (arrAlerts.length === 0) {
             html += "<div id='sysalert0'>";
             html += "<table class='w-sysalerts-table'>";
@@ -1041,12 +1104,12 @@ function widgetSystemAlerts(data) {
             html += "</table>";
             html += "</div>";
         }
-    
+
         html += "</div>"; /* Close <div id="aniHolder"> */
     } catch (err) {
         html = 'Error';
     }
-    
+
     $('#t1-widget-container' + data.dwid).html(html);
 
     widgetAlertRotator();
@@ -1058,11 +1121,11 @@ function widgetUserAlerts(data) {
     try {
         var arrAlerts = new Array([]);
         arrAlerts = JSON.parse(data.SQL1);
-    
+
         //"[{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/05/14 12:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"09/04/14 10:09:15","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 12:08:24","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:08","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"},{"ALERT_ID":"17","OPERATOR":">","V1":"80","ACTUAL":"81","TO_CHAR(ADDED,'MM/DD/YY HH:MM:SS')":"08/29/14 10:08:13","VALUE":"80","NOTIFY":"","COND":"value","TITLE":"Sensor 1"}]"
-    
+
         html = "<div id='w-useralerts-rotator'>";
-    
+
         for (var i = 0; i < arrAlerts.length; i++) {
             var img;
             html += "<div id='useralert" + i + "'>";
@@ -1074,7 +1137,7 @@ function widgetUserAlerts(data) {
             html += "</table>";
             html += "</div>";
         }
-    
+
         if (arrAlerts.length === 0) {
             html += "<div id='useralert0'>";
             html += "<table class='w-useralerts-table'>";
@@ -1085,7 +1148,7 @@ function widgetUserAlerts(data) {
             html += "</table>";
             html += "</div>";
         }
-    
+
         html += "</div>"; /* Close <div id="aniHolder"> */
     } catch (err) {
         html = 'Error';
@@ -1100,7 +1163,7 @@ function widgetSensorAPI(data) {
     //Requires data.dwid, data.VALUE, data.UOM1, data.TEXT1
     var html;
     try {
-       html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
+        html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
         html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";
     } catch (err) {
         html = err;
@@ -1112,7 +1175,7 @@ function widgetSensorAPI(data) {
 function metricHANAOverview(data) {
     //Requires data.dwid
     try {
-        
+
         if (typeof window.m2DiskData === 'undefined') {
             window.m2DiskData = [];
             window.m2RAMData = [];
@@ -1121,168 +1184,168 @@ function metricHANAOverview(data) {
             window.m2ActiveUsers = [];
             window.m2Timestamps = [];
         }
-        
+
         window.m2Timestamps.push(moment().format('ll h:mm:ss a')); // Peity
         window.m2DiskData.push(getScalarVal(data, 'SQL1', 'DATA_DISK_SIZE')); // Peity
         window.m2RAMData.push(getScalarVal(data, 'SQL1', 'MEM')); // Peity
-        window.m2ConnectionsData.push(getScalarVal(data, 'SQL1', 'RUNNING'));  // Peity
+        window.m2ConnectionsData.push(getScalarVal(data, 'SQL1', 'RUNNING')); // Peity
         window.m2ActiveUsers.push(getScalarVal(data, 'SQL1', 'ACTIVE'));
         window.m2CPUData.push(getScalarVal(data, 'SQL1', 'CPU')); // Peity
-    
+
         //Trim large graphs to length
-        if (window.m2DiskData.length > 50){
+        if (window.m2DiskData.length > 50) {
             window.m2DiskData.splice(0, 1);
             window.m2RAMData.splice(0, 1);
             window.m2CPUData.splice(0, 1);
-            window.m2Timestamps.splice(0,1);
+            window.m2Timestamps.splice(0, 1);
         }
-        
+
         //Trim background/small graphs to length
-        if (window.m2ConnectionsData.length > 10){
+        if (window.m2ConnectionsData.length > 10) {
             window.m2ConnectionsData.splice(0, 1);
             window.m2ActiveUsers.splice(0, 1);
         }
-    
-    
+
+
         var html = "<div class='col-md-3' style='margin-top: 15px;'>";
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
-                                html += "<span class='connections" + data.dwid + "'>" + window.m2ConnectionsData.toString() + "</span>";
-                            html += "</div>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>Connections</div>";
-                                html += "<div class='huge'>" + window.m2ConnectionsData[window.m2ConnectionsData.length - 1] + "</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
-                                html += "<span class='activeusers" + data.dwid + "'>" + window.m2ActiveUsers.toString() + "</span>";
-                            html += "</div>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>Active Users</div>";
-                                html += "<div class='huge'>" + window.m2ActiveUsers[window.m2ActiveUsers.length - 1] + "</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>All Services Started</div>";
-                                html += "<div class='huge'>OK</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>Blocked Transactions</div>";
-                                html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'BLOCKED') + "</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>Unsuccessful Connections</div>";
-                                html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'INVALID_CONS') + "</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-                html += "<div class='panel panel-primary'>";
-                    html += "<div class='panel-heading'>";
-                        html += "<div class='row'>";
-                            html += "<div class='col-xs-12 text-left'>";
-                                html += "<div>System Type</div>";
-                                html += "<div class='huge'>Single</div>";
-                            html += "</div>";
-                        html += "</div>";
-                    html += "</div>";
-                html += "</div>";
-                
-            html += "</div>";
-            
-            html += "<div class='col-md-9' style='padding-right: 60px;'>";
-                html += "<div class='row' style='margin-top: 30px;'>";
-                    html += "<span class='pull-right'><h4 id='dt'>" + moment().format('ll h:mm:ss a') + "</h4></span>";
-                html += "</div>";
-                html += "<div class='row' style='margin-top: 50px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9992; margin-bottom: 10px;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
-                    html += "<span class='cpu" + data.dwid + "'>" + window.m2CPUData.toString() + "</span>";
-                html += "</div>";
-                html += "<div class='row' style='margin-top: 50px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9990; margin-bottom: 10px;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
-                    html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
-                html += "</div>";
-                html += "<div class='row' style='margin-top: 50px;'>";
-                    html += "<h3 class='pull-left' style='color: #999; z-index: 9994; margin-bottom: 10px;'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
-                    html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
-                html += "</div>";
-            html += "</div>";
-            
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
+        html += "<span class='connections" + data.dwid + "'>" + window.m2ConnectionsData.toString() + "</span>";
+        html += "</div>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>Connections</div>";
+        html += "<div class='huge'>" + window.m2ConnectionsData[window.m2ConnectionsData.length - 1] + "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-11' id='connGraph' style='position: absolute; margin-top: 41px;'>";
+        html += "<span class='activeusers" + data.dwid + "'>" + window.m2ActiveUsers.toString() + "</span>";
+        html += "</div>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>Active Users</div>";
+        html += "<div class='huge'>" + window.m2ActiveUsers[window.m2ActiveUsers.length - 1] + "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>All Services Started</div>";
+        html += "<div class='huge'>OK</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>Blocked Transactions</div>";
+        html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'BLOCKED') + "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>Unsuccessful Connections</div>";
+        html += "<div class='huge'>" + getScalarVal(data, 'SQL1', 'INVALID_CONS') + "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "<div class='panel panel-primary'>";
+        html += "<div class='panel-heading'>";
+        html += "<div class='row'>";
+        html += "<div class='col-xs-12 text-left'>";
+        html += "<div>System Type</div>";
+        html += "<div class='huge'>Single</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+        html += "</div>";
+
+        html += "</div>";
+
+        html += "<div class='col-md-9' style='padding-right: 60px;'>";
+        html += "<div class='row' style='margin-top: 30px;'>";
+        html += "<span class='pull-right'><h4 id='dt'>" + moment().format('ll h:mm:ss a') + "</h4></span>";
+        html += "</div>";
+        html += "<div class='row' style='margin-top: 50px;'>";
+        html += "<h3 class='pull-left' style='color: #999; z-index: 9992; margin-bottom: 10px;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
+        html += "<span class='cpu" + data.dwid + "'>" + window.m2CPUData.toString() + "</span>";
+        html += "</div>";
+        html += "<div class='row' style='margin-top: 50px;'>";
+        html += "<h3 class='pull-left' style='color: #999; z-index: 9990; margin-bottom: 10px;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
+        html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
+        html += "</div>";
+        html += "<div class='row' style='margin-top: 50px;'>";
+        html += "<h3 class='pull-left' style='color: #999; z-index: 9994; margin-bottom: 10px;'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
+        html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
+        html += "</div>";
+        html += "</div>";
+
         $('#t1-widget-container' + data.dwid).html(html);
-        
+
         //Small background charts
         $('.connections' + data.dwid).peity('bar', {
-                width: $("#connGraph").width(),
-                height: 40,
-                fill: ["#F7F7F7"]
+            width: $("#connGraph").width(),
+            height: 40,
+            fill: ["#F7F7F7"]
         });
-        
+
         $('.activeusers' + data.dwid).peity('bar', {
-                width: $("#connGraph").width(),
-                height: 40,
-                fill: ["#F7F7F7"]
+            width: $("#connGraph").width(),
+            height: 40,
+            fill: ["#F7F7F7"]
         });
-        
-        
+
+
         //Larger Charts
         $('.cpu' + data.dwid).peity('bar', {
-                width: parseInt(data.width) * 175,
-                height: 200,
-                fill: ["#2A89C1"]
+            width: parseInt(data.width) * 175,
+            height: 200,
+            fill: ["#2A89C1"]
         });
-        
+
         $('.ram' + data.dwid).peity('bar', {
-                width: parseInt(data.width) * 175,
-                height: 200,
-                fill: ["#8FBC8F"]
+            width: parseInt(data.width) * 175,
+            height: 200,
+            fill: ["#8FBC8F"]
         });
-        
+
         $('.disk' + data.dwid).peity('line', {
-                width: parseInt(data.width) * 175,
-                height: 200,
-                fill: ["#778899"]
+            width: parseInt(data.width) * 175,
+            height: 200,
+            fill: ["#778899"]
         });
-        
+
         $('rect').hover(
-            function(){
+            function() {
                 $("#dt").html(window.m2Timestamps[$(this).index()]);
             }
         );
-        
-        
+
+
     } catch (err) {
         html = err;
     }
-    
+
 }
 
 function metricLabel(data) {
