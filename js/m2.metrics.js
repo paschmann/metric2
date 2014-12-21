@@ -289,7 +289,7 @@ function metricDataByState(data) {
     //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
     try {
         var objDataSet = JSON.parse(data.SQL1);
-        $('#t1-widget-container' + data.dwid).html('<div id="maplabel' + data.dwid + '">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
+        $('#t1-widget-container' + data.dwid).html('<div id="maplabel' + data.dwid + '" class="maplabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
 
         var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
@@ -325,7 +325,7 @@ function metricDataByState(data) {
                         st[0].style.fill = "rgba(252,143,42, " + val + ")";
                         
                         st[0].onmouseover = function () {
-                            $("#maplabel" + data.dwid).html(state + " " + parseFloat(value));
+                            $("#maplabel" + data.dwid).html(state + ", " + parseFloat(value));
                         };
                         
                         st[0].onmouseout = function () {
