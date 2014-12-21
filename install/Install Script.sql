@@ -155,7 +155,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (43,'Gauge','43.png','Query','metricGau
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (44,'Clock','44.png','Query','metricClock','Client','Displays a clock',2,0,2,2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (45,'HANA Overview','45.png','Query','metricHANAOverview','Client','Displays a HANA Instance overview',1,0,4,6);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (46,'Label','46.png','Label','metricLabel','Client','Displays a dashboard label',2,0,null,null);
-
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (47,'US State Map', '47.png','Query','metricDataByState','Client','Displays a map of the US by State. Expects a 2 letter State and Value.', 2, 2, 2, 2);
 
 -- Widget Params
 -- widgetTextAndFooter
@@ -334,6 +334,11 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (172,46,'TEXT1','Static','',100,1
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (173,46,'FONTSIZE','Static','',200,1,'Font size in px','Font Size','true',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (174,46,'FONTCOLOR','Static','',300,1,'Font color in Hex (e.g #333333)','Font Color','true',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','Static','',400,1,'Font alignment (e.g left, center, right)','Font Alignment','true',null,0,null);
+
+-- US State Map Widget
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,'SQL1','SQL','SELECT MET2FLMET2 as STATE, MET210,000MET2 as VALUE FROM DUMMY',200,0,'SQL Query for details','SQL Query','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (177,47,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
+
 
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
