@@ -289,11 +289,11 @@ function metricDataByState(data) {
     //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
     try {
         var objDataSet = JSON.parse(data.SQL1);
-        $('#t1-widget-container' + data.dwid).html('<div id="maplabel' + data.dwid + '" class="maplabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
+        $('#t1-widget-container' + data.dwid).html('<div class="maplabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="statevalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="statelabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
 
         var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
-                "fill": "#FFF9F4",
+                "fill": "#DEEDF6",
                 "stroke": "#fff",
                 "stroke-opacity": "1",
                 "stroke-linejoin": "round",
@@ -317,19 +317,24 @@ function metricDataByState(data) {
                     st[0].style.cursor = "pointer";
                     if (objDataSet[i].STATE === state){
                         var len = objDataSet[i].VALUE.length;
+                        var statename = objDataSet[i].STATE_NAME;
                         var val = parseFloat(objDataSet[i].VALUE);
                         var value = objDataSet[i].VALUE;
+                        var uom = data.UOM1;
+                        
                         for (var t = 1; t <= len; t++){
                             val = val / 10;
                         }
-                        st[0].style.fill = "rgba(252,143,42, " + val + ")";
+                        st[0].style.fill = "rgba(42, 137, 193," + val + ")";
                         
                         st[0].onmouseover = function () {
-                            $("#maplabel" + data.dwid).html(state + ", " + parseFloat(value));
+                            $("#statelabel" + data.dwid).html(statename);
+                            $("#statevalue" + data.dwid).html(uom + parseFloat(value).toString());
                         };
                         
                         st[0].onmouseout = function () {
-                            $("#maplabel" + data.dwid).html('&nbsp;');
+                            $("#statelabel" + data.dwid).html('&nbsp;');
+                            $("#statevalue" + data.dwid).html('&nbsp;');
                         };
                     }
                 }
