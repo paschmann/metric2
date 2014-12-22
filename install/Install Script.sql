@@ -336,10 +336,10 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (174,46,'FONTCOLOR','Static','',3
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','Static','',400,1,'Font alignment (e.g left, center, right)','Font Alignment','true',null,0,null);
 
 -- US State Map Widget
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,'SQL1','SQL','SELECT MET2FLMET2 as STATE, MET210,000MET2 as VALUE FROM DUMMY',200,0,'SQL Query for details','SQL Query','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (177,47,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
-
-
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,'SQL1','SQL','SELECT MET2FLMET2 as STATE, MET210,000MET2 as VALUE FROM DUMMY',200,0,'SQL Query for details','SQL Query','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (178,47,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (179,47,'UOM1','OPTION',' ',400,0,'Optional, Unit of measure for the value','UOM','true',2,0, null);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (2,'bar','Bar',1);
