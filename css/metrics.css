@@ -13,7 +13,27 @@ table{
 }
 
 .map{
-    margin-top: 50px;
+    margin-top: 20px;
+}
+
+.statevalue{
+    text-align: left;
+    font-weight: 300;
+    font-size: 20px;
+    padding-left: 15px;
+}
+
+.statelabel{
+    text-align: left;
+    font-size: 10px;
+    padding-left: 15px;
+}
+
+.maplabel{
+    text-align: left;
+    font-size: 10px;
+    padding-left: 15px;
+    padding-top: 10px;
 }
 
 .w-misc-table{
