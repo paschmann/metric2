@@ -289,8 +289,9 @@ function metricDataByState(data) {
     //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
     try {
         var objDataSet = JSON.parse(data.SQL1);
-        $('#t1-widget-container' + data.dwid).html('<div class="maplabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="statevalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="statelabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"></div>');
-
+        $('#t1-widget-container' + data.dwid).html('<div class="maplabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="statevalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="statelabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"><div class="maplegend" id="legend' + data.dwid + '"></div></div>');
+        
+        var rgb = "rgba(42, 137, 193,";
         var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
                 "fill": "#DEEDF6",
@@ -309,11 +310,13 @@ function metricDataByState(data) {
             usRaphael[state] = R.path(usMap[state]).attr(attr);
             states.push(usRaphael[state]);
         }
-
+    
+        var arrValues = [];
         //Color States
         for (var state in usRaphael) {
             (function (st, state) {
                 for (var i = 0; i <= objDataSet.length - 1; i++){
+                    arrValues.push(objDataSet[i].VALUE);
                     st[0].style.cursor = "pointer";
                     if (objDataSet[i].STATE === state){
                         var len = objDataSet[i].VALUE.length;
@@ -325,26 +328,24 @@ function metricDataByState(data) {
                         for (var t = 1; t <= len; t++){
                             val = val / 10;
                         }
-                        st[0].style.fill = "rgba(42, 137, 193," + val + ")";
+                        st[0].style.fill = rgb + val + ")";
                         
                         st[0].onmouseover = function () {
                             $("#statelabel" + data.dwid).html(statename);
-                            $("#statevalue" + data.dwid).html(uom + parseFloat(value).toString());
-                        };
-                        
-                        st[0].onmouseout = function () {
-                            $("#statelabel" + data.dwid).html('&nbsp;');
-                            $("#statevalue" + data.dwid).html('&nbsp;');
+                            $("#statevalue" + data.dwid).html(uom + numeral(parseFloat(value)).format('0.00a').toString());
                         };
                     }
                 }
             })(usRaphael[state], state);
         }
-
-
+        
+        var minVal = numeral(Math.min.apply(Math, arrValues).toString()).format('0.00a');
+        var maxVal = numeral(Math.max.apply(Math, arrValues).toString()).format('0.00a');
+        
+        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + minVal + "&nbsp;</td><td style='background-color: " + rgb + "0.10);'>&nbsp;</td><td style='background-color: " + rgb + "0.30);'></td><td style='background-color: " + rgb + "0.50);'>&nbsp;</td><td style='background-color: " + rgb + "0.70);'>&nbsp;</td><td style='background-color: " + rgb + "0.90);'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + maxVal + "&nbsp;&nbsp;</td></tr></table>");
         states.scale("0.5,0.5 0,0");
     } catch (err) {
-        $('#t1-widget-container' + data.dwid).html('Error');
+        $('#t1-widget-container' + data.dwid).html(err.description);
     }
 }
 
