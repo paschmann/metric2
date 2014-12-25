@@ -156,6 +156,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (44,'Clock','44.png','Query','metricClo
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (45,'HANA Overview','45.png','Query','metricHANAOverview','Client','Displays a HANA Instance overview',1,0,4,6);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (46,'Label','46.png','Label','metricLabel','Client','Displays a dashboard label',2,0,null,null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (47,'US State Map', '47.png','Query','metricDataByState','Client','Displays a map of the US by State. Expects a 2 letter State and Value.', 2, 2, 2, 2);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (48,'Donut Chart', '48.png','Query','metricDonut','Client','Displays a donut chart.', 2, 0, null, null);
 
 -- Widget Params
 -- widgetTextAndFooter
@@ -337,9 +338,15 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','Static','',4
 
 -- US State Map Widget
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (177,47,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,'SQL1','SQL','SELECT MET2FLMET2 as STATE, MET210,000MET2 as VALUE FROM DUMMY',200,0,'SQL Query for details','SQL Query','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,'SQL1','SQL','SELECT * FROM SALES.STATE_SALES',200,0,'SQL Query for details','SQL Query','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (178,47,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (179,47,'UOM1','OPTION',' ',400,0,'Optional, Unit of measure for the value','UOM','true',2,0, null);
+
+-- Donut Chart
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (180,48,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (181,48,'SQL1','SQL','SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM SALES.STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC LIMIT 5',200,0,'SQL Query for details','SQL Query','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (182,48,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (183,48,'UOM1','OPTION',' ',400,0,'Optional, Unit of measure for the value','UOM','true',2,0, null);
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (2,'bar','Bar',1);
