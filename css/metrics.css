@@ -12,34 +12,40 @@ table{
     width: 100%;
 }
 
+.donutdiv {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 10%;
+}
+
 .map{
-    margin-top: 20px;
+    margin-top: 10px;
     position: relative;
 }
 
-.maplegend table {
+.metriclegend table {
     width: 180px;
     position: absolute;
-    top: 310px;
+    top: 320px;
     float: right;
     right: 0;
 }
 
-.statevalue{
+.metricvalue{
     text-align: left;
     font-weight: 300;
     font-size: 24px;
     padding-left: 15px;
 }
 
-.statelabel{
+.smalllabel{
     text-align: left;
     font-size: 14px;
     padding-left: 15px;
     color: #ccc;
 }
 
-.maplabel{
+.metriclabel{
     text-align: left;
     font-size: 14px;
     padding-left: 15px;
@@ -172,7 +178,6 @@ t1-widget-header-div{
     color: #CCC;
     margin-top: 2px;
 }
-
 
 .t1-widget-peity {
     height: 40%;
