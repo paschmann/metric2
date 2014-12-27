@@ -29,11 +29,16 @@ function updateUser(){
     var company = $.request.parameters.get('company');
     var name = $.request.parameters.get('name');
     var password = $.request.parameters.get('password');
-    var tmpUserID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "'");
-
     var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
-    password = hash(password, dt);
-    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email_domain = '" + company + "', email = '" + email + "', password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
+    var tmpUserID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "'");
+    
+    if (password.length > 0){
+        password = hash(password, dt);
+        var SQL = "UPDATE METRIC2.M2_USERS SET password = '" + password + "' WHERE user_id = " + tmpUserID;
+        sqlLib.executeQuery(SQL);
+    }
+    
+    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email = '" + email + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
     sqlLib.executeQuery(SQL);
     return SQL;
 }
