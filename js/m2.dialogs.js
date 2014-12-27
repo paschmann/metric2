@@ -440,8 +440,8 @@ function showProfileDialog(objData){
 	output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='col-sm-5'><input type='text' class='form-control' placeholder='First name' id='name' name='name' value = '" + objData[0].NAME + "' /></div></div>";
 	output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + objData[0].LNAME + "' /></div></div>";
 	output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='col-sm-9'><input type='text' class='form-control' required='true' placeholder='Email Address' name='email' id='email' value = '" + objData[0].EMAIL + "' /></div></div>";
-	output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-5'><input type='password' class='form-control' required='true' placeholder='Password' name='password' id='password' value = '' /></div></div>";
+	//output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-5'><input type='password' class='form-control' placeholder='Password' name='password' id='password' value = '' /></div></div>";
     dialogConstructor("Edit Profile", false, true, output, 1, true, false);
 }
 
