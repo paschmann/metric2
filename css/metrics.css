@@ -12,6 +12,11 @@ table{
     width: 100%;
 }
 
+.treemap{
+    display: block;
+    margin: 10px;
+}
+
 .donutdiv {
     padding-left: 10%;
     padding-right: 10%;
