@@ -326,9 +326,7 @@ function metricDataByState(data) {
                 for (var i = 0; i <= objDataSet.length - 1; i++) {
                     st[0].style.cursor = "pointer";
                     if (objDataSet[i].STATE === state) {
-                        //var len = objDataSet[i].VALUE.length;
                         var statename = objDataSet[i].STATE_NAME;
-                        //var val = parseFloat(objDataSet[i].VALUE);
                         var value = objDataSet[i].VALUE;
                         var uom = data.UOM1;
 
@@ -1402,16 +1400,29 @@ function metricDonut(data) {
     });
 }
 
-function metricTreemap(data){
-    
+function metricTreemap(data) {
+
     try {
         var objDataSet = JSON.parse(data.SQL1);
-        
+
+        var arrValues = [];
+        for (var i = 0; i <= objDataSet.length - 1; i++) {
+            var objVal = {};
+            var objChild = {};
+            objVal.name = i;
+
+            objChild.NAME = objDataSet[i].NAME;
+            objChild.VALUE = objDataSet[i].VALUE;
+
+            objVal.children = objChild;
+            arrValues.push(objVal);
+        }
+
         var treedata = {
             "name": "treemap",
             "children": objDataSet
         };
-        
+
         var w = 220 * data.width,
             h = 210 * data.height,
             x = d3.scale.linear().range([0, w]),
@@ -1419,88 +1430,208 @@ function metricTreemap(data){
             color = d3.scale.category20c(),
             root,
             node;
-    
+
         var treemap = d3.layout.treemap()
             .round(false)
             .size([w, h])
             .sticky(true)
-            .value(function(d) { return d.VALUE; });
-    
+            .value(function(d) {
+                return d.VALUE;
+            });
+
         var svg = d3.select("#t1-widget-container" + data.dwid).append("div")
             .attr("class", "treemap")
             .style("width", w + "px")
             .style("height", h + "px")
-          .append("svg:svg")
+            .append("svg:svg")
             .attr("width", w)
             .attr("height", h)
-          .append("svg:g")
+            .append("svg:g")
             .attr("transform", "translate(.5,.5)");
-    
+
         node = root = treedata;
-    
-          var nodes = treemap.nodes(root)
-              .filter(function(d) { 
-                  return !d.children; 
+
+        var nodes = treemap.nodes(root)
+            .filter(function(d) {
+                return !d.children;
             });
-    
-          var cell = svg.selectAll("g")
-              .data(nodes)
-                .enter().append("svg:g")
-              .attr("class", "cell")
-              .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-              .on("click", function(d) { return zoom(node == d.parent ? root : d.parent); });
-    
-          cell.append("svg:rect")
-              .attr("width", function(d) { return d.dx - 1; })
-              .attr("height", function(d) { return d.dy - 1; })
-              .style("fill", function(d) { return color(d.parent.name); });
-    
-          cell.append("svg:text")
-              .attr("x", function(d) { return d.dx / 2; })
-              .attr("y", function(d) { return d.dy / 2; })
-              .attr("dy", ".25em")
-              .attr("text-anchor", "middle")
-              .text(function(d) { return d.NAME; })
-              .style("opacity", function(d) { d.w = this.getComputedTextLength(); return d.dx > d.w ? 1 : 0; })
-              .style("font-size", "10px");
-    
-          d3.select(window).on("click", function() { zoom(root); });
-    
-          d3.select("select").on("change", function() {
+
+        var cell = svg.selectAll("g")
+            .data(nodes)
+            .enter().append("svg:g")
+            .attr("class", "cell")
+            .attr("transform", function(d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            })
+            .on("click", function(d) {
+                return zoom(node == d.parent ? root : d.parent);
+            });
+
+        cell.append("svg:rect")
+            .attr("width", function(d) {
+                return d.dx - 1;
+            })
+            .attr("height", function(d) {
+                return d.dy - 1;
+            })
+            .style("fill", function(d) {
+                return color(d.parent.NAME);
+            });
+
+        cell.append("svg:text")
+            .attr("x", function(d) {
+                return d.dx / 2;
+            })
+            .attr("y", function(d) {
+                return d.dy / 2;
+            })
+            .attr("dy", ".25em")
+            .attr("text-anchor", "middle")
+            .text(function(d) {
+                return d.NAME;
+            })
+            .style("opacity", function(d) {
+                d.w = this.getComputedTextLength();
+                return d.dx > d.w ? 1 : 0;
+            })
+            .style("font-size", "10px");
+
+        d3.select(window).on("click", function() {
+            zoom(root);
+        });
+
+        d3.select("select").on("change", function() {
             treemap.value(this.value == "value" ? size : count).nodes(root);
             zoom(node);
-          });
-    
+        });
+
         function size(d) {
-          return d.size;
+            return d.size;
         }
-    
+
         function count(d) {
-          return 1;
+            return 1;
         }
-    
+
         function zoom(d) {
-          var kx = w / d.dx, ky = h / d.dy;
-          x.domain([d.x, d.x + d.dx]);
-          y.domain([d.y, d.y + d.dy]);
-    
-          var t = svg.selectAll("g.cell").transition()
-              .duration(d3.event.altKey ? 7500 : 750)
-              .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
-    
-          t.select("rect")
-              .attr("width", function(d) { return kx * d.dx - 1; })
-              .attr("height", function(d) { return ky * d.dy - 1; })
-    
-          t.select("text")
-              .attr("x", function(d) { return kx * d.dx / 2; })
-              .attr("y", function(d) { return ky * d.dy / 2; })
-              .style("opacity", function(d) { return kx * d.dx > d.w ? 1 : 0; });
-    
-          node = d;
-          d3.event.stopPropagation();
+            var kx = w / d.dx,
+                ky = h / d.dy;
+            x.domain([d.x, d.x + d.dx]);
+            y.domain([d.y, d.y + d.dy]);
+
+            var t = svg.selectAll("g.cell").transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .attr("transform", function(d) {
+                    return "translate(" + x(d.x) + "," + y(d.y) + ")";
+                });
+
+            t.select("rect")
+                .attr("width", function(d) {
+                    return kx * d.dx - 1;
+                })
+                .attr("height", function(d) {
+                    return ky * d.dy - 1;
+                })
+
+            t.select("text")
+                .attr("x", function(d) {
+                    return kx * d.dx / 2;
+                })
+                .attr("y", function(d) {
+                    return ky * d.dy / 2;
+                })
+                .style("opacity", function(d) {
+                    return kx * d.dx > d.w ? 1 : 0;
+                });
+
+            node = d;
+            d3.event.stopPropagation();
         }
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html("Error");
+    }
+}
+
+
+
+function metricDataByCountry(data) {
+    //Requires data.dwid, data.SQL1 (objDataSet[0].LABEL, objDataSet[0].VALUE)
+    try {
+        var objDataSet = JSON.parse(data.SQL1);
+        $('#t1-widget-container' + data.dwid).html('<div class="metriclabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="metricvalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="smalllabel">&nbsp;</div><div id="worldmap' + data.dwid + '" class="worldmap"><div class="metriclegend" id="legend' + data.dwid + '"></div></div>');
+
+        var rgb = "rgba(42, 137, 193,";
+
+        var r = Raphael("worldmap" + data.dwid, 300, 200),
+            attr = {
+                "fill": "#DEEDF6",
+                "stroke": "#fff",
+                "stroke-opacity": "1",
+                "stroke-linejoin": "round",
+                "stroke-miterlimit": "4",
+                "stroke-width": "0.75",
+                "stroke-dasharray": "none"
+            };
+
+        var arrCountryValues = [];
+
+        for (var i = 0; i <= objDataSet.length - 1; i++) {
+            arrCountryValues.push(objDataSet[i].VALUE);
+        }
+
+        var minVal = Math.min.apply(Math, arrCountryValues).toString();
+        var maxVal = Math.max.apply(Math, arrCountryValues).toString();
+
+        r.setStart();
+        var arrAllValues = [];
+        
+        for (var country in worldmap.shapes) {
+            var found = false;
+            var path = r.path(worldmap.shapes[country]);
+            var objCountryData = {};
+            
+            path[0].style.cursor = "pointer";
+
+            for (var i = 0; i <= objDataSet.length - 1; i++) {
+                if (objDataSet[i].COUNTRY === country) {
+                    
+                    objCountryData.COUNTRY = objDataSet[i].COUNTRY_NAME;
+                    var value = objDataSet[i].VALUE;
+                    var uom = data.UOM1;
+
+                    var val = value / maxVal * 10;
+                    path.attr({
+                        fill: rgb + val + ")",
+                        stroke: "#fff"
+                    });
+                    
+                    var fmtValue = uom + numeral(parseFloat(value)).format('0.00a').toString();
+                    objCountryData.VALUE = fmtValue;
+                    found = true;
+                }
+            }
+
+            if (found === false) {
+                objCountryData.COUNTRY = "&nbsp;";
+                objCountryData.VALUE = "&nbsp;";
+                path.attr({
+                    fill: "#DEEDF6",
+                    stroke: "#fff"
+                });
+            }
+            
+            path.hover(function() {
+                $("#statelabel" + data.dwid).html(arrAllValues[this.id].COUNTRY);
+                $("#statevalue" + data.dwid).html(arrAllValues[this.id].VALUE);
+            });
+            
+            arrAllValues.push(objCountryData);
+        }
+
+        var world = r.setFinish();
+        $("#legend" + data.dwid).html("<table style='margin-top: 40px; float: left; margin-left: 10px;'><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral(minVal).format('0.00a') + "&nbsp;</td><td style='background-color: " + rgb + "0.10);'>&nbsp;</td><td style='background-color: " + rgb + "0.30);'></td><td style='background-color: " + rgb + "0.50);'>&nbsp;</td><td style='background-color: " + rgb + "0.70);'>&nbsp;</td><td style='background-color: " + rgb + "0.90);'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
+        
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html(err.description);
     }
 }
