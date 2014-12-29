@@ -21,7 +21,7 @@ SAP HANA SPS6+ (SAP In-memory DB)
 XS Engine running (HTTP Server built into SAP HANA)
 
 
-####Section 1 - File download and install to HANA
+####Step 1 - File download and install to HANA
 
 #####**Delivery Unit** (SAP HANA Package)
 
@@ -31,10 +31,10 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 - Moves all files into a new project in eclipse and commit them from there
 
-####Section 2 – Schema creation
+####Step 2 – Schema creation
 Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install\install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2 (and is not changeable).
 
-####Section 3 – Sample data creation (optional)
+####Step 3 – Sample data creation (optional)
 Once you have completed sections 1 & 2, you can choose to run some of the included sql scripts which will populate your metric² system with sample/demo data. Select which sample data set you would like from the install folder, and execute the sql file included.
 
 
