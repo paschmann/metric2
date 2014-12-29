@@ -158,6 +158,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (46,'Label','46.png','Label','metricLab
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (47,'US State Map', '47.png','Query','metricDataByState','Client','Displays a map of the US by State.', 2, 2, 2, 2);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (48,'Donut Chart', '48.png','Query','metricDonut','Client','Displays a donut chart.', 2, 0, null, null);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (49,'Treemap', '49.png','Query','metricTreemap','Client','Displays a treemap chart.', 2, 0, null, null);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (50,'World Map', '50.png','Query','metricDataByCountry','Client','Displays a world map.', 2, 0, 2, 4);
 
 -- Widget Params
 -- widgetTextAndFooter
@@ -352,6 +353,13 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (182,48,'UOM1','OPTION',' ',400,0
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (183,49,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (184,49,'SQL1','SQL','SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM SALES.STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC',200,0,'SQL Query for details','SQL Query','true',null,0, null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (185,49,'GROUP','Static','',300,0,'Optional, Column name group for Treemap categories, should be returned by SQL','Grouping Column','true',2,0, null);
+
+-- 50. World Map
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (186,50,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (187,50,'SQL1','SQL','SELECT * FROM SALES.COUNTRY_SALES',200,0,'SQL Query for details','SQL Query','true',null,0, null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (188,50,'TEXT1','Static','',300,1,'Any form of Static Text','Text','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (189,50,'UOM1','OPTION',' ',400,0,'Optional, Unit of measure for the value','UOM','true',2,0, null);
+
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (2,'bar','Bar',1);
