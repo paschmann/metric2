@@ -206,7 +206,7 @@ function widgetDataMap(data) {
     try {
         var objDataSet = JSON.parse(data.SQL1);
         $('#t1-widget-container' + data.dwid).html('<div id="map' + data.dwid + '" class="map"></div>');
-
+        
         var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
                 "fill": "#d3d3d3",
@@ -291,10 +291,9 @@ function metricDataByState(data) {
         var objDataSet = JSON.parse(data.SQL1);
         $('#t1-widget-container' + data.dwid).html('<div class="metriclabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="metricvalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="smalllabel">&nbsp;</div><div id="map' + data.dwid + '" class="map"><div class="metriclegend" id="legend' + data.dwid + '"></div></div>');
 
-        var rgb = "rgba(42, 137, 193,";
         var R = Raphael("map" + data.dwid, 400, 300),
             attr = {
-                "fill": "#DEEDF6",
+                "fill": data.HEXCOLOR2,
                 "stroke": "#fff",
                 "stroke-opacity": "1",
                 "stroke-linejoin": "round",
@@ -330,11 +329,8 @@ function metricDataByState(data) {
                         var value = objDataSet[i].VALUE;
                         var uom = data.UOM1;
 
-                        var val = value / maxVal * 10;
-                        //for (var t = 1; t <= len; t++){
-                        //    val = val / 10;
-                        //}
-                        st[0].style.fill = rgb + val + ")";
+                        var val = value / maxVal;
+                        st[0].style.fill = blendColors(data.HEXCOLOR1, data.HEXCOLOR2, val);
 
                         st[0].onmouseover = function() {
                             $("#statelabel" + data.dwid).html(statename);
@@ -345,7 +341,7 @@ function metricDataByState(data) {
             })(usRaphael[state], state);
         }
 
-        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral(minVal).format('0.00a') + "&nbsp;</td><td style='background-color: " + rgb + "0.10);'>&nbsp;</td><td style='background-color: " + rgb + "0.30);'></td><td style='background-color: " + rgb + "0.50);'>&nbsp;</td><td style='background-color: " + rgb + "0.70);'>&nbsp;</td><td style='background-color: " + rgb + "0.90);'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
+        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral(minVal).format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.1) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.3) + "');'></td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.5) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.7) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.9) + "');'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
         states.scale("0.5,0.5 0,0");
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err.description);
@@ -1560,12 +1556,15 @@ function metricDataByCountry(data) {
         var objDataSet = JSON.parse(data.SQL1);
         $('#t1-widget-container' + data.dwid).html('<div class="metriclabel">' + data.TEXT1 + '</div><div id="statevalue' + data.dwid + '" class="metricvalue">&nbsp;</div><div id="statelabel' + data.dwid + '" class="smalllabel">&nbsp;</div><div id="worldmap' + data.dwid + '" class="worldmap"><div class="metriclegend" id="legend' + data.dwid + '"></div></div>');
 
-        var rgb = "rgba(42, 137, 193,";
-
+        var strStrokeColor = "#FFF";
+        var strBaseColor = data.HEXCOLOR1;
+        var strZeroValColor = data.HEXCOLOR1;
+        
+        
         var r = Raphael("worldmap" + data.dwid, 300, 200),
             attr = {
-                "fill": "#DEEDF6",
-                "stroke": "#fff",
+                "fill": strBaseColor,
+                "stroke": strStrokeColor,
                 "stroke-opacity": "1",
                 "stroke-linejoin": "round",
                 "stroke-miterlimit": "4",
@@ -1599,10 +1598,11 @@ function metricDataByCountry(data) {
                     var value = objDataSet[i].VALUE;
                     var uom = data.UOM1;
 
-                    var val = value / maxVal * 10;
+                    var val = (value / maxVal);
+                    
                     path.attr({
-                        fill: rgb + val + ")",
-                        stroke: "#fff"
+                        fill: blendColors(strBaseColor, data.HEXCOLOR2, val),
+                        stroke: strStrokeColor
                     });
                     
                     var fmtValue = uom + numeral(parseFloat(value)).format('0.00a').toString();
@@ -1615,21 +1615,21 @@ function metricDataByCountry(data) {
                 objCountryData.COUNTRY = "&nbsp;";
                 objCountryData.VALUE = "&nbsp;";
                 path.attr({
-                    fill: "#DEEDF6",
-                    stroke: "#fff"
+                    fill: strZeroValColor,
+                    stroke: strStrokeColor
                 });
             }
+            
+            arrAllValues.push(objCountryData);
             
             path.hover(function() {
                 $("#statelabel" + data.dwid).html(arrAllValues[this.id].COUNTRY);
                 $("#statevalue" + data.dwid).html(arrAllValues[this.id].VALUE);
             });
-            
-            arrAllValues.push(objCountryData);
         }
 
         var world = r.setFinish();
-        $("#legend" + data.dwid).html("<table style='margin-top: 40px; float: left; margin-left: 10px;'><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral(minVal).format('0.00a') + "&nbsp;</td><td style='background-color: " + rgb + "0.10);'>&nbsp;</td><td style='background-color: " + rgb + "0.30);'></td><td style='background-color: " + rgb + "0.50);'>&nbsp;</td><td style='background-color: " + rgb + "0.70);'>&nbsp;</td><td style='background-color: " + rgb + "0.90);'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
+        $("#legend" + data.dwid).html("<table style='margin-top: 40px; float: left; margin-left: 10px;'><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral("0").format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(strBaseColor, data.HEXCOLOR2, 0.1) + "'>&nbsp;</td><td style='background-color: " + blendColors(strBaseColor, data.HEXCOLOR2, 0.3) + "'></td><td style='background-color: " + blendColors(strBaseColor, data.HEXCOLOR2, 0.5) + "'>&nbsp;</td><td style='background-color: " + blendColors(strBaseColor, data.HEXCOLOR2, 0.7) + "'>&nbsp;</td><td style='background-color: " + blendColors(strBaseColor, data.HEXCOLOR2, 0.9) + "'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
         
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err.description);
