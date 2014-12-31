@@ -28,6 +28,12 @@ table{
     position: relative;
 }
 
+.worldmap {
+    padding: 0px 10px 10px 10px;
+    position: relative;
+    margin-top: -30px;
+}
+
 .metriclegend table {
     width: 180px;
     position: absolute;
