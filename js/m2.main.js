@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = 'Version 2.3.1';
+var m2version = 'Version 2.4.2';
 var userToken = 0;
 var intCurrentDashboardID = 1;
 var arrActiveTimers = [];
@@ -24,7 +24,6 @@ var objWidgets = {};
 $(document).ready(function() {
     configureLeftMenu();
     getUserToken();
-    console.log(userToken);
     if (userToken === '' || userToken === 0 || !userToken) {
         doLogout();
     } else {
@@ -38,6 +37,8 @@ $(document).ready(function() {
     if (showTour == true) {
         configureTour();
     }
+    
+    
 });
 
 function init() {
@@ -449,6 +450,24 @@ function loadDashboards(objDashboards) {
     } else if (intCurrentDashboardID !== '') {
         $("li[data-id='" + intCurrentDashboardID +"']").addClass('active');
     }
+    
+    loadDashboardSortable();
+}
+
+function loadDashboardSortable(){
+    $( "#dashboards" ).sortable({
+        helper : 'clone'
+    });
+    $( "#dashboards" ).disableSelection();
+    $( "#dashboards" ).sortable({
+        stop: function( ) {
+            var order = JSON.stringify($("#dashboards").sortable("toArray"));
+            getDataSet({
+                strService: 'SaveDashboardPositions', 
+                strDashboardPos: order
+            });
+        }
+    });
 }
 
 function getContent(sId) {
@@ -572,7 +591,8 @@ function getDataSet(options) {
             widgetgroup: options.intWidgetGroup,
             startdt: options.strStartDt,
             enddt: options.strEndDt,
-            SQL: options.strSQL
+            SQL: options.strSQL,
+            dashboardpos: options.strDashboardPos
         },
         success: function(data) {
             if (options.strService == 'DBInfo') {
