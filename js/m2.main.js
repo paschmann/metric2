@@ -659,6 +659,8 @@ function getDataSet(options) {
             } else if (options.strService == 'ClearAlert') {
                 loadAlerts(jQuery.parseJSON(data));
                 addNotification('Alert History Cleared', 0, true);
+            } else if (options.strService == 'SaveDashboardPositions') {
+                addNotification('Dashboard Order Saved', 0, false);
             } else if (options.strService == 'CreateDashboard') {
                 getDataSet({
                     strService: 'Dashboards'
