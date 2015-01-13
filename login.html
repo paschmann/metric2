@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>metric&#178; | Login</title>
+        <title>metric&#178; | Account</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
@@ -24,7 +24,7 @@
 	<header id="home">
 		<div class="header-bg"></div>
 		<div class="pattern"></div>
-		<div class="container">
+		<div class="container" id="login">
     	    <div class="row">
                 <div class="col-sm-6 col-md-4 col-md-offset-4">
                     <img class="login-logo" src="img/logo_grey_small.png" alt="">
@@ -37,9 +37,29 @@
                             <label class="checkbox pull-left"><input type="checkbox" value="remember-me">Remember me</label>
                             <a href="http://www.metric2.com/doc.html" class="pull-right need-help" target="_blank">Need help? </a><span class="clearfix"></span>
                         </form>
-                        <a href="create.html" class="text-center new-account">Need a free account? </a>
+                        <a href="#" onclick="toggleForm();" class="text-center new-account">Need a free account? </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="container" id="create" style="display: none;">
+    	    <div class="row">
+                <div class="col-sm-6 col-md-4 col-md-offset-4">
+                    <img class="login-logo" src="img/logo_grey_small.png" alt="">
+                    <div id="formvals" class="account-wall">
+                    <form id="createform" class="form-signin" style="padding: 20px;">
+                        <div id="createmsg" class="msg"></div>
+                        <input type="text" id="createemail" class="form-control" placeholder="Email" required autofocus style="margin-bottom:  10px;">
+                        <input type="text" id="createname" class="form-control" placeholder="First Name" required style="margin-bottom:  10px;">
+                        <input type="text" id="createlname" class="form-control" placeholder="Last Name" required style="margin-bottom:  10px;">
+                        <input type="text" id="createcompany" class="form-control" placeholder="Company" required style="margin-bottom:  10px;">
+                        <input type="password" id="createpassword" class="form-control" placeholder="Password" required >
+                        <input type="password" id="createpassword2" class="form-control" placeholder="Repeat Password" required>
+                        <button class="btn btn-lg btn-block btn-primary" type="submit" style="color: #FFF; font-weight: 300;">Create Account</button>
+                        <a href="#" class="pull-right need-help">Need help? </a><span class="clearfix"></span>
+                    </form>
+                </div>
+            <a href="#" onclick="toggleForm();" class="text-center new-account">Already have an account? Login</a>
             </div>
         </div>
     </div>
