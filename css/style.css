@@ -595,6 +595,12 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 
 
 /* Bootstrap Overrides */
+
+sup {
+    top: -1.6em;
+    font-size: 30%;
+}
+
 .panel {
     border-radius: 0px;
     border-bottom: 1px solid #999;
