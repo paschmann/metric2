@@ -341,7 +341,7 @@ function metricDataByState(data) {
             })(usRaphael[state], state);
         }
 
-        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral(minVal).format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.1) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.3) + "');'></td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.5) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.7) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.9) + "');'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
+        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral("0").format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.1) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.3) + "');'></td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.5) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.7) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.9) + "');'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
         states.scale("0.5,0.5 0,0");
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err.description);
@@ -364,7 +364,7 @@ function widgetJSONService(data) {
                     value = val;
                 }
             });
-            html = "<div class='t1-widget-text-small' style='margin-top: 35%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+            html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
             $('#t1-widget-container' + data.dwid).html(html);
         });
     } catch (err) {
@@ -383,9 +383,9 @@ function widgetWeather(data) {
         unit: 'f',
         success: function(weather) {
             var cur = weather.currently;
-            html = '<div class="t1-widget-text-big" style="top: 90px;">' + weather.temp + '<sup>&deg;F</sup>' + '</div>';
+            html = '<div class="t1-widget-text-big" style="margin-top: 10px;">' + weather.temp + '<sup>&deg;F</sup>' + '</div>';
             html += '<div class="t1-widget-datetime">';
-            html += '<br /><img src="' + weather.thumbnail + '" /></div>';
+                html += '<img src="' + weather.thumbnail + '" /></div>';
             html += '</div>';
             $('#t1-widget-container' + data.dwid).html(html);
         },
@@ -456,7 +456,7 @@ function widgetPing(data) {
     //		success: function(data) {
     //			ping = new Date - ping;
     try {
-        var html = '<div class="t1-widget-text-medium" style="margin-top: 60px;">' + Math.floor(Math.random() * (300 - 50) + 50) + '<sup>ms</sup></div>';
+        var html = '<div class="t1-widget-text-medium" style="margin-top: 40px;">' + Math.floor(Math.random() * (300 - 50) + 50) + '<sup>ms</sup></div>';
         $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err);
@@ -1168,7 +1168,7 @@ function widgetSensorAPI(data) {
     //Requires data.dwid, data.VALUE, data.UOM1, data.TEXT1
     var html;
     try {
-        html = '<div class="t1-widget-text-big">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
+        html = '<div class="t1-widget-text-big" style="margin-top: 10px;">' + data.VALUE + '<sup>' + data.UOM1 + '</sup></div>';
         html += "<p class='w-sensor-text1'>" + data.TEXT1 + "</p>";
     } catch (err) {
         html = err;
@@ -1593,7 +1593,7 @@ function metricDataByCountry(data) {
 
             for (var i = 0; i <= objDataSet.length - 1; i++) {
                 if (objDataSet[i].COUNTRY === country) {
-                    
+                    var country = objDataSet[i].COUNTRY_NAME;
                     objCountryData.COUNTRY = objDataSet[i].COUNTRY_NAME;
                     var value = objDataSet[i].VALUE;
                     var uom = data.UOM1;
