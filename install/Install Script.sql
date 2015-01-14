@@ -336,7 +336,7 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (171,45,'Server Connection','OPTI
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (172,46,'TEXT1','Static','',100,1,'Any form of Static Text','Text','true',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (173,46,'FONTSIZE','Static','',200,1,'Font size in px','Font Size','true',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (174,46,'FONTCOLOR','COLOR','',300,1,'Font color in Hex (e.g #333333)','Font Color','true',null,0,null);
-INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','Static','',400,1,'Font alignment (e.g left, center, right)','Font Alignment','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (175,46,'FONTALIGN','OPTION','',400,1,'Font alignment (e.g left, center, right)','Font Alignment','true',4,0,null);
 
 -- US State Map Widget
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (177,47,'Server Connection','OPTION','Local Server',100,1,'Local Server','Server Connection','true',3,0, null);
@@ -391,6 +391,9 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (22, 'mph', 'mph', 2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (23, 'km', 'km', 2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (24, 'ft/s', 'ft/s', 2);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (25, 'm/s', 'm/s', 2);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (26, 'left', 'left', 4);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (27, 'center', 'center', 4);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (28, 'right', 'right', 4);
 
 
 INSERT INTO "METRIC2"."M2_PAL_TS_FIXEDVALS" VALUES (1);
