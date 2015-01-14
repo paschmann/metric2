@@ -107,81 +107,57 @@ function loadAlertList(){
     }
 }
 
-function configureWidgetCarousel(data){
-    dialogConstructor("Select a Widget", false, false, getNewWidgetHTML(JSON.parse(data)), 3, true, false);
-    $('#widgetcarousel').carousel({
-        interval: 4000
-    });
-                            
-    $('.carousel .item').each(function(){
-        var next = $(this).next();
-        if (!next.length) {
-            next = $(this).siblings(':first');
-        }
-        next.children(':first-child').clone().appendTo($(this));
-                              
-        if (next.next().length>0) {
-            next.next().children(':first-child').clone().appendTo($(this));
-        } else {
-            $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
-        }
-    });
+function showNewWidgetDialog(intWidgetGroup){
+    var strHTML = '<div class="row">';
+        strHTML += '<div class="col-md-2">';
+            strHTML += '<div class="list-group">';
+                strHTML += '<a href="#" class="list-group-item active" data-id="0">All</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="1">SAP HANA</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="7">Web Services</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="6">IoT and Sensors</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="3">SAP HANA Cloud</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="4">SAP ERP</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="5">SAP CRM</a>';
+            strHTML += '</div>';
+        strHTML += '</div>';
+        strHTML += '<div class="col-md-10" style="overflow-y:scroll; max-height: 740px;" id="metriclist"></div>';
+    strHTML += '</div>';
+    
+    dialogConstructor("Select a Widget", false, false, strHTML, 2, true, false);
+    
+    loadNewWidgetList(intWidgetGroup);
 }
 
-
-
-function getNewWidgetHTML(objWidgets) {
-    strCarousel = '<div id="widgetcarousel" class="carousel slide"><div class="carousel-inner">';
-        
-            
-    for (var i = 0, len = objWidgets.length; i < len; ++i) {
-        if (i === 0){
-            strCarousel += '<div class="item active">';
-        } else {
-            strCarousel += '<div class="item">';
+function loadNewWidgetList(intWidgetGroup){
+    var strMetrics = '';
+    
+    for (var i = 0, len = objWidgetList.length; i < len; ++i) {
+        if (intWidgetGroup === parseInt(objWidgetList[i].WIDGET_GROUP) || intWidgetGroup === 0){
+            strMetrics += '<div class="col-md-4" style="cursor: pointer; height: 196px; margin-bottom: 20px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});">';
+                strMetrics += '<div class="thumbnail" style="height: 100%;">'
+                strMetrics += '<div class="col-md-6"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" alt="" style="width: 210px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});" /></div>';
+                strMetrics += '<div class="caption col-md-6">';
+                    strMetrics += '<h4>' + objWidgetList[i].NAME + '</h4>';
+                    strMetrics += '<p>' + objWidgetList[i].DESCRIPTION + '</p>';
+                strMetrics += '</div>';
+                strMetrics += '</div>';
+            strMetrics += ' </div>';
         }
-            strCarousel += '<div class="col-md-4">';
-                strCarousel += '<div class="thumbnail">';
-                  strCarousel += '<img src="img/metrics/' +  objWidgets[i].ICON_URL + '" alt="" style="width: 210px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});" />';
-                  strCarousel += '<div class="caption">';
-                    strCarousel += '<h4>' + objWidgets[i].NAME + '</h4>';
-                   strCarousel += ' <p>' + objWidgets[i].DESCRIPTION + '</p>';
-                    strCarousel += '<p class="addbtn"><a href="#" class="btn btn-primary" role="button" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgets[i].WIDGET_ID + '\'});">Add</a></p>';
-                  strCarousel += '</div>';
-               strCarousel += ' </div>';
-            strCarousel += '</div>';
-        strCarousel += '</div>';
     }
     
-    if (objWidgets.length === 0){
-        strCarousel += '<div class="col-md-12"><p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p></div>';
-    } else {
-        strCarousel += '</div><a class="carousel-control left" href="#widgetcarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="carousel-control right" href="#widgetcarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a></div>';
-        strCarousel += '</div>';
+    if (objWidgetList.length === 0){
+        strMetrics += '<p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p>';
     }
-    
-    
     
     var elem = $('#metriccount');
     
     if (typeof elem !== 'undefined' && elem !== null) {
-        elem.innerHTML = objWidgets.length + " Metrics";
+        elem.innerHTML = objWidgetList.length + " Metrics";
     }
     
-    var strHTML = '<table width="100%"><tr>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button1" class="inlinebuttons"><img src="img/add-widget-db.png" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 1});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button2" class="inlinebuttons"><img src="img/add-widget-custom.png" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 2});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button2" class="inlinebuttons"><img src="img/add-widget-services.png" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 7});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button3" class="inlinebuttons"><img src="img/add-widget-sensor.png" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 6});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button4" class="inlinebuttons"><img src="img/add-widget-platform.png" style="opacity:0.3;" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 3});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button5" class="inlinebuttons"><img src="img/add-widget-erp.png" style="opacity:0.3;" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 4});" /></div></td>';
-    strHTML += '<td style="text-align: center; width: 14%;"><div id="button6" class="inlinebuttons"><img src="img/add-widget-crm.png" style="opacity:0.3;" onClick="getDataSet({ strService: \'GetWidgetTypes\', intWidgetGroup : 5});" /></div></td>';
-    strHTML += '</tr></table><div id="carousel" style="margin-top:40px;">' + strCarousel + '</div><div id="metriccount" style="margin-top:20px; text-align: right;"></div>';
-    return strHTML;
+    $('#metriclist').html(strMetrics);
 }
-
-
-
 
 function showPred(dashboardwidgetid) {
     $("#dialogHTML1").innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
@@ -291,8 +267,8 @@ function widgetForecastChart(strData, dashboardwidgetid) {
 function showSettingsDialog(objData) {
     var output = "<form class='form-horizontal'>";
     output += "<input type='" + debugmode + "' value = '" + objData[0].USER_ID + "' id='userid' />";
-    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain:</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version:</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
+    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
     
     dialogConstructor("Edit Settings", false, true, output, 1, true, false);
 }
@@ -308,8 +284,8 @@ function showWidgetDialog(objData, edit){
         output += "<input type='" + debugmode + "' value='" + intCurrentDashboardID + "' id='dashboardid' />";
         output += "<input type='" + debugmode + "' value='" + objData.widgetid + "' id='widgetid' />";
         output += "<input type='" + debugmode + "' value='" + objData.dashboardwidgetid + "' id='dashboardwidgetid' />";
-        output += "<div class='form-group'><label class='col-sm-3 control-label'>Type: </label><div class='col-sm-9'>" + objData.widgetname + "</div></div>";
-        output += "<div class='form-group'><label for='widgettitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Title' id='widgettitle' value = '" + objData.widgettitle + "' /></div></div>";
+        output += "<div class='form-group'><label class='col-sm-3 control-label'>Metric Type</label><div class='col-sm-9'>" + objData.widgetname + "</div></div>";
+        output += "<div class='form-group'><label for='widgettitle' class='col-sm-3 col-sm-3 control-label'>Title</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Title' id='widgettitle' value = '" + objData.widgettitle + "' /></div></div>";
 	
         output += "<div class='form-group'><label for='widgetwidth' class='col-sm-3 control-label'>Width</label><div class='col-sm-9'><select class='form-control' id='widgetwidth' style='width: 100px;'";
         output += objData.defaultwidgetwidth ? ' disabled ' : '';
@@ -319,7 +295,7 @@ function showWidgetDialog(objData, edit){
         output += objData.defaultwidgetheight ? ' disabled ' : '';
         output += ">" + showWidgetSizeDropdown(objData.widgetheight) + "</select></div></div>";
 	
-	output += "<div class='form-group'><label for='refreshrate' class='col-sm-3 control-label'>Refresh Rate:</label><div class='col-sm-4'><div class='input-group'><input class='form-control' type='text' placeholder='0' id='refreshrate' value = '" + objData.widgetrefresh + "'><div class='input-group-addon'>Seconds</div></div></div></div>";
+	output += "<div class='form-group'><label for='refreshrate' class='col-sm-3 control-label'>Refresh Rate</label><div class='col-sm-4'><div class='input-group'><input class='form-control' type='text' placeholder='0' id='refreshrate' value = '" + objData.widgetrefresh + "'><div class='input-group-addon'>Seconds</div></div></div></div>";
 	
 	for (var i = 0; i <= objData.param.length - 1; i++){
         var required = '';
@@ -457,7 +433,7 @@ function showDashboardDialog(objData, edit){
     
     var output = "<form class='form-horizontal' role='form'>";
 	output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
-	output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title:</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
+	output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
     output += "</form>";
     
     
@@ -664,7 +640,6 @@ function saveDialog(strFunction) {
                 strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
                 strReload: "dashboards"
             });
-            //document.getElementById('dashboardname').html('<a href="#">' + document.getElementById('dashboardtitle').value + '</a>');
         } else if (strFunction == 'Add Alert') {
             getDataSet({
                 strService: "CreateAlert",
@@ -684,6 +659,9 @@ function saveDialog(strFunction) {
                 data: $('form').serialize(),
                 success: function(data, textStatus, XMLHttpRequest) {
                     addNotification('User Account Updated', 0);
+                    getDataSet({
+                        strService: 'UserInfo'
+                    });
                 }
             });
         } else if (strFunction == 'Edit Settings') {
