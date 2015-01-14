@@ -136,7 +136,7 @@ function loadNewWidgetList(intWidgetGroup){
         if (intWidgetGroup === parseInt(objWidgetList[i].WIDGET_GROUP) || intWidgetGroup === 0){
             strMetrics += '<div class="col-md-4" style="cursor: pointer; height: 196px; margin-bottom: 20px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});">';
                 strMetrics += '<div class="thumbnail" style="height: 100%;">'
-                strMetrics += '<div class="col-md-6"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" alt="" style="width: 210px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});" /></div>';
+                strMetrics += '<div class="col-md-6"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" class="img-responsive" /></div>';
                 strMetrics += '<div class="caption col-md-6">';
                     strMetrics += '<h4>' + objWidgetList[i].NAME + '</h4>';
                     strMetrics += '<p>' + objWidgetList[i].DESCRIPTION + '</p>';
