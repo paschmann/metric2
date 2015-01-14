@@ -79,11 +79,15 @@ function configureClickEvents() {
         addAlert();
     });
     
+     $(document).on('keypress','#searchmetrics',function(e){
+        loadNewWidgetList(0, $('#searchmetrics').val());
+    });
+    
     $(document).on('click','.list-group-item',function(e){
         var previous = $(this).closest(".list-group").children(".active");
         previous.removeClass('active'); // previous list-item
         $(e.target).addClass('active'); // activated list-item
-        loadNewWidgetList($(this).data("id"));
+        loadNewWidgetList($(this).data("id"), '');
     });
 
     $(document).on('click','#btnExecuteSQL',function(){
