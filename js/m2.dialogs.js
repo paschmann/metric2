@@ -111,29 +111,30 @@ function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
         strHTML += '<div class="col-md-2">';
             strHTML += '<div class="list-group">';
+                strHTML += '<a href="#" class="list-group-item" data-id="0"><input type="text" class="form-control" id="searchmetrics" placeholder="Search"></a>';
                 strHTML += '<a href="#" class="list-group-item active" data-id="0">All</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="1">SAP HANA</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="7">Web Services</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="6">IoT and Sensors</a>';
-                strHTML += '<a href="#" class="list-group-item" data-id="3">SAP HANA Cloud</a>';
-                strHTML += '<a href="#" class="list-group-item" data-id="4">SAP ERP</a>';
-                strHTML += '<a href="#" class="list-group-item" data-id="5">SAP CRM</a>';
+                strHTML += '<a href="#" class="list-group-item disabled" data-id="3">SAP HANA Cloud</a>';
+                strHTML += '<a href="#" class="list-group-item disabled" data-id="4">SAP ERP</a>';
+                strHTML += '<a href="#" class="list-group-item disabled" data-id="5">SAP CRM</a>';
             strHTML += '</div>';
         strHTML += '</div>';
         strHTML += '<div class="col-md-10" style="overflow-y:scroll; max-height: 740px;" id="metriclist"></div>';
     strHTML += '</div>';
     
-    dialogConstructor("Select a Widget", false, false, strHTML, 2, true, false);
+    dialogConstructor("Select a Metric", false, false, strHTML, 2, true, false);
     
-    loadNewWidgetList(intWidgetGroup);
+    loadNewWidgetList(intWidgetGroup, '');
 }
 
-function loadNewWidgetList(intWidgetGroup){
+function loadNewWidgetList(intWidgetGroup, strSearchTerm){
     var strMetrics = '';
     
     for (var i = 0, len = objWidgetList.length; i < len; ++i) {
-        if (intWidgetGroup === parseInt(objWidgetList[i].WIDGET_GROUP) || intWidgetGroup === 0){
+        if ((intWidgetGroup === parseInt(objWidgetList[i].WIDGET_GROUP) || intWidgetGroup === 0 && strSearchTerm === '') || (intWidgetGroup === 0 && strSearchTerm !== '' && (objWidgetList[i].NAME.indexOf(strSearchTerm) > 0 || objWidgetList[i].DESCRIPTION.indexOf(strSearchTerm) > 0))) {
             strMetrics += '<div class="col-md-4" style="cursor: pointer; height: 196px; margin-bottom: 20px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});">';
                 strMetrics += '<div class="thumbnail" style="height: 100%;">'
                 strMetrics += '<div class="col-md-6"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" class="img-responsive" /></div>';
@@ -146,7 +147,7 @@ function loadNewWidgetList(intWidgetGroup){
         }
     }
     
-    if (objWidgetList.length === 0){
+    if (intWidgetGroup === 3 || intWidgetGroup === 4 || intWidgetGroup === 5){
         strMetrics += '<p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p>';
     }
     
@@ -335,9 +336,9 @@ function showWidgetDialog(objData, edit){
     output += "</form>";
     
     if (edit){
-        dialogConstructor("Edit Widget", true, true, output, 1, true, true);
+        dialogConstructor("Edit Metric", true, true, output, 1, true, true);
     } else {
-        dialogConstructor("New Widget", false, true, output, 3, true, false);
+        dialogConstructor("New Metric", false, true, output, 3, true, false);
     }
 }
 
@@ -581,7 +582,7 @@ function saveDialog(strFunction) {
     var strSQL = '';
     var checkParams = checkParamValidation();
     if (checkParams == "false"){
-        if (strFunction == 'New Widget') {
+        if (strFunction == 'New Metric') {
             var paramCount = 0;
             refreshrate = document.getElementById('refreshrate').value;
             if (refreshrate === '') refreshrate = 0;
@@ -605,7 +606,7 @@ function saveDialog(strFunction) {
                 });
             }, 1000);
             getContent(intCurrentDashboardID);
-        } else if (strFunction == 'Edit Widget') {
+        } else if (strFunction == 'Edit Metric') {
             refreshrate = document.getElementById('refreshrate').value;
             var updateStatements = '';
             if (refreshrate === '') refreshrate = 0;
@@ -685,7 +686,7 @@ function deleteDialog(strFunction) {
             strSQL: "CALL METRIC2.M2_P_DELETE_DASHBOARD(" + intCurrentDashboardID + ")",
             strReload: 'true'
         });
-    } else if (strFunction == 'Edit Widget') {
+    } else if (strFunction == 'Edit Metric') {
        var dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
        getDataSet({
             strService: 'CallSP', 
@@ -699,7 +700,7 @@ function deleteDialog(strFunction) {
             strService: 'DeleteAlert',
             strAlertID: alertID
         });
-    }  else if (strFunction == 'Widget History') {
+    }  else if (strFunction == 'Metric History') {
        var dashboardwidgetid = $('#dashboardwidgetid').value;
        getDataSet({
             strService: 'CallSP', 
