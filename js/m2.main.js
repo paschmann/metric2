@@ -20,6 +20,7 @@ var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard wo
 var strInputControl = '';
 
 var objWidgets = {};
+var objWidgetList = {};
 
 $(document).ready(function() {
     configureLeftMenu();
@@ -78,6 +79,13 @@ function configureClickEvents() {
         addAlert();
     });
     
+    $(document).on('click','.list-group-item',function(e){
+        var previous = $(this).closest(".list-group").children(".active");
+        previous.removeClass('active'); // previous list-item
+        $(e.target).addClass('active'); // activated list-item
+        loadNewWidgetList($(this).data("id"));
+    });
+
     $(document).on('click','#btnExecuteSQL',function(){
         getDataSet({
             strService: "Select",
@@ -643,7 +651,8 @@ function getDataSet(options) {
             } else if (options.strService == 'EditSettingsDialog') {
                 showSettingsDialog(jQuery.parseJSON(data));
             } else if (options.strService == 'GetWidgetTypes') {
-                configureWidgetCarousel(data);
+                objWidgetList = JSON.parse(data);
+                showNewWidgetDialog(0);
             } else if (options.strService == 'Alerts') {
                 loadAlerts(jQuery.parseJSON(data));
             } else if (options.strService == 'AddAlert') {
