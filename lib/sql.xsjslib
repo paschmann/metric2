@@ -79,7 +79,6 @@ function executeRecordSet(strSQL) {
         var pstmt = conn.prepareStatement(strSQL);
         var rs = pstmt.executeQuery();
         var rsm = rs.getMetaData();
-        var intCount = 0;
         var htmlTable = '';
 
         if (!rs.next()) {
@@ -122,7 +121,7 @@ function executeRecordSetObjCALL(strSQL, strSP) {
     try {
         var conn = $.db.getConnection(strDashboardUser);
 
-        if (strSP == true) {
+        if (strSP === true) {
             var pstmt = conn.prepareCall(strSQL);
             var rs = pstmt.getRecordSet();
         } else {
@@ -138,7 +137,7 @@ function executeRecordSetObjCALL(strSQL, strSP) {
                     strObj += '"' + rsm.getColumnLabel(i) + '":"' + rs.getString(i) + '",';
                 }
                 strObj = strObj.substring(0, strObj.length - 1);
-                strObj += '},'
+                strObj += '},';
             }
             rs.close();
         }
@@ -219,7 +218,7 @@ function executeRecordSetObj(strSQL) {
                 strObj += '"' + rsm.getColumnLabel(i) + '":"' + value + '",';
             }
             strObj = strObj.substring(0, strObj.length - 1);
-            strObj += '},'
+            strObj += '},';
         }
         rs.close();
         pstmt.close();
@@ -254,7 +253,7 @@ function executeInputQuery(SQL) {
         }
         return rs;
     } catch (err) {
-        return err;
+        return err.message;
     }
 }
 
