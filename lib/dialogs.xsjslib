@@ -10,11 +10,14 @@ function showProfileDialog(){
  
 
 function showSettingsDialog(){
+    var data = {};
     if (userid){
 		//This is an edit
-		return sqlLib.executeRecordSetObj("SELECT email_domain, user_id FROM metric2.m2_users WHERE user_id =" + userid);
+		data.userInfo = sqlLib.executeRecordSetObj("SELECT email_domain, user_id FROM metric2.m2_users WHERE user_id =" + userid);
+		data.diskSize = sqlLib.executeRecordSetObj("select ROUND(d.total_size/1024/1024/1024,0) DISKSIZE FROM m_disks as d where d.usage_type = 'DATA'");
+		data.m2Size = sqlLib.executeRecordSetObj("SELECT round(sum(TABLE_SIZE) /1024/1024) M2SIZE FROM M_TABLES WHERE SCHEMA_NAME = 'METRIC2' GROUP BY SCHEMA_NAME");
 	}
-	return '';
+	return data;
 }   
 
 
