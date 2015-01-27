@@ -111,7 +111,7 @@ function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
         strHTML += '<div class="col-md-2">';
             strHTML += '<div class="list-group">';
-                strHTML += '<a href="#" class="list-group-item" data-id="0"><input type="text" class="form-control" id="searchmetrics" placeholder="Search"></a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="0"><input type="text" class="form-control" id="searchmetrics" placeholder="Filter"></a>';
                 strHTML += '<a href="#" class="list-group-item active" data-id="0">All</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="1">SAP HANA</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
@@ -121,8 +121,9 @@ function showNewWidgetDialog(intWidgetGroup){
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="4">SAP ERP</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="5">SAP CRM</a>';
             strHTML += '</div>';
+            strHTML += '<span id="metriccount" class="pull-right">0 Metrics Shown</span>'
         strHTML += '</div>';
-        strHTML += '<div class="col-md-10" style="overflow-y:scroll; max-height: 740px;" id="metriclist"></div>';
+        strHTML += '<div class="col-md-10" id="metriclist"></div>';
     strHTML += '</div>';
     
     dialogConstructor("Select a Metric", false, false, strHTML, 2, true, false);
@@ -132,18 +133,17 @@ function showNewWidgetDialog(intWidgetGroup){
 
 function loadNewWidgetList(intWidgetGroup, strSearchTerm){
     var strMetrics = '';
+    var intMetricCount = 0;
     
     for (var i = 0, len = objWidgetList.length; i < len; ++i) {
         if ((intWidgetGroup === parseInt(objWidgetList[i].WIDGET_GROUP) || intWidgetGroup === 0 && strSearchTerm === '') || (intWidgetGroup === 0 && strSearchTerm !== '' && (objWidgetList[i].NAME.indexOf(strSearchTerm) > 0 || objWidgetList[i].DESCRIPTION.indexOf(strSearchTerm) > 0))) {
-            strMetrics += '<div class="col-md-4" style="cursor: pointer; height: 196px; margin-bottom: 20px;" onClick="getDataSet({strService: \'NewWidgetDialog\', strWidgetID: \'' + objWidgetList[i].WIDGET_ID + '\'});">';
-                strMetrics += '<div class="thumbnail" style="height: 100%;">'
-                strMetrics += '<div class="col-md-6"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" class="img-responsive" /></div>';
-                strMetrics += '<div class="caption col-md-6">';
-                    strMetrics += '<h4>' + objWidgetList[i].NAME + '</h4>';
-                    strMetrics += '<p>' + objWidgetList[i].DESCRIPTION + '</p>';
-                strMetrics += '</div>';
+            strMetrics += '<div class="col-md-4 btnAddMetricThumbnail" data-id="' + objWidgetList[i].WIDGET_ID + '">';
+                strMetrics += '<div class="thumbnail metricThumbnailGroup">'
+                    strMetrics += '<div class="col-md-6 metricThumbnailImg"><img src="img/metrics/' +  objWidgetList[i].ICON_URL + '" class="img-responsive" /></div>';
+                    strMetrics += '<div class="caption col-md-6"><h4>' + objWidgetList[i].NAME + '</h4><p>' + objWidgetList[i].DESCRIPTION + '</p></div>';
                 strMetrics += '</div>';
             strMetrics += ' </div>';
+            intMetricCount++;
         }
     }
     
@@ -151,13 +151,8 @@ function loadNewWidgetList(intWidgetGroup, strSearchTerm){
         strMetrics += '<p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p>';
     }
     
-    var elem = $('#metriccount');
-    
-    if (typeof elem !== 'undefined' && elem !== null) {
-        elem.innerHTML = objWidgetList.length + " Metrics";
-    }
-    
     $('#metriclist').html(strMetrics);
+    $('#metriccount').html(intMetricCount + " Metrics Shown");
 }
 
 function showPred(dashboardwidgetid) {
@@ -267,11 +262,19 @@ function widgetForecastChart(strData, dashboardwidgetid) {
 
 function showSettingsDialog(objData) {
     var output = "<form class='form-horizontal'>";
-    output += "<input type='" + debugmode + "' value = '" + objData[0].USER_ID + "' id='userid' />";
-    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
+    output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
+    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
     output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
+    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB</p></div></div>";
+    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Disk Free</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div></div>";
+    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label><div class='col-sm-9' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
+    dialogConstructor("Edit Settings", false, true, output, 1, true, false); 
     
-    dialogConstructor("Edit Settings", false, true, output, 1, true, false);
+    $('.usagePeity').peity("pie", {
+        height: "50px",
+        width: "50px",
+        fill: ["#EEE", "#C6D9FD"]
+    });
 }
 
 
