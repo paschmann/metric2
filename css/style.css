@@ -11,6 +11,11 @@ html {
   min-width: 320px;
 }
 
+#peitysvg>svg{
+    height: 50px;
+    width: 50px;
+}
+
 body {
   background: #101215;
   color: #666;
@@ -39,6 +44,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-size: 36px;
 }
 
+.metriclist{
+    margin: 10px;
+}
 
 
 a {
@@ -90,6 +98,31 @@ a.logo {
   overflow: hidden;
   position: absolute;
   right: 0;
+}
+
+#metriclist {
+    overflow-y:scroll; 
+    max-height: 715px;
+}
+
+#metriccount {
+    margin-right: 15px; 
+    margin-bottom: 5px;
+}
+
+.metricThumbnailGroup {
+    height: 187px; 
+    padding: 0px;
+}
+
+.metricThumbnailImg{
+    padding: 0px;
+}
+
+.btnAddMetricThumbnail {
+    cursor: pointer; 
+    height: 196px; 
+    margin-bottom: 15px;
 }
 
 #main {
@@ -600,6 +633,15 @@ sup {
     top: -1.6em;
     font-size: 30%;
 }
+
+.list-group-item.disabled {
+    background-color: #EEE;
+}
+
+a.list-group-item.active {
+    background-color: #2A89C1;
+}
+
 
 .panel {
     border-radius: 0px;
