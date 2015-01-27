@@ -5,6 +5,7 @@ var intCurrentDashboardID = 1;
 var arrActiveTimers = [];
 var arrActiveTimersIDList = [];
 var alertlist = [];
+var timers = [];
 var gridsterloaded = 0;
 var strNotificationTable = '';
 var strCarousel = '';
@@ -82,6 +83,11 @@ function configureClickEvents() {
      $(document).on('keypress','#searchmetrics',function(e){
         loadNewWidgetList(0, $('#searchmetrics').val());
     });
+    
+    $(document).on('click','.btnAddMetricThumbnail',function(){
+        getDataSet({strService: 'NewWidgetDialog', strWidgetID: $(this).data("id")});
+    });
+    
     
     $(document).on('click','.list-group-item',function(e){
         var previous = $(this).closest(".list-group").children(".active");
