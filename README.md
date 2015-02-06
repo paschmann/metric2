@@ -48,6 +48,10 @@ Although not required, please could you register with the metric² mailing list 
 
 
 ## Version History
+
+####Version 2.4+
+* All versions from 2.4.0 on-wards now support SAP HANA SPS09 and is downward compatible (to SPS07)
+
 ####Version 2.0
 * New UI, no longer using SAPUI5
 * Github release
