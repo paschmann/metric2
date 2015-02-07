@@ -93,7 +93,7 @@ function loadAlerts(objData){
             strHTML += "<h1>System Alerts</h1>";
             strHTML += "<table class='table table-striped' style='margin-top: 20px;margin-bottom: 40px;'><thead><tr><th>Host</th><th>Rating</th><th>Alert Details</th><th>Last Check</th></tr></thead><tbody>";
             $.each(systemAlerts, function(key, value) {
-                strHTML += "<tr><td>" + systemAlerts[key].HOST + "</td><td>" + systemAlerts[key].ALERTRATING + "</td><td>" + systemAlerts[key].ALERTDETAILS + "</td><td>" + systemAlerts[key].TIME + "</td></tr>";
+                strHTML += "<tr><td>" + systemAlerts[key].HOST + "</td><td>" + systemAlerts[key].ALERT_RATING + "</td><td>" + systemAlerts[key].ALERT_DETAILS + "</td><td>" + systemAlerts[key].TIME + "</td></tr>";
             });
             
             strHTML += "</tbody></table></div></div>";
