@@ -433,11 +433,19 @@ function showDashboardDialog(objData, edit){
     if (edit){
         dashboardid = objData.DASHBOARD_ID;
         dashboardtitle = objData.TITLE;
+        shareurl = objData.SHARE_URL
     }
     
     var output = "<form class='form-horizontal' role='form'>";
 	output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
 	output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
+	if (shareurl){
+	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard' checked></label></div></div>";
+	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '" + getShareURL(shareurl) + "'/></div></div>";
+	} else if (edit) {
+	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard'></label></div></div>";
+	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '' disabled/></div></div>";
+	}
     output += "</form>";
     
     
