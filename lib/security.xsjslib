@@ -1,22 +1,24 @@
 // --------------------------------------- Security ----------------------------------------------------- //
 
+function getRandomSHA1(token)
+{
+    //Handles changes to $.util in SPS09
+    // Calculate HMACSHA1-Value (160 Bits) which is returned as a Buffer of 20 Bytes
+    // Encode ByteBuffer to Base64-String
+    var hmacSha1ByteBuffer;
+    if (intHanaVersion >= 9){
+        hmacSha1ByteBuffer = $.security.crypto.sha1(token, Math.random().toString(36).slice(2));
+    } else {
+        hmacSha1ByteBuffer = $.util.crypto.hmacSha1(token, Math.random().toString(36).slice(2));
+    }
+    return  $.util.codec.encodeBase64(hmacSha1ByteBuffer);
+}
+
 function getUserLoginToken() {
     // Get the salt from the useraccount, apply it, and test the password
     var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY(DT_ADDED)) from METRIC2.M2_Users where email = '" + email + "'");
     var userID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "' AND password = '" + hash + "'");
-    
-    //Handles changes to $.util in SPS09
-    // Calculate HMACSHA1-Value (160 Bits) which is returned as a Buffer of 20 Bytes
-    // Encode ByteBuffer to Base64-String
-    if (intHanaVersion >= 9){
-        var hmacSha1ByteBuffer = $.security.crypto.sha1(userID, Math.random().toString(36).slice(2));
-        
-        var userInitialToken =  $.util.codec.encodeBase64(hmacSha1ByteBuffer);
-    } else {
-        var hmacSha1ByteBuffer = $.util.crypto.hmacSha1(userID, Math.random().toString(36).slice(2));
-        // Encode ByteBuffer to Base64-String
-        var userInitialToken =  $.util.convert.encodeBase64(hmacSha1ByteBuffer);
-    }
+    var userInitialToken = getRandomSHA1(userID);
     
     //if the userID and password are correct, we will return a hashed user token otherwise the 999 number
     if (!userID){
