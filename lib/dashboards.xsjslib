@@ -16,6 +16,23 @@ function createDashboard(sql){
 	}
 }
 
+function setShareURL(strURL){
+    try {
+        sqlLib.executeUpdate("UPDATE metric2.m2_dashboard SET share_url = '" + strURL + "' WHERE dashboard_id = " + dashboardid);
+        return strURL;
+	} catch (err) {
+		return err.message;
+	}
+}
+
+function getShareURL(strURL){
+    try {
+        return sqlLib.executeScalar("SELECT share_url FROM metric2.m2_dashboard WHERE dashboard_id = " + dashboardid);
+	} catch (err) {
+		return err.message;
+	}
+}
+
 function saveDashboardPositions(userid){
     try {
         var arrDashboards = JSON.parse(dashboardpos);
