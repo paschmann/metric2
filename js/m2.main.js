@@ -14,6 +14,7 @@ var chart = nv.models.lineChart();
 var navMenu = '';
 var useremail = '';
 var showTour = true;
+var viewmode = false;
 var tour;
 var debugmode = 'hidden';
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
@@ -24,23 +25,26 @@ var objWidgets = {};
 var objWidgetList = {};
 
 $(document).ready(function() {
-    configureLeftMenu();
     getUserToken();
-    if (userToken === '' || userToken === 0 || !userToken) {
+    if (parseParams('mode') === 'view') {
+        viewmode = true;
+        alert('viewmode');
+        //Show single, read only dashboard
+        // 1. Check if token valid -> otherwise logout
+    } else if (userToken === '' || userToken === 0 || !userToken) {
         doLogout();
     } else {
+        configureLeftMenu();
         init();
+        dashboardActive(true);
+        $('[data-toggle="tooltip"]').tooltip({
+            'placement': 'bottom'
+        });
+        configureClickEvents();
+        if (showTour == true) {
+            configureTour();
+        }
     }
-    dashboardActive(true);
-    $('[data-toggle="tooltip"]').tooltip({
-        'placement': 'bottom'
-    });
-    configureClickEvents();
-    if (showTour == true) {
-        configureTour();
-    }
-    
-    
 });
 
 function init() {
@@ -65,15 +69,21 @@ function init() {
 // -------------------------   Client Side click events ----------------------- //
 
 function configureClickEvents() {
+    
+    $(document).on('click','#chkShareDashboard',function(){
+        if ($(this).is(':checked')){
+            getDataSet({strService: 'SetSharingURL', strDashboardID: $("li.active").data('id')});
+        } else {
+            getDataSet({strService: 'DisableSharingURL', strDashboardID: $("li.active").data('id')});
+        }
+    })
+    
     $('#btnShowAlertList').click(function() {
         loadAlertList();
     });
     
     $('#btnAddWidget, #mnuAddWidget').click(function() {
-        getDataSet({
-            strService: 'GetWidgetTypes',
-            intWidgetGroup: 0
-        });
+        getDataSet({ strService: 'GetWidgetTypes', intWidgetGroup: 0});
     });
     
     $('#btnAddAlert').click(function() {
@@ -97,10 +107,7 @@ function configureClickEvents() {
     });
 
     $(document).on('click','#btnExecuteSQL',function(){
-        getDataSet({
-            strService: "Select",
-            strSQL: document.getElementById('txtSQL').value
-        })
+        getDataSet({ strService: "Select", strSQL: document.getElementById('txtSQL').value })
     });
     
     $(document).on('click','#btnExecuteOData',function(){
@@ -143,6 +150,7 @@ function configureClickEvents() {
     $('#btnEditDashboard').click(function() {
         var objData = {};
         objData.DASHBOARD_ID = $("li.active").data('id');
+        objData.SHARE_URL = $("li.active").data('shareurl');
         objData.TITLE = $("li.active").attr('title');
         showDashboardDialog(objData, true);
     });
@@ -437,15 +445,16 @@ function loadDashboards(objDashboards) {
     if (len > 0) {
         for (var i = 0; i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
+            var shareurl = objDashboards[i].SHARE_URL;
             //Load top menu bar with dashboards
-            $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
+            $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 intDashboardID = $(this).data('id');
                 return false;
             });
             //Load left menu with dashboards
-            $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
+            $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 intDashboardID = $(this).data('id');
@@ -586,6 +595,10 @@ function showLoadingSpinner(visible, strText){
     }
 }
 
+function getShareURL(id){
+    return location.href.replace('#', '') + "?mode=view&id=" + id;
+}
+
 
 // -------------------------   Server side processesing ----------------------- //
 
@@ -695,6 +708,12 @@ function getDataSet(options) {
                 addNotification("Dashboard updated", 0, false);
             } else if (options.strService == 'Select') {
                 showSQLResults(data);
+            } else if (options.strService == 'SetSharingURL'){
+                $("#dashboardshareurl").prop('disabled', false);
+                $('#dashboardshareurl').val(getShareURL(data));
+            } else if (options.strService == 'DisableSharingURL'){
+                $("#dashboardshareurl").prop('disabled', true);
+                $('#dashboardshareurl').val('');
             }
 
             if (options.strReload == 'true') {
