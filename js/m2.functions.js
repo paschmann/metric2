@@ -156,7 +156,7 @@ Date.prototype.format = function (mask, utc) {
 
 
 function parseParams(val) {
-    var result = "Not found",
+    var result = "",
         tmp = [];
     location.search
     //.replace ( "?", "" ) 
