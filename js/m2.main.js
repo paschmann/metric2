@@ -25,31 +25,43 @@ var objWidgets = {};
 var objWidgetList = {};
 
 $(document).ready(function() {
-    getUserToken();
-    if (parseParams('mode') === 'view') {
+    if (parseParams('did').length > 0) {
         viewmode = true;
-        alert('viewmode');
+        userToken = "temp";
         //Show single, read only dashboard
         // 1. Check if token valid -> otherwise logout
-    } else if (userToken === '' || userToken === 0 || !userToken) {
-        doLogout();
     } else {
-        configureLeftMenu();
-        init();
+        getUserToken();
+    }
+    
+    if (userToken === '' || userToken === 0 || !userToken) {
+        doLogout();
+    }
+    
+    configureLeftMenu();
+    init();
+    
+    if (viewmode){
+        $(".navbar-right").html('<li><a>View Mode</a></li>');
+    } else {
         dashboardActive(true);
-        $('[data-toggle="tooltip"]').tooltip({
-            'placement': 'bottom'
-        });
         configureClickEvents();
-        if (showTour == true) {
-            configureTour();
-        }
+    }
+    
+    
+    $('[data-toggle="tooltip"]').tooltip({
+        'placement': 'bottom'
+    });
+    
+    if (showTour == true) {
+        configureTour();
     }
 });
 
 function init() {
     getDataSet({
-        strService: 'Dashboards'
+        strService: 'Dashboards',
+        strDashboardID: parseParams('did')
     });
     getDataSet({
         strService: 'DBInfo'
@@ -57,6 +69,11 @@ function init() {
     getDataSet({
         strService: 'UserInfo'
     });
+}
+
+function enableShareMode(){
+    //Hide and disable all buttons
+    
 }
 
 // -------------------------   Demo/Tutorial Walk Through Tour ----------------------- //
@@ -228,50 +245,52 @@ function toggleSideBar(){
 }
 
 function configureGristerClickEvents() {
-    $("[id^=tile_]").mouseover(function(e) {
-        var tileID = this.id.substring(5);
-        $('#editicon' + tileID).animate({
-            'opacity': 1
-        }, 0);
-        $('#historyicon' + tileID).animate({
-            'opacity': 1
-        }, 0);
-    });
-
-    $("[id^=tile_]").mouseout(function(e) {
-        var tileID = this.id.substring(5);
-        $('#editicon' + tileID).animate({
-            'opacity': 0
-        }, 0);
-        $('#historyicon' + tileID).animate({
-            'opacity': 0
-        }, 0);
-    });
-
-    $("[id^=editicon]").click(function(e) {
-        getDataSet({
-            strService: 'EditWidgetDialog',
-            strDashboardWidgetID: this.id.substring(8)
-        })
-        e.stopPropagation();
-    });
-
-    $("[id^=historyicon]").click(function(e) {
-        showHist(this.id.substring(11));
-        e.stopPropagation();
-    });
-
-    $("[id^=refreshicon]").click(function(e) {
-        getDataSet({
-            strService: 'RefreshWidget',
-            strDashboardWidgetID: this.id.substring(11)
+    if (!viewmode){
+        $("[id^=tile_]").mouseover(function(e) {
+            var tileID = this.id.substring(5);
+            $('#editicon' + tileID).animate({
+                'opacity': 1
+            }, 0);
+            $('#historyicon' + tileID).animate({
+                'opacity': 1
+            }, 0);
         });
-        e.stopPropagation();
-    });
-
-    $("[id^=tile_]").click(function(e) {
-        saveGridPosition();
-    });
+    
+        $("[id^=tile_]").mouseout(function(e) {
+            var tileID = this.id.substring(5);
+            $('#editicon' + tileID).animate({
+                'opacity': 0
+            }, 0);
+            $('#historyicon' + tileID).animate({
+                'opacity': 0
+            }, 0);
+        });
+    
+        $("[id^=editicon]").click(function(e) {
+            getDataSet({
+                strService: 'EditWidgetDialog',
+                strDashboardWidgetID: this.id.substring(8)
+            })
+            e.stopPropagation();
+        });
+    
+        $("[id^=historyicon]").click(function(e) {
+            showHist(this.id.substring(11));
+            e.stopPropagation();
+        });
+    
+        $("[id^=refreshicon]").click(function(e) {
+            getDataSet({
+                strService: 'RefreshWidget',
+                strDashboardWidgetID: this.id.substring(11)
+            });
+            e.stopPropagation();
+        });
+    
+        $("[id^=tile_]").click(function(e) {
+            saveGridPosition();
+        });
+    }
 }
 
 
@@ -596,7 +615,7 @@ function showLoadingSpinner(visible, strText){
 }
 
 function getShareURL(id){
-    return location.href.replace('#', '') + "?mode=view&id=" + id;
+    return location.href.replace('#', '') + "?did=" + id;
 }
 
 
@@ -623,7 +642,8 @@ function getDataSet(options) {
             startdt: options.strStartDt,
             enddt: options.strEndDt,
             SQL: options.strSQL,
-            dashboardpos: options.strDashboardPos
+            dashboardpos: options.strDashboardPos,
+            view: viewmode
         },
         success: function(data) {
             if (options.strService == 'DBInfo') {
