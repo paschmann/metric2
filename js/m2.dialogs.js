@@ -429,6 +429,7 @@ function showProfileDialog(objData){
 function showDashboardDialog(objData, edit){
     var dashboardid = '';
     var dashboardtitle = '';
+    var shareurl = '';
     
     if (edit){
         dashboardid = objData.DASHBOARD_ID;
