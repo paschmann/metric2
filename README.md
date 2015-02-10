@@ -23,11 +23,11 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 ####Step 1 - File download and install to HANA
 
-#####**Delivery Unit** (SAP HANA Package)
+#####Otion 1: **Delivery Unit** (SAP HANA Package)
 
 - Download the delivery unit package [here](http://www.metric2.com/download.html) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
 
-#####**Github** Install Directions
+#####Option 2: **Github** Install Directions
 
 - Moves all files into a new project in eclipse and commit them from there
 
