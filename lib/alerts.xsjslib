@@ -12,6 +12,7 @@ function createAlert(sql) {
 }
 
 function createAlertHist(alertid, dashboardwidgetid) {
+    //This creates some random alert history entries for demo purposes
     var hour = 0;
     var maxentries = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
 
@@ -34,7 +35,7 @@ function createAlertHist(alertid, dashboardwidgetid) {
 function showAlerts() {
     var data = {};
     data.userAlerts = sqlLib.executeRecordSetObj("SELECT metric2.m2_dashboard_widget.title, metric2.m2_alert.cond, metric2.m2_alert.operator, metric2.m2_alert.value, metric2.m2_alert.notify, metric2.m2_dashboard.title as dashboardtitle, metric2.m2_alert.alert_id as ALERTID, status, COUNT(metric2.m2_alert_history.alert_id) as ALERTCOUNT, MAX(metric2.m2_alert_history.ADDED) as LASTTRIGGERED FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id LEFT OUTER JOIN metric2.m2_alert_history ON metric2.m2_alert_history.alert_id = metric2.m2_alert.alert_id WHERE metric2.m2_dashboard.user_id = " + userid + " GROUP BY metric2.m2_dashboard_widget.title, metric2.m2_alert.cond, metric2.m2_alert.operator, metric2.m2_alert.value, metric2.m2_alert.notify, metric2.m2_dashboard.title, metric2.m2_alert.alert_id, status ORDER BY MAX(metric2.m2_alert_history.ADDED) DESC"); 
-    data.sysAlerts = sqlLib.executeRecordSetObj("SELECT ALERT_DETAILS as ALERTDETAILS, ALERT_RATING as ALERTRATING, UTCTOLOCAL(ALERT_TIMESTAMP, '" + strTimeZone + "') as TIME, '', ALERT_ID, ALERT_NAME as ALERTNAME, ALERT_DESCRIPTION as ALERTDESCRIPTION, ALERT_USERACTION as ALERTUSERACTION FROM _SYS_STATISTICS.STATISTICS_CURRENT_ALERTS  WHERE (ALERT_RATING =2 OR ALERT_RATING =3 OR ALERT_RATING =4 OR ALERT_RATING =5)");
+    data.sysAlerts = sqlLib.executeRecordSetObj("SELECT *, UTCTOLOCAL(ALERT_TIMESTAMP, '" + strTimeZone + "') as TIME FROM METRIC2.M2_WIDGET_SYSALERTS");
     data.userAlertsStats = sqlLib.executeRecordSetObj("SELECT COUNT(metric2.m2_alert_history.alert_id) as ALERTCOUNT, TO_CHAR(metric2.m2_alert_history.ADDED, 'MM') as Month FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id LEFT OUTER JOIN metric2.m2_alert_history ON metric2.m2_alert_history.alert_id = metric2.m2_alert.alert_id WHERE metric2.m2_dashboard.user_id = " + userid + " GROUP BY TO_CHAR(metric2.m2_alert_history.ADDED, 'MM') ORDER BY TO_CHAR(metric2.m2_alert_history.ADDED, 'MM')"); 
     return data;
 }
@@ -64,61 +65,39 @@ function sendAlertEmail(email, msg) {
 function checkWidgetAlert(dashboardwidgetid, value) {
     //check if widget has an alert - if yes, check against the specified value and send an alert if needed
     try {
-        var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1 AND metric2.m2_alert.dashboard_widget_id = " + dashboardwidgetid);
+        var source = "Web"; //Default
+        if (dashboardwidgetid === ""){
+            var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title, m2_dashboard_widget.dashboard_widget_id FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1");
+            source = "XSJob";
+        } else {
+            var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1 AND metric2.m2_alert.dashboard_widget_id = " + dashboardwidgetid);
+        }
         var strContent = '';
 
         while (rs.next()) {
             var alertid = rs.getString(2);
-            var response = '';
-            var doInsert = 0;
             var intCheckValue = rs.getInteger(3);
             var strOperator = rs.getString(2);
             var msg = "Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue;
+            
+            if (dashboardwidgetid === ""){
+                value = sqlLib.executeScalar(getWidgetParamValueFromParamName('SQL1', rs.getString(7)));
+            }
 
-            if (alertid !== '') {
-                if (checkValueInsert(strOperator, intCheckValue, value) == 1) {
-                    var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual, added_by) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + dashboardwidgetid + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", '" + rs.getString(4) + "', " + value + ", 'Web')";
-                    sqlLib.executeQuery(SQL);
-
-                    if (rs.getString(4) !== '') {
-                        sendAlertEmail(rs.getString(4), msg);
-                    }
-                    strContent = msg;
+            if (checkValueInsert(strOperator, intCheckValue, value) === 1) {
+                var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual, added_by) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + dashboardwidgetid + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", '" + rs.getString(4) + "', " + value + ", '" + source + "')";
+                sqlLib.executeUpdate(SQL);
+                
+                if (rs.getString(4) !== '') {
+                    sendAlertEmail(rs.getString(4), msg);
                 }
+                strContent = msg;
             }
         }
         rs.close();
         return strContent;
     } catch (err) {
         return err;
-    }
-}
-
-
-function checkAlertJob() {
-    try {
-        var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title, m2_dashboard_widget.dashboard_widget_id FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1");
-        var strContent = '';
-
-        while (rs.next()) {
-            var alertid = rs.getString(2);
-            var response = '';
-            var doInsert = 0;
-            var intCheckValue = rs.getInteger(3);
-            var strOperator = rs.getString(2);
-            var dashboardWidgetID = rs.getString(7);
-            var value = sqlLib.executeScalar(getWidgetParamValueFromParamName('SQL1', rs.getString(7)));
-
-            if (alertid !== '') {
-                if (checkValueInsert(strOperator, intCheckValue, value) == 1) {
-                    var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual, added_by) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + rs.getString(7) + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", 'XSJOB', " + value + ", 'XSJOB')";
-                    sqlLib.executeQuery(SQL);
-                }
-            }
-        }
-        rs.close();
-    } catch (err) {
-        var msg = err;
     }
 }
 
@@ -133,23 +112,23 @@ function getWidgetParamValueFromParamName(paramname, dashboardwidgetid){
 
 function checkValueInsert(strOperator, intCheckValue, value) {
     var doInsert = 0;
-    if (strOperator == '=') {
-        if (value == intCheckValue) {
+    if (strOperator === '=') {
+        if (value === intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator == '>') {
+    } else if (strOperator === '>') {
         if (value > intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator == '<') {
+    } else if (strOperator === '<') {
         if (value < intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator == '<=') {
+    } else if (strOperator === '<=') {
         if (value <= intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator == '>=') {
+    } else if (strOperator === '>=') {
         if (value >= intCheckValue) {
             doInsert = 1;
         }
