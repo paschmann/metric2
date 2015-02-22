@@ -9,7 +9,7 @@ function getListOfWidgets(dashboardid){
 function getWidgetTypes(widgetGroup){
     try{
     var SQL = "";
-        if (widgetGroup == '0'){
+        if (widgetGroup === '0'){
             SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget ORDER BY widget_id";
         } else {
             SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget WHERE widget_group = " + widgetGroup + " ORDER BY widget_id";
@@ -79,7 +79,7 @@ function showWidgetDiv(intDashboardWidgetID){
                 if (rs.getString(5) !== null){
                     var val = JSON.parse(datapoint);
                     insertWidgetHistory(intDashboardWidgetID, paramname, val[0][rs.getString(5)]);
-                    data['Alert'] = alertLib.checkWidgetAlert(intDashboardWidgetID, val[0][rs.getString(5)]);
+                    data.Alert = alertLib.checkWidgetAlert(intDashboardWidgetID, val[0][rs.getString(5)]);
                 } else {
                     insertWidgetHistory(intDashboardWidgetID, paramname, datapoint);
                 }
