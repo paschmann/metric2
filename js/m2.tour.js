@@ -6,8 +6,8 @@ function configureTour(){
             strHTML += "<div class='popover-content'></div>";
                 strHTML += "<div class='popover-navigation'>";
                     strHTML += "<div class='btn-group'>";
-                    strHTML += "<button class='btn btn-sm btn-default' data-role='prev'>&#171; Prev</button>";
-                    strHTML += "<button class='btn btn-sm btn-primary' data-role='next'>Next &#187;</button>";
+                    strHTML += "<button class='btn btn-sm btn-default' data-role='prev'>« Prev</button>";
+                    strHTML += "<button class='btn btn-sm btn-primary' data-role='next'>Next »</button>";
                 strHTML += "</div>";
             strHTML += "<button class='btn btn-sm btn-default' data-role='end'>Close</button>";
             strHTML += "</nav>";
@@ -16,15 +16,15 @@ function configureTour(){
     tour = new Tour({
         steps: [
             // 0
-            { element: "#", title: "metric&#178; Introduction", content: "Thanks for checking out the demo of metric&#178; the web based, realtime, self service dashboard platform for SAP HANA. Since it's a platform and has multiple use cases, we have included a few different dashboards, giving you an example of possible scenarios, these include: <br /><br /><Strong>A HANA Dashboard</strong> - Perfect for a IT or DBA team wanting to ensure their HANA instance is running optimally<br /><br /><strong>Sales Dashboard</strong> - A Sales department may use to track daily progress toward a set of goals<br /><br /><strong>Internet of Things Dashboard</strong> - metric&#178; can be used as a datamart and dashboard to store data from sensors, or devices located anywhere. These sensors can be polled, or data can be pushed into metric&#178; from the sensors using the included API.<br /><br />This short guide will walk you through the basic fundamentals of using the website.<br /><br /><p style='font-size: 10px;'>If you prefer to explore on your own, just click the Close button below.</p>" },
+            { element: "#", title: "metric&#178; Introduction", content: "Thanks for checking out the demo of metric&#178;. metric&#178 is a web based, realtime, self service dashboard platform for SAP HANA. Since it's a platform and has multiple use cases, we have included 3 different dashboards, giving you an example of 3 possible scenarios, these include: <br /><br /><Strong>A HANA Dashboard</strong> - Perfect for a IT or DBA team wanting to ensure their HANA instance is running optimally<br /><br /><strong>Sales Dashboard</strong> - A Sales department may use to track daily progress toward a set of goals<br /><br /><strong>Internet of Things Dashboard</strong> - metric&#178; can be used as a datamart and dashboard to store data from sensors, or devices located anywhere. These sensors can be polled, or data can be pushed into metric&#178; from the sensors using the included API.<br /><br />This short guide will walk you through the basic fundamentals of using the website.<br /><br /><p style='font-size: 10px;'>If you prefer to explore on your own, just click the Close button below.</p>" },
             // 1
             { element: "#btnSideBar", title: "Navigation", content: "The Sidebar displays details about your user profile, along with some key information about the HANA instance you are running on." },
             //2
             { element: ".mm-search", title: "Navigation", content: "The Side Menu displays a list of dashboards, alerts and options to modify settings or your user profile." },
             //3
-            { element: "#btnAddDashboard", title: "Navigation", content: "The Tool tip area gives users quick and easy access to many of the popular functions, including adding dashboards & metrics, showing alerts and profile changes" },
+            { element: "#btnAddDashboardTab", title: "Navigation", content: "The Tool tip area gives users quick and easy access to many of the popular functions, including adding dashboards & metrics, showing alerts and profile changes" },
             //4
-            { element: "#btnAddDashboard", title: "Dashboards", content: "Realtime dashboards are the core of metric&#178;. Adding one is as simple as clicking the + button." },
+            { element: "#btnAddDashboardTab", title: "Dashboards", content: "Realtime dashboards are the core of metric&#178;. Adding one is as simple as clicking the + button." },
             //5
             { element: "#dashboardtitle", title: "Add a Dashboard", content: "Enter a title for your dashboard and click Save. We would recommend descriptive titles, like Sales, or Performance Dashboard." },
             //6
@@ -32,9 +32,9 @@ function configureTour(){
             //7
             { element: "#", title: "Metrics", content: "Once a metric has been selected, customized and saved, they will apear on the dashboard." },
             //8
-            { element: "#widget-header3", title: "Metrics", content: "Moving a metric is as simple as dragging and dropping it into its new location." },
+            { element: "#widget-header120", title: "Metrics", content: "Moving a metric is as simple as dragging and dropping it into its new location." },
             //9
-            { element: "#historyicon3", title: "Metric History", content: "A metric's history will be saved automatically for you. If you would like to see the history, hover over the metric and click the History icon in the top right corner." },
+            { element: "#historyicon120", title: "Metric History", content: "A metric's history will be saved automatically for you. If you would like to see the history, hover over the metric and click the History icon in the top right corner." },
             //10
             { element: "#btnSearchHist", title: "Metric History", content: "A date range can be specified at the top to narrow your selection." },
             //11
@@ -46,7 +46,7 @@ function configureTour(){
             //14
             { element: "#alertID16", title: "Alerts", content: "An alert history can also be viewed by clicking on the number displayed in the center of the table, in the column Alert Count. This will open the alert history screen for analysis." },
             //15
-            { element: "#", title: "Alerts", content: "You can change the table format by clicking on the icons in the top right corner." },
+            { element: ".alert-menu-img", title: "Alerts", content: "You can change the table format by clicking on the icons in the top right corner." },
             //16
             { element: "#", title: "Tour complete", content: "Thanks for letting us show you around, please feel free to <a href='http://metric2.com/#contact' target='_blank'>contact us</a> if you have any questions or comments." }
         ],
@@ -63,7 +63,7 @@ function configureTour(){
                     $('.toggle-menu').click();
                     break;
                 case 4:
-                    getDataSet({ strService: 'AddDashboardDialog'});
+                    showDashboardDialog(null, false);
                     break;
                 case 6:
                     getDataSet({
@@ -77,16 +77,16 @@ function configureTour(){
                     $('#myModal').modal('hide');
                     break;
                 case 9:
-                    showHist(3);
+                    showHist(130);
                     break;
                 case 10:
-                    showPred(3);
+                    showPred(130);
                     break;
                 case 12:
                     getDataSet({ strService: 'Alerts'});
                     break;
                 case 14:
-                    alertHistory(16);
+                    alertHistory(7);
                     break;
                 case 15:
                     window.location = "index.html";
