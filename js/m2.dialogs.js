@@ -206,7 +206,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
         d3.select("#dialogHTML1").append("svg")
             .datum(data)
             .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><span id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='glyphicon glyphicon-search' onClick='showHist(" + dashboardwidgetid + ");' /></span></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><span style='font-size: 20px;' class='glyphicon glyphicon-list'></span> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><span style='font-size: 20px; margin-right: 10px;' class='glyphicon glyphicon-road'/>Predictive Forecast</span></button></td></tr></table>");
+        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><i id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='fa fa-search' onClick='showHist(" + dashboardwidgetid + ");' /></i></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><i style='font-size: 20px;' class='fa fa-reorder'></i> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><i style='font-size: 20px; margin-right: 10px;' class='fa fa-line-chart'></i>Predictive Forecast</button></td></tr></table>");
         $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
         $('#startdt').datepicker();
         $('#enddt').datepicker({autoclose: true});
@@ -255,7 +255,7 @@ function widgetForecastChart(strData, dashboardwidgetid) {
         d3.select("#dialogHTML1").append("svg")
             .datum(data)
             .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table style='text-align: left;' class='w-histchart-table'><tr><td></td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' onClick='showHist(" + dashboardwidgetid + ");' ><span style='font-size: 20px; margin-right: 10px;' class='glyphicon glyphicon-road'/>History</span></button></td></tr></table>");
+        $("#dialogHTML1").prepend("<table style='text-align: left;' class='w-histchart-table'><tr><td></td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' onClick='showHist(" + dashboardwidgetid + ");' ><i style='font-size: 20px; margin-right: 10px;' class='fa fa-area-chart'></i>History</button></td></tr></table>");
         return chart;
     });
 }
