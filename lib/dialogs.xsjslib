@@ -62,11 +62,14 @@ function showDashboardDialog(){
 
 function showWidgetHistoryDialog(dashboardwidgetid, reclimit, startdt, enddt){
 
-	//var strHTML = '[["2012-10-02",200],["2012-10-09", 300],["2012-10-12", 150]]';
-    var strSQL = "SELECT TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY') as year, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM') as month, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD') as day, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24') as hour,TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') as min, '00' as secs, TO_DECIMAL(AVG(TO_DECIMAL(metric2.m2_dwp_history.value)),2,2) as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + " AND (TO_DATE(TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE('" + startdt + "','MM/DD/YYYY')  AND TO_DATE('" + enddt + "','MM/DD/YYYY')) GROUP BY TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') ORDER BY day, hour, min";
-	//var strSQL = "CALL METRIC2.M2_P_WIDGET_HISTORY(" + dashboardwidgetid + ",'" + startdt + "','" + enddt + "');";
-	var strHTML = sqlLib.executeRecordSetObj(strSQL);
-	return strHTML;
+	var strSQL = "SELECT TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY') as year, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM') as month, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD') as day, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24') as hour,TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') as min, '00' as secs, TO_DECIMAL(AVG(TO_DECIMAL(metric2.m2_dwp_history.value)),2,2) as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + " AND (TO_DATE(TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE('" + startdt + "','MM/DD/YYYY')  AND TO_DATE('" + enddt + "','MM/DD/YYYY')) GROUP BY TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24'), TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') ORDER BY day, hour, min";
+	var objData = sqlLib.executeRecordSetObj(strSQL);
+	if (objData.indexOf("dberror") > -1){
+	    //Error converting to decimal, most likely because data is string based
+	   var strSQL = "SELECT TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'YYYY') as year, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM') as month, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'DD') as day, TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'HH24') as hour,TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MI') as min, '00' as secs, metric2.m2_dwp_history.value as value from metric2.m2_dwp_history INNER JOIN metric2.m2_dashboard_widget_params ON metric2.m2_dwp_history.dashboard_widget_param_id = metric2.m2_dashboard_widget_params.dashboard_widget_param_id INNER JOIN metric2.m2_widget_param ON metric2.m2_widget_param.param_id = metric2.m2_dashboard_widget_params.param_id WHERE  metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + " AND (TO_DATE(TO_CHAR(UTCTOLOCAL(metric2.m2_dwp_history.dt_added,'" + strTimeZone + "'), 'MM/DD/YYYY'),'MM/DD/YYYY') between TO_DATE('" + startdt + "','MM/DD/YYYY')  AND TO_DATE('" + enddt + "','MM/DD/YYYY')) ORDER BY day, hour, min";
+	   var objData = sqlLib.executeRecordSetObj(strSQL);
+	}
+	return objData;
 }
 
 
@@ -97,7 +100,7 @@ function showWidgetDialog(){
 	
 	if(widgetid === undefined){
         //This is an edit
-        widgetid = getWidgetIDFromDashboardWidgetID();
+        widgetid = widgetLib.getWidgetIDFromDashboardWidgetID();
         widget.widgetid = widgetid;
         widget.dashboardwidgetid = dashboardwidgetid;
         var rsdetails = sqlLib.executeReader("SELECT * FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id =" + dashboardwidgetid);
@@ -116,14 +119,14 @@ function showWidgetDialog(){
     widget.widgetwidth = widget.defaultwidgetwidth !== '' ? widget.defaultwidgetwidth : widget.widgetwidth;
     widget.widgetheight = widget.defaultwidgetheight !== '' ? widget.defaultwidgetheight : widget.widgetheight;
     
-    widget.widgetname = getWidgetNameFromWidgetID(widgetid);
+    widget.widgetname = widgetLib.getWidgetNameFromWidgetID(widgetid);
     
     var params = [];
     var rs = sqlLib.executeReader("SELECT param_id, name, type, value_default, index_no, required, placeholder, display_name, visible, option_group FROM metric2.m2_widget_param WHERE widget_id =" + widgetid + " ORDER BY index_no");
     while (rs.next()) {
         var widgetparam = {};
         var value = 'unknown';
-        value = dashboardwidgetid === undefined ? rs.getString(4) : getWidgetParamValueEscaped(rs.getString(1), dashboardwidgetid);
+        value = dashboardwidgetid === undefined ? rs.getString(4) : widgetLib.getWidgetParamValueEscaped(rs.getString(1), dashboardwidgetid);
 		var required = '';
 		
 		value = replaceAll("MET2", "&#039;", value);
@@ -149,10 +152,10 @@ function showWidgetDialog(){
     }
 	rs.close();
 	widget.param = params;
-	widget.type = getWidgetTypeFromWidgetID(widgetid);
+	widget.type = widgetLib.getWidgetTypeFromWidgetID(widgetid);
 	
 	if (widget.type == 'WebService'){
-		widget.dashboardwidgetparamid = getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid);
+		widget.dashboardwidgetparamid = widgetLib.getDashboardWidgetParamIDFromParamName('VALUE',dashboardwidgetid);
 	}
     
     return widget;
