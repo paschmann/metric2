@@ -46,11 +46,11 @@ function updateUser(){
         var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
         password = hash(password, dt);
         var SQL = "UPDATE METRIC2.M2_USERS SET password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
-        sqlLib.executeQuery(SQL);
+        sqlLib.executeUpdate(SQL);
     }
     
     var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email = '" + email + "' WHERE user_id = " + tmpUserID;
-    sqlLib.executeQuery(SQL);
+    sqlLib.executeUpdate(SQL);
     return SQL;
 }
 
@@ -74,7 +74,7 @@ function createUser(){
         var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
         password = hash(password, dt);
         var SQL = "INSERT INTO METRIC2.M2_USERS (user_ID, name, lname, email_domain, email, password, acct_type, dt_added) VALUES (metric2.user_id.NEXTVAL, '" + name + "', '" + lname + "', '" + company + "', '" + email + "', '" + password + "', '0', '" + dt + "')";
-        var msg = sqlLib.executeQuery(SQL);
+        var msg = sqlLib.executeUpdate(SQL);
         recCount = 1;
     } else {
         recCount = -1;
