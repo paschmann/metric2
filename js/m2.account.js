@@ -7,11 +7,11 @@ $(document).ready(function () {
     var CSRFToken = '';
 
         $("#loginform").submit(function (e) {
-            $.ajax({
+            $.ajax({ 
             	url: "lib/api.xsjs",
             	type: "POST",
             	data: {
-            	    service: "DoLogin",
+            	    service: "Login",
             	    email: $('#email').val(),
                 	password: $('#password').val()
                 },
