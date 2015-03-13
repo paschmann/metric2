@@ -1,0 +1,1 @@
+{"exposed":true,"authentication":null,"rewrite_rules":[{"source":"/dashboard/(.*)","target":"/index.html?did=$1"},{"source":"/API/V1/(.*)","target":"lib/api.xsjs?service=API&dashboardwidgetparamid=$1"}]}
