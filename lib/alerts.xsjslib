@@ -36,7 +36,7 @@ function showAlerts() {
     var data = {};
     data.userAlerts = sqlLib.executeRecordSetObj("SELECT metric2.m2_dashboard_widget.title, metric2.m2_alert.cond, metric2.m2_alert.operator, metric2.m2_alert.value, metric2.m2_alert.notify, metric2.m2_dashboard.title as dashboardtitle, metric2.m2_alert.alert_id as ALERTID, status, COUNT(metric2.m2_alert_history.alert_id) as ALERTCOUNT, MAX(metric2.m2_alert_history.ADDED) as LASTTRIGGERED FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id LEFT OUTER JOIN metric2.m2_alert_history ON metric2.m2_alert_history.alert_id = metric2.m2_alert.alert_id WHERE metric2.m2_dashboard.user_id = " + userid + " GROUP BY metric2.m2_dashboard_widget.title, metric2.m2_alert.cond, metric2.m2_alert.operator, metric2.m2_alert.value, metric2.m2_alert.notify, metric2.m2_dashboard.title, metric2.m2_alert.alert_id, status ORDER BY MAX(metric2.m2_alert_history.ADDED) DESC"); 
     data.sysAlerts = sqlLib.executeRecordSetObj("SELECT *, UTCTOLOCAL(ALERT_TIMESTAMP, '" + strTimeZone + "') as TIME FROM METRIC2.M2_WIDGET_SYSALERTS");
-    data.userAlertsStats = sqlLib.executeRecordSetObj("SELECT COUNT(metric2.m2_alert_history.alert_id) as ALERTCOUNT, TO_CHAR(metric2.m2_alert_history.ADDED, 'MM') as Month FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id LEFT OUTER JOIN metric2.m2_alert_history ON metric2.m2_alert_history.alert_id = metric2.m2_alert.alert_id WHERE metric2.m2_dashboard.user_id = " + userid + " GROUP BY TO_CHAR(metric2.m2_alert_history.ADDED, 'MM') ORDER BY TO_CHAR(metric2.m2_alert_history.ADDED, 'MM')"); 
+    data.userAlertsStats = sqlLib.executeRecordSetObj("SELECT COUNT(metric2.m2_alert_history.alert_id) as ALERTCOUNT, TO_CHAR(metric2.m2_alert_history.ADDED, 'MM') as Month, TO_CHAR(metric2.m2_alert_history.ADDED, 'YYYY') as Year FROM metric2.m2_alert INNER JOIN metric2.m2_dashboard_widget ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id INNER JOIN metric2.m2_dashboard ON metric2.m2_dashboard_widget.dashboard_id = metric2.m2_dashboard.dashboard_id LEFT OUTER JOIN metric2.m2_alert_history ON metric2.m2_alert_history.alert_id = metric2.m2_alert.alert_id WHERE metric2.m2_dashboard.user_id = " + userid + " GROUP BY TO_CHAR(metric2.m2_alert_history.ADDED, 'MM'), TO_CHAR(metric2.m2_alert_history.ADDED, 'YYYY') ORDER BY TO_CHAR(metric2.m2_alert_history.ADDED, 'YYYY'), TO_CHAR(metric2.m2_alert_history.ADDED, 'MM')"); 
     return data;
 }
 
@@ -58,8 +58,22 @@ function setAlert(alertid, intStatus) {
 }
 
 function sendAlertEmail(email, msg) {
-    var SQL = "INSERT INTO metric2.m2_outgoing_email (id, emailfrom, emailto, subject, contents) VALUES (metric2.alert_mail_id.NEXTVAL, 'info@metric2.com','" + email + "','" + msg + "','" + msg + "')";
-    sqlLib.executeUpdate(SQL);
+    if (intHanaVersion === 9){
+        try {
+            var mail = new $.net.Mail({sender: {address:"info@metric2.com"},
+                to: [{ address: email}],
+                subject: "Metric2 Alert",
+                parts: [new $.net.Mail.Part ({type: $.net.Mail.Part.TYPE_TEXT, text: msg, contentType: "text/plain" })]
+            });
+            var returnValue = mail.send();
+            return "MessageId= " + returnValue.messageId + ", final reply = " + returnValue.finalReply;
+        } catch (err) {
+            return JSON.stringify("Error sending email alert: " + err);
+        }
+    } else {
+        var SQL = "INSERT INTO metric2.m2_outgoing_email (id, emailfrom, emailto, subject, contents) VALUES (metric2.alert_mail_id.NEXTVAL, 'info@metric2.com','" + email + "','" + msg + "','" + msg + "')";
+        sqlLib.executeUpdate(SQL);
+    }
 }
 
 function checkWidgetAlert(dashboardwidgetid, value) {
@@ -75,23 +89,28 @@ function checkWidgetAlert(dashboardwidgetid, value) {
         var strContent = '';
 
         while (rs.next()) {
-            var alertid = rs.getString(2);
-            var intCheckValue = rs.getInteger(3);
+            var intAlertID = rs.getString(1);
             var strOperator = rs.getString(2);
-            var msg = "Alert Condition: " + rs.getString(6) + " " + value + " " + strOperator + " " + intCheckValue;
+            var intCheckValue = rs.getInteger(3);
+            var strNotify = rs.getString(4);
+            var strCondition = rs.getString(5);
+            var strTitle = rs.getString(6);
+            
+            var msg = "Alert Condition: " + strTitle + " " + value + " " + strOperator + " " + intCheckValue;
             
             if (dashboardwidgetid === ""){
-                value = sqlLib.executeScalar(getWidgetParamValueFromParamName('SQL1', rs.getString(7)));
+                dashboardwidgetid = rs.getString(7);
+                value = sqlLib.executeScalar(widgetLib.getWidgetParamValueFromParamName('SQL1', rs.getString(7)));
             }
 
             if (checkValueInsert(strOperator, intCheckValue, value) === 1) {
-                var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual, added_by) VALUES (metric2.alert_history_id.NEXTVAL, " + rs.getString(1) + ", " + dashboardwidgetid + ", '" + rs.getString(5) + "', '" + rs.getString(2) + "', " + rs.getString(3) + ", '" + rs.getString(4) + "', " + value + ", '" + source + "')";
+                var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual, added_by) VALUES (metric2.alert_history_id.NEXTVAL, " + intAlertID + ", " + dashboardwidgetid + ", '" + strCondition + "', '" + strOperator + "', " + intCheckValue + ", '" + strNotify + "', " + value + ", '" + source + "')";
                 sqlLib.executeUpdate(SQL);
                 
-                if (rs.getString(4) !== '') {
+                strContent += msg;
+                if (strNotify !== '') {
                     sendAlertEmail(rs.getString(4), msg);
                 }
-                strContent = msg;
             }
         }
         rs.close();
