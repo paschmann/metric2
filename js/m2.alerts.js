@@ -64,27 +64,14 @@ function loadAlerts(objData){
                     });
                     strHTML += "</tbody></table></div>";
             
-            var userAlertStats = jQuery.parseJSON(objData.userAlertsStats);
+            var userAlertStats = JSON.parse(objData.userAlertsStats);
             var arrMonthData = [];
             var arrMonthNames = [];
             
-            for (var i = 1; i <= 12; i++){
-                var found = false;
-                for (var t = 0; t <= 11; t++){
-                    try{
-                        if (userAlertStats[t].MONTH === i.toString()){
-                            arrMonthData.push(parseInt(userAlertStats[t].ALERTCOUNT));
-                            arrMonthNames.push(month[userAlertStats[t].MONTH]);
-                            found = true;
-                        }
-                    } catch (e) {
-                        
-                    }
-                }
-                if (!found){
-                    //arrMonthData.push(0);
-                }
-            }
+            $.each(userAlertStats, function (index, value) {
+                arrMonthData.push(parseInt(value.ALERTCOUNT));
+                arrMonthNames.push(month[parseInt(value.MONTH) - 1] + " " + value.YEAR);
+            });
         }
             
         var systemAlerts = jQuery.parseJSON(objData.sysAlerts);
@@ -160,7 +147,7 @@ function loadEventsbyMonth(arrData, arrMonthNames){
             text: null
         },
         xAxis: {
-            categories: arrMonthNames
+            categories: arrMonthNames    
         },
         yAxis: {
             min: 0,
