@@ -1,7 +1,7 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
 var m2version = 'Version 2.4.2';
 var userToken = 0;
-var intCurrentDashboardID = 1;
+var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
 var arrActiveTimersIDList = [];
 var alertlist = [];
@@ -652,7 +652,7 @@ function getDataSet(options) {
                 loadInstanceData(arrData);
             } else if (options.strService == 'UserInfo') {
                 var objData = jQuery.parseJSON(data);
-                var arrData = JSON.parse(objData.dbinfo);
+                var arrData = JSON.parse(objData.userinfo);
                 loadUserData(arrData);
             } else if (options.strService == 'Dashboards') {
                 var objData = jQuery.parseJSON(data);
