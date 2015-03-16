@@ -1,6 +1,6 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = 'Version 2.4.2';
-var userToken = 0;
+var m2version = 'Version 2.4.4';
+var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
 var arrActiveTimersIDList = [];
@@ -27,14 +27,14 @@ var objWidgetList = {};
 $(document).ready(function() {
     if (parseParams('did').length > 0) {
         viewmode = true;
-        userToken = "temp";
+        sessionToken = "temp";
         //Show single, read only dashboard
         // 1. Check if token valid -> otherwise logout
     } else {
-        getUserToken();
+        getSessionToken();
     }
     
-    if (userToken === '' || userToken === 0 || !userToken) {
+    if (sessionToken === '' || sessionToken === 0 || !sessionToken) {
         doLogout();
     }
     
@@ -97,6 +97,12 @@ function configureClickEvents() {
     
     $('#btnShowAlertList').click(function() {
         loadAlertList();
+    });
+    
+    $(document).on('click','#btnChangePassword',function(e){
+        var output = "<div class='form-group'><label for='password1' class='col-sm-3 control-label'>New Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Password' name='password'  id='password' /></div></div>";
+        output += "<div class='form-group'><label for='password2' class='col-sm-3 control-label'>Repeat Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Repeat Password' name='password1'  id='password1' /></div></div>";
+        $(".form-horizontal").append(output);
     });
     
     $('#btnAddWidget, #mnuAddWidget').click(function() {
@@ -433,13 +439,13 @@ function loadInstanceData(arrData) {
 
 
 function doLogout() {
-    userToken = '';
-    $.removeCookie('userToken');
+    sessionToken = '';
+    $.removeCookie('sessionToken');
     window.location = "login.html";
 }
 
-function getUserToken() {
-    userToken = $.cookie('userToken');
+function getSessionToken() {
+    sessionToken = $.cookie('sessionToken');
     $gravatarEmail = $.cookie('tmpEmail');
 }
 
@@ -629,9 +635,11 @@ function getDataSet(options) {
     $.ajax({
         url: jURL,
         type: 'GET',
+        headers: {
+            "SessionToken": sessionToken
+        },
         data: {
             service: options.strService,
-            usertoken: userToken,
             dashboardid: options.strDashboardID,
             gridpos: options.strGridPos,
             dashboardwidgetid: options.strDashboardWidgetID,
