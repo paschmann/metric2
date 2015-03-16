@@ -17,7 +17,7 @@ $(document).ready(function () {
                 },
                 success: function(data, textStatus, XMLHttpRequest) {
                     if (data != 0 && data != 999){
-                	    $.cookie('userToken', data);
+                	    $.cookie('sessionToken', data);
                 		window.location = 'index.html';
                 	} else {
                 	    $('#msg').html('Incorrect Email or Password');
