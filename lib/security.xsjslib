@@ -14,7 +14,7 @@ function getRandomSHA1(token)
     return  $.util.codec.encodeBase64(hmacSha1ByteBuffer);
 }
 
-function getUserLoginToken() {
+function getUserSessionToken() {
     // Get the salt from the useraccount, apply it, and test the password
     var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY(DT_ADDED)) from METRIC2.M2_Users where email = '" + email + "'");
     var userID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "' AND password = '" + hash + "'");
@@ -34,24 +34,34 @@ function getUserIDfromToken(usertoken){
     return sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE user_token = '" + usertoken + "'");
 }
 
+function updateUserPassword(password){
+    //var userid = $.request.parameters.get('userid');
+    var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
+    password = hash(password, dt);
+    var SQL = "UPDATE METRIC2.M2_USERS SET password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + userid;
+    sqlLib.executeUpdate(SQL);
+    return "updated";
+}
+
 function updateUser(){
     var email = $.request.parameters.get('email');
     var lname = $.request.parameters.get('lname');
     var company = $.request.parameters.get('company');
     var name = $.request.parameters.get('name');
-    var password = $.request.parameters.get('password');
-    var tmpUserID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "'");
+    //var userid = $.request.parameters.get('userid');
     
-    if (password.length > 0){
-        var dt = sqlLib.executeScalar("SELECT CURRENT_TIMESTAMP from DUMMY");
-        password = hash(password, dt);
-        var SQL = "UPDATE METRIC2.M2_USERS SET password = '" + password + "', dt_added = '" + dt + "' WHERE user_id = " + tmpUserID;
-        sqlLib.executeUpdate(SQL);
-    }
-    
-    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email = '" + email + "' WHERE user_id = " + tmpUserID;
+    var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email = '" + email + "' WHERE user_id = " + userid;
     sqlLib.executeUpdate(SQL);
-    return SQL;
+    
+    try {
+        var password = $.request.parameters.get('password');
+        if (password.length > 0){
+            updateUserPassword(password);
+        }
+    } catch (err) {
+        //do nothing
+    }
+    return "updated";
 }
 
 function hash(password, dt){
