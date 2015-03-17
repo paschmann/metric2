@@ -4,14 +4,15 @@ describe("metric2 Test Suite", function() {
     var m2api = '/lilabs/metric2/lib/api.xsjs';
     var testemail = 'demo@metric2.com';
     var testpassword = 'demo';
-    var usertoken;
-    
-    var contentTypeHeader = {
-        "Content-Type": "application/json"
-    };
+    var sessiontoken = '';
 
     function callAPI(queryString) {
-        var response = jasmine.callHTTPService(m2api + queryString, $.net.http.GET);
+        var contentTypeHeader = {
+            "Content-Type": "application/json",
+            "sessionToken": sessiontoken
+        };
+        
+        var response = jasmine.callHTTPService(m2api + queryString, $.net.http.GET, "", contentTypeHeader);
         return response.body ? response.body.asString() : "";
     }
 
@@ -28,7 +29,7 @@ describe("metric2 Test Suite", function() {
         var requestQuery = '?service=Login&email=' + testemail + '&password=' + testpassword;
         var response = callAPI(requestQuery);
         expect(response).not.toMatch(/dberror/);
-        usertoken = response;
+        sessiontoken = response;
     });
     
     it("API: DBInfo should return DB Info", function() {
@@ -39,21 +40,21 @@ describe("metric2 Test Suite", function() {
     });
     
     it("API: UserInfo should return User Info", function() {
-        var requestQuery = '?service=UserInfo&usertoken=' + usertoken;
+        var requestQuery = '?service=UserInfo&view=false';
         var response = callAPI(requestQuery);
         expect(response).not.toMatch(/dberror/);
         expect(response).toContain("LNAME");
     });
     
     it("API: Dashboards should return a list of dashboards", function() {
-        var requestQuery = '?service=Dashboards&usertoken=' + usertoken;
+        var requestQuery = '?service=Dashboards';
         var response = callAPI(requestQuery);
         expect(response).not.toMatch(/dberror/);
         expect(response).toContain("dashboards");
     });
     
     it("API: Widgets should return a list of widgets", function() {
-        var requestQuery = '?service=Widgets&usertoken=' + usertoken;
+        var requestQuery = '?service=Widgets';
         var response = callAPI(requestQuery);
         expect(response).not.toMatch(/dberror/);
         expect(response).toContain("widgetData");
