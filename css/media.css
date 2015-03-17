@@ -1,7 +1,7 @@
 @media (max-width: 991px) {
     #main{
         margin-left: 0;
-        display: block;
-        padding-top: 0;
+        display: block; 
+        padding-top: 0; 
     }
 }
