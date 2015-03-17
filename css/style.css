@@ -1,11 +1,11 @@
 /* Just for reference as CSS variables are not supported outside of FF 
-:root {
+:root { 
   --metric-red: #F55B4C;
   --metric-yellow: #FFDD72;
   --metric-green: #5BD993;
-  --metric-text-light: #CCC;
+  --metric-text-light: #CCC; 
   --metric-text-dark: #666;
-}*/
+}*/  
 
 html {
   min-width: 320px;
@@ -14,6 +14,28 @@ html {
 #peitysvg>svg{
     height: 50px;
     width: 50px;
+}
+
+.dashboardbackground {
+    /* This class gets added to content when a dashboard background image has been defined */
+    min-height: 100%;
+    min-width: 1024px;
+	
+    width: 100%;
+    height: auto;
+	
+    top: 0;
+    left: 0;
+  
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.metricopacity {
+    background-color: rgb(255,255,255); /* fallback */
+    background-color: rgba(255,255,255,0.9);
 }
 
 body {
@@ -647,6 +669,7 @@ a.list-group-item.active {
     border-radius: 0px;
     border-bottom: 1px solid #999;
     box-shadow: none;
+    background: none;
 }
 
 .panel-heading {
@@ -655,7 +678,7 @@ a.list-group-item.active {
 }
 
 .panel-primary > .panel-heading{
-    background-color: #fff;
+    background: none;
     border-color: #EEE;
     color: #999;
 }
