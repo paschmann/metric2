@@ -174,6 +174,7 @@ function configureClickEvents() {
         var objData = {};
         objData.DASHBOARD_ID = $("li.active").data('id');
         objData.SHARE_URL = $("li.active").data('shareurl');
+        objData.BG_URL = $("li.active").data('bgurl');
         objData.TITLE = $("li.active").attr('title');
         showDashboardDialog(objData, true);
     });
@@ -471,15 +472,16 @@ function loadDashboards(objDashboards) {
         for (var i = 0; i < len; ++i) {
             var dashboardid = objDashboards[i].DASHBOARD_ID;
             var shareurl = objDashboards[i].SHARE_URL;
+            var bgurl = objDashboards[i].BG_URL;
             //Load top menu bar with dashboards
-            $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
+            $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' data-bgurl='" + bgurl + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboard" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 intDashboardID = $(this).data('id');
                 return false;
             });
             //Load left menu with dashboards
-            $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
+            $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' data-bgurl='" + bgurl + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
                 getContent($(this).data('id'));
                 intDashboardID = $(this).data('id');
@@ -502,7 +504,7 @@ function loadDashboards(objDashboards) {
     } else if (intCurrentDashboardID !== '') {
         $("li[data-id='" + intCurrentDashboardID +"']").addClass('active');
     }
-    
+    loadImg();
     loadDashboardSortable();
 }
 
@@ -520,6 +522,18 @@ function loadDashboardSortable(){
             });
         }
     });
+}
+
+function loadImg(){
+    if ($("li.active").data('bgurl') !== ''){
+        $('#content').css('background', 'url(' + $("li.active").data('bgurl') + ')  no-repeat center center fixed');
+        $('#content').addClass('dashboardbackground');
+        $('.t1-widget-div').addClass('metricopacity');
+    } else {
+        $('#content').css('background', 'none');
+        $('#content').removeClass('dashboardbackground');
+        $('.t1-widget-div').removeClass('metricopacity');
+    }
 }
 
 function getContent(sId) {
@@ -606,6 +620,7 @@ function loadMetrics(objData) {
     });
     strContent += "</ul></div>";
     $("#grid").html(strContent);
+    loadImg();
     showLoadingSpinner(false, '');
 }
 
