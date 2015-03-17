@@ -340,8 +340,9 @@ function metricDataByState(data) {
                 }
             })(usRaphael[state], state);
         }
-
-        $("#legend" + data.dwid).html("<table><tr><td align='right' style='width: 0;'>" + data.UOM1 + numeral("0").format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.1) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.3) + "');'></td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.5) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.7) + "');'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.9) + "');'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1 + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>");
+        
+        var strLegend = "<table><tr><td align='right' style='width: 0;'>" + data.UOM1.trim() + numeral("0").format('0.00a') + "&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.1) + "'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.3) + "'></td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.5) + "'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.7) + "'>&nbsp;</td><td style='background-color: " + blendColors(data.HEXCOLOR1, data.HEXCOLOR2, 0.9) + "'>&nbsp;</td><td align='left' style='width: 0;'>&nbsp;" + data.UOM1.trim() + numeral(maxVal).format('0.00a') + "&nbsp;&nbsp;</td></tr></table>";
+        $("#legend" + data.dwid).html(strLegend);
         states.scale("0.5,0.5 0,0");
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html(err.description);
@@ -1311,13 +1312,13 @@ function metricHANAOverview(data) {
         $('.connections' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: ["#F7F7F7"]
+            fill: ["#E7E7E7"]
         });
 
         $('.activeusers' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: ["#F7F7F7"]
+            fill: ["#E7E7E7"]
         });
 
 
@@ -1325,19 +1326,19 @@ function metricHANAOverview(data) {
         $('.cpu' + data.dwid).peity('bar', {
             width: parseInt(data.width) * 175,
             height: 200,
-            fill: ["#2A89C1"]
+            fill: ["#F55B4C"]
         });
 
         $('.ram' + data.dwid).peity('bar', {
             width: parseInt(data.width) * 175,
             height: 200,
-            fill: ["#8FBC8F"]
+            fill: ["#F27141"]
         });
 
-        $('.disk' + data.dwid).peity('line', {
+        $('.disk' + data.dwid).peity('bar', {
             width: parseInt(data.width) * 175,
             height: 200,
-            fill: ["#778899"]
+            fill: ["#F2A71B"]
         });
 
         $('rect').hover(
