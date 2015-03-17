@@ -111,8 +111,9 @@ function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
         strHTML += '<div class="col-md-2">';
             strHTML += '<div class="list-group">';
+                strHTML += '<a href="#" class="list-group-item" data-id="0"><b>Integration Groups</b></a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="0"><input type="text" class="form-control" id="searchmetrics" placeholder="Filter"></a>';
-                strHTML += '<a href="#" class="list-group-item active" data-id="0">All</a>';
+                strHTML += '<a href="#" class="list-group-item active" data-id="0">All Metrics</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="1">SAP HANA</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="7">Web Services</a>';
@@ -170,49 +171,55 @@ function showHist(dashboardwidgetid) {
 
 function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
     dialogConstructor("Widget History", true, false, null, 2, false, false);
-                
     $('#dialogHTML1').innerHTML = '';
     var maxval = -1000000;
     var minval = 1000000;
-
-    var arrData = JSON.parse(strData);
-
-    startdt = startdt !== '' ? startdt : getDate();
-    enddt = enddt !== '' ? enddt : getDate();
-
-    var vals = [];
-    for (var i = 0; i < arrData.length; ++i) {
-        var date = new Date(arrData[i].YEAR, arrData[i].MONTH - 1, arrData[i].DAY, arrData[i].HOUR, arrData[i].MIN, arrData[i].SECS, 1);
-        vals.push({
-            x: date,
-            y: arrData[i].VALUE
+        
+    try {
+        
+        var arrData = JSON.parse(strData);
+        var strTable = "<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><i id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='fa fa-search' onClick='showHist(" + dashboardwidgetid + ");' /></i></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><i style='font-size: 20px;' class='fa fa-reorder'></i> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><i style='font-size: 20px; margin-right: 10px;' class='fa fa-line-chart'></i>Predictive Forecast</button></td></tr></table>";
+        
+        startdt = startdt !== '' ? startdt : getDate();
+        enddt = enddt !== '' ? enddt : getDate();
+    
+        var vals = [];
+        for (var i = 0; i < arrData.length; ++i) {
+            var date = new Date(arrData[i].YEAR, arrData[i].MONTH - 1, arrData[i].DAY, arrData[i].HOUR, arrData[i].MIN, arrData[i].SECS, 1);
+            vals.push({
+                x: date,
+                y: arrData[i].VALUE
+            });
+            maxval = parseFloat(arrData[i].VALUE) > maxval ? parseFloat(arrData[i].VALUE) : maxval;
+            minval = parseFloat(arrData[i].VALUE) < minval ? parseFloat(arrData[i].VALUE) : minval;
+        }
+    
+        nv.addGraph(function() {
+            var data = [{
+                "values": vals,
+                "key": "Value",
+                "color": "#5A92F9"
+            }];
+            
+            chart.xAxis.axisLabel("Date & Time").tickFormat(function(d) {
+                return d3.time.format("%m/%d %H:%M")(new Date(d));
+            });
+            
+            $("#dialogHTML1 svg").remove();
+            d3.select("#dialogHTML1").append("svg")
+                .datum(data)
+                .call(chart.forceY([minval, maxval]));
+            $("#dialogHTML1").prepend(strTable);
+            $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
+            $('#startdt').datepicker();
+            $('#enddt').datepicker({autoclose: true});
+            
+            return chart;
         });
-        maxval = parseFloat(arrData[i].VALUE) > maxval ? parseFloat(arrData[i].VALUE) : maxval;
-        minval = parseFloat(arrData[i].VALUE) < minval ? parseFloat(arrData[i].VALUE) : minval;
+    } catch (err) {
+        $("#dialogHTML1").prepend(strTable);
+        $("#dialogHTML1").append(strData);
     }
-
-    nv.addGraph(function() {
-        var data = [{
-            "values": vals,
-            "key": "Value",
-            "color": "#5A92F9"
-        }];
-        
-        chart.xAxis.axisLabel("Date & Time").tickFormat(function(d) {
-            return d3.time.format("%m/%d %H:%M")(new Date(d));
-        });
-        
-        $("#dialogHTML1 svg").remove();
-        d3.select("#dialogHTML1").append("svg")
-            .datum(data)
-            .call(chart.forceY([minval, maxval]));
-        $("#dialogHTML1").prepend("<table class='w-histchart-table'><tr><td class='w-histchart-td'>Start Date&nbsp;<input type='text' id='startdt' style='width: 100px;' value='" + startdt + "' />&nbsp;&nbsp;&nbsp;End Date&nbsp;<input type='text'  style='width: 100px;' id='enddt' value='" + enddt + "' /><i id='btnSearchHist' style='font-size: 20px; margin-left: 10px;' class='fa fa-search' onClick='showHist(" + dashboardwidgetid + ");' /></i></td><td style='width: 1px; vertical-align: middle;'></td><td style='text-align: center; width: 300px;'><i style='font-size: 20px;' class='fa fa-reorder'></i> " + arrData.length + " Records</td><td style='text-align: right;'><button type='button' class='btn btn-default btn-med' id='btnShowPred' onClick='showPred(" + dashboardwidgetid + ");' ><i style='font-size: 20px; margin-right: 10px;' class='fa fa-line-chart'></i>Predictive Forecast</button></td></tr></table>");
-        $("#dialogHTML1").append("<input type='hidden' id='dashboardwidgetid' value='" + dashboardwidgetid + "' />");
-        $('#startdt').datepicker();
-        $('#enddt').datepicker({autoclose: true});
-        
-        return chart;
-    });
     
     $('#myModal').appendTo("body").modal('show');
     $('#modal-header').html($('#widget-header' + dashboardwidgetid).text() + ' History');
@@ -261,14 +268,16 @@ function widgetForecastChart(strData, dashboardwidgetid) {
 }
 
 function showSettingsDialog(objData) {
+    
     var output = "<form class='form-horizontal'>";
-    output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
-    output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB</p></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Disk Free</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div></div>";
-    output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label><div class='col-sm-9' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
-    dialogConstructor("Edit Settings", false, true, output, 1, true, false); 
+        output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
+        output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB</p></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Disk Free</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label><div class='col-sm-9' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
+    
+    dialogConstructor("Edit Settings", false, true, output, 1, true, false);
     
     $('.usagePeity').peity("pie", {
         height: "50px",
@@ -421,7 +430,7 @@ function showProfileDialog(objData){
 	output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + objData[0].LNAME + "' /></div></div>";
 	output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='col-sm-9'><input type='text' class='form-control' required='true' placeholder='Email Address' name='email' id='email' value = '" + objData[0].EMAIL + "' /></div></div>";
 	//output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-5'><input type='password' class='form-control' placeholder='Password' name='password' id='password' value = '' /></div></div>";
+    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-9'>*********<button type='button' class='btn btn-default btn-med pull-right' id='btnChangePassword'>Change Password</button></div></div>";
     dialogConstructor("Edit Profile", false, true, output, 1, true, false);
 }
 
@@ -430,16 +439,19 @@ function showDashboardDialog(objData, edit){
     var dashboardid = '';
     var dashboardtitle = '';
     var shareurl = '';
+    var bgurl = '';
     
     if (edit){
         dashboardid = objData.DASHBOARD_ID;
         dashboardtitle = objData.TITLE;
-        shareurl = objData.SHARE_URL
+        shareurl = objData.SHARE_URL;
+        bgurl = objData.BG_URL;
     }
     
     var output = "<form class='form-horizontal' role='form'>";
 	output += "<input type='" + debugmode + "' value='" + dashboardid + "' id='dashboardid' />";
 	output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Title</label><div class='col-sm-9'><input class='form-control' required='true' type='text' placeholder='Title' id='dashboardtitle' value = '" + dashboardtitle + "' /></div></div>";
+	output += "<div class='form-group'><label for='dashboardbgurl' class='col-sm-3 col-sm-3 control-label'>Background Image</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Background Image URL' id='dashboardbgurl' value = '" + bgurl + "' /></div></div>";
 	if (shareurl){
 	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard' checked></label></div></div>";
 	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '" + getShareURL(shareurl) + "'/></div></div>";
@@ -643,14 +655,14 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Add Dashboard') {
             getDataSet({
                 strService: "CreateDashboard",
-                strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + document.getElementById('dashboardtitle').value + "', '',999)",
+                strSQL: "Insert into metric2.m2_dashboard (dashboard_id, title, subtitle, bg_url, user_id) VALUES (metric2.dashboard_id.NEXTVAL, '" + document.getElementById('dashboardtitle').value + "', '','" + document.getElementById('dashboardbgurl').value + "', 999)",
                 strReload: "dashboards", 
                 strMisc: document.getElementById('dashboardtitle').value
             });
         } else if (strFunction == 'Edit Dashboard') {
             getDataSet({
                 strService: "UpdateDashboard",
-                strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
+                strSQL: "Update metric2.m2_dashboard SET title = '" + document.getElementById('dashboardtitle').value + "', subtitle = '', bg_url = '" + document.getElementById('dashboardbgurl').value + "' WHERE dashboard_id =" + document.getElementById('dashboardid').value,
                 strReload: "dashboards"
             });
         } else if (strFunction == 'Add Alert') {
@@ -668,6 +680,9 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Edit Profile') {
             $.ajax({
                 url: "lib/api.xsjs",
+                headers: {
+                    "SessionToken": sessionToken
+                },
                 type: "GET",
                 data: $('form').serialize(),
                 success: function(data, textStatus, XMLHttpRequest) {
