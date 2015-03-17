@@ -54,7 +54,7 @@ function showDashboardDialog(){
     var dashboardtitle = '';
 	var dashboardsubtitle = '';
 	if(service !== 'AddDashboardDialog'){
-        return sqlLib.executeRecordSetObj("SELECT title, subtitle, dashboard_id FROM metric2.m2_dashboard WHERE dashboard_id =" + dashboardid);
+        return sqlLib.executeRecordSetObj("SELECT title, subtitle, dashboard_id, bg_url FROM metric2.m2_dashboard WHERE dashboard_id =" + dashboardid);
     }
 	return '';
 }
