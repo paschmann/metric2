@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = 'Version 2.4.4';
+var m2version = 'Version 2.4.5';
 var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
@@ -16,7 +16,7 @@ var useremail = '';
 var showTour = true;
 var viewmode = false;
 var tour;
-var debugmode = 'hidden';
+var debugmode = 'hidden'; /*display*/
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-tachometer fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
 var strInputControl = '';
@@ -60,14 +60,14 @@ $(document).ready(function() {
 
 function init() {
     getDataSet({
-        strService: 'Dashboards',
-        strDashboardID: parseParams('did')
+        service: 'Dashboards',
+        dashboardid: parseParams('did')
     });
     getDataSet({
-        strService: 'DBInfo'
+        service: 'DBInfo'
     });
     getDataSet({
-        strService: 'UserInfo'
+        service: 'UserInfo'
     });
 }
 
@@ -89,9 +89,9 @@ function configureClickEvents() {
     
     $(document).on('click','#chkShareDashboard',function(){
         if ($(this).is(':checked')){
-            getDataSet({strService: 'SetSharingURL', strDashboardID: $("li.active").data('id')});
+            getDataSet({service: 'SetSharingURL', dashboardid: $("li.active").data('id')});
         } else {
-            getDataSet({strService: 'DisableSharingURL', strDashboardID: $("li.active").data('id')});
+            getDataSet({service: 'DisableSharingURL', dashboardid: $("li.active").data('id')});
         }
     })
     
@@ -106,7 +106,7 @@ function configureClickEvents() {
     });
     
     $('#btnAddWidget, #mnuAddWidget').click(function() {
-        getDataSet({ strService: 'GetWidgetTypes', intWidgetGroup: 0});
+        getDataSet({ service: 'GetWidgetTypes', widgetgroup: 0});
     });
     
     $('#btnAddAlert').click(function() {
@@ -118,7 +118,7 @@ function configureClickEvents() {
     });
     
     $(document).on('click','.btnAddMetricThumbnail',function(){
-        getDataSet({strService: 'NewWidgetDialog', strWidgetID: $(this).data("id")});
+        getDataSet({service: 'NewWidgetDialog', widgetid: $(this).data("id")});
     });
     
     
@@ -130,7 +130,7 @@ function configureClickEvents() {
     });
 
     $(document).on('click','#btnExecuteSQL',function(){
-        getDataSet({ strService: "Select", strSQL: document.getElementById('txtSQL').value })
+        getDataSet({ service: "Select", sql: document.getElementById('txtSQL').value })
     });
     
     $(document).on('click','#btnExecuteOData',function(){
@@ -181,13 +181,13 @@ function configureClickEvents() {
 
     $('#mnuProfile, btnProfile').click(function() {
         getDataSet({
-            strService: 'EditProfileDialog'
+            service: 'EditProfileDialog'
         });
     });
 
     $('#mnuSettings, btnSettings').click(function() {
         getDataSet({
-            strService: 'EditSettingsDialog'
+            service: 'EditSettingsDialog'
         });
     });
     
@@ -275,8 +275,8 @@ function configureGristerClickEvents() {
     
         $("[id^=editicon]").click(function(e) {
             getDataSet({
-                strService: 'EditWidgetDialog',
-                strDashboardWidgetID: this.id.substring(8)
+                service: 'EditWidgetDialog',
+                dashboardwidgetid: this.id.substring(8)
             })
             e.stopPropagation();
         });
@@ -288,8 +288,8 @@ function configureGristerClickEvents() {
     
         $("[id^=refreshicon]").click(function(e) {
             getDataSet({
-                strService: 'RefreshWidget',
-                strDashboardWidgetID: this.id.substring(11)
+                service: 'RefreshWidget',
+                dashboardwidgetid: this.id.substring(11)
             });
             e.stopPropagation();
         });
@@ -366,7 +366,7 @@ function loadAlertScreen(){
     $('#myAlertModal').modal('hide');
     dashboardActive(false);
     getDataSet({
-        strService: 'Alerts'
+        service: 'Alerts'
     });
 }
 
@@ -408,8 +408,8 @@ function loadTimers(){
             arrActiveTimersIDList.push(objWidgets[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
-                    strService: 'RefreshWidget',
-                    strDashboardWidgetID: objWidgets[key].dwid
+                    service: 'RefreshWidget',
+                    dashboardwidgetid: objWidgets[key].dwid
                 });
             }, objWidgets[key].refresh));
         }
@@ -517,8 +517,8 @@ function loadDashboardSortable(){
         stop: function( ) {
             var order = JSON.stringify($("#dashboards").sortable("toArray"));
             getDataSet({
-                strService: 'SaveDashboardPositions', 
-                strDashboardPos: order
+                service: 'SaveDashboardPositions', 
+                dashboardpos: order
             });
         }
     });
@@ -544,8 +544,8 @@ function getContent(sId) {
     
     if (typeof sId != 'undefined') {
         getDataSet({
-            strService: 'Widgets',
-            strDashboardID: intCurrentDashboardID
+            service: 'Widgets',
+            dashboardid: intCurrentDashboardID
         });
     } else {
         $("#grid").html(strNoDashboardMsg);
@@ -578,8 +578,8 @@ function loadClientMetrics(objData) {
             arrActiveTimersIDList.push(objData.widgetData[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
-                    strService: 'RefreshWidget',
-                    strDashboardWidgetID: objData.widgetData[key].dwid
+                    service: 'RefreshWidget',
+                    dashboardwidgetid: objData.widgetData[key].dwid
                 });
             }, objData.widgetData[key].refresh));
         }
@@ -643,9 +643,10 @@ function getShareURL(id){
 // -------------------------   Server side processesing ----------------------- //
 
 function getDataSet(options) {
-    showLoadingSpinner(true, 'Loading ' + options.strService);
+    showLoadingSpinner(true, 'Loading ' + options.service);
     var html = '';
     var jURL = 'lib/api.xsjs';
+    options.viewmode = viewmode;
 
     $.ajax({
         url: jURL,
@@ -653,34 +654,20 @@ function getDataSet(options) {
         headers: {
             "SessionToken": sessionToken
         },
-        data: {
-            service: options.strService,
-            dashboardid: options.strDashboardID,
-            gridpos: options.strGridPos,
-            dashboardwidgetid: options.strDashboardWidgetID,
-            widgetid: options.strWidgetID,
-            alertid: options.strAlertID,
-            alertstatus: options.intAlertStatus,
-            widgetgroup: options.intWidgetGroup,
-            startdt: options.strStartDt,
-            enddt: options.strEndDt,
-            SQL: options.strSQL,
-            dashboardpos: options.strDashboardPos,
-            view: viewmode
-        },
+        data: options,
         success: function(data) {
-            if (options.strService == 'DBInfo') {
+            if (options.service == 'DBInfo') {
                 var objData = jQuery.parseJSON(data);
                 var arrData = JSON.parse(objData.dbinfo);
                 loadInstanceData(arrData);
-            } else if (options.strService == 'UserInfo') {
+            } else if (options.service == 'UserInfo') {
                 var objData = jQuery.parseJSON(data);
                 var arrData = JSON.parse(objData.userinfo);
                 loadUserData(arrData);
-            } else if (options.strService == 'Dashboards') {
+            } else if (options.service == 'Dashboards') {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
-            } else if (options.strService == 'Widgets') {
+            } else if (options.service == 'Widgets') {
                 var objData = jQuery.parseJSON(data);
                 clearTimers();
                 if (objData.widgetCount === 0) {
@@ -691,85 +678,88 @@ function getDataSet(options) {
                     loadGridster();
                 }
                 dashboardActive(true);
-            } else if (options.strService == 'RefreshWidget') {
+            } else if (options.service == 'RefreshWidget') {
                 var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 var objData = jQuery.parseJSON(data);
                 if (objData.widgets != '') {
                     $(elemID).html(objData.widgets);
                 }
                 loadClientMetrics(objData);
-            } else if (options.strService == 'EditWidgetDialog') {
+            } else if (options.service == 'EditWidgetDialog') {
                 showWidgetDialog(jQuery.parseJSON(data), true);
-            } else if (options.strService == 'NewWidgetDialog') {
+            } else if (options.service == 'NewWidgetDialog') {
                 showWidgetDialog(jQuery.parseJSON(data), false);
-            } else if (options.strService == 'WidgetHistoryDialog') {
+            } else if (options.service == 'WidgetHistoryDialog') {
                 widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
-            } else if (options.strService == 'WidgetForecastDialog') {
+            } else if (options.service == 'WidgetForecastDialog') {
                 widgetForecastChart(data, options.strDashboardWidgetID);
-            } else if (options.strService == 'AlertHistoryDialog') {
+            } else if (options.service == 'AlertHistoryDialog') {
                 showAlertHistoryDialog(jQuery.parseJSON(data));
-            } else if (options.strService == 'DeleteWidget') {
+            } else if (options.service == 'DeleteWidget') {
                 addNotification('Metric Deleted', 3, true);
-            } else if (options.strService == 'CloneMetric') {
+            } else if (options.service == 'CloneMetric') {
                 addNotification('Metric Cloned', 0, true);
-            } else if (options.strService == 'EditProfileDialog') {
+            } else if (options.service == 'DeleteMetricHistory') {
+                addNotification("History deleted", 3, true);
+            } else if (options.service == 'EditProfileDialog') {
                 showProfileDialog(jQuery.parseJSON(data));
-            } else if (options.strService == 'EditSettingsDialog') {
+            } else if (options.service == 'EditSettingsDialog') {
                 showSettingsDialog(jQuery.parseJSON(data));
-            } else if (options.strService == 'GetWidgetTypes') {
+            } else if (options.service == 'GetWidgetTypes') {
                 objWidgetList = JSON.parse(data);
                 showNewWidgetDialog(0);
-            } else if (options.strService == 'Alerts') {
+            } else if (options.service == 'Alerts') {
                 loadAlerts(jQuery.parseJSON(data));
-            } else if (options.strService == 'AddAlert') {
+            } else if (options.service == 'AddAlert') {
                 showAlertDialog(jQuery.parseJSON(data), false);
-            } else if (options.strService == 'EditAlert') {
+            } else if (options.service == 'EditAlertDialog') {
                 showAlertDialog(jQuery.parseJSON(data), true);
-            } else if (options.strService == 'DeleteAlert') {
+            } else if (options.service == 'DeleteAlert') {
                 loadAlerts(jQuery.parseJSON(data));
                 addNotification('Alert Deleted', 0, false);
-            } else if (options.strService == 'SetAlert') {
+            } else if (options.service == 'SetAlert') {
                 loadAlerts(jQuery.parseJSON(data));
                 addNotification('Alert Status Set', 0, false);
-            } else if (options.strService == 'ClearAlert') {
+            } else if (options.service == 'ClearAlert') {
                 loadAlerts(jQuery.parseJSON(data));
                 addNotification('Alert History Cleared', 0, true);
-            } else if (options.strService == 'SaveDashboardPositions') {
+            } else if (options.service == 'SaveDashboardPositions') {
                 addNotification('Dashboard Order Saved', 0, false);
-            } else if (options.strService == 'CreateDashboard') {
-                getDataSet({
-                    strService: 'Dashboards'
-                });
+            } else if (options.service == 'CreateDashboard') {
                 addNotification("Dashboard created", 0);
                 if ($("#grid").html().indexOf('looks like') > 0) {
                     $("#grid").html(strNoWidgetMsg);
                 }
-            } else if (options.strService == 'UpdateDashboard') {
-                getDataSet({
-                    strService: 'Dashboards'
-                });
+            } else if (options.service == 'UpdateDashboard') {
                 addNotification("Dashboard updated", 0, false);
-            } else if (options.strService == 'Select') {
+            } else if (options.service == 'Select') {
                 showSQLResults(data);
-            } else if (options.strService == 'SetSharingURL'){
+            } else if (options.service == 'SetSharingURL'){
                 $("#dashboardshareurl").prop('disabled', false);
                 $('#dashboardshareurl').val(getShareURL(data));
-            } else if (options.strService == 'DisableSharingURL'){
+            } else if (options.service == 'DisableSharingURL'){
                 $("#dashboardshareurl").prop('disabled', true);
                 $('#dashboardshareurl').val('');
-            }
-
-            if (options.strReload == 'true') {
-                location.reload();
-            } else if (options.strReload == 'alerts') {
+            } else if (options.service == 'UpdateUser'){
+                addNotification('User Account Updated', 0);
                 getDataSet({
-                    strService: 'Alerts'
+                    service: 'UserInfo'
                 });
-            } else if (options.strReload == 'dashboard') {
-                getContent(intCurrentDashboardID);
-            } else if (options.strReload == 'dashboards') {
+            }
+            
+            
+
+            if (options.reload == 'true') {
+                location.reload();
+            } else if (options.reload == 'alerts') {
                 getDataSet({
-                    strService: 'Dashboards'
+                    service: 'Alerts'
+                });
+            } else if (options.reload == 'dashboard') {
+                getContent(intCurrentDashboardID);
+            } else if (options.reload == 'dashboards') {
+                getDataSet({
+                    service: 'Dashboards'
                 });
                 
             }
