@@ -7,6 +7,15 @@ function showProfileDialog(){
 	}
 	return '';
 }
+
+function editSettings() {
+    try {
+        return sqlLib.executeInputQuery("Update metric2.m2_users SET email_domain = '" + $.request.parameters.get('domain') + "' WHERE user_id =" + userid);
+    } catch (err) {
+        return err.message;
+    }
+    
+}
  
 
 function showSettingsDialog(){
