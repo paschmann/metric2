@@ -181,7 +181,45 @@ function updateWidgetPositions(objGridPos){
         var intDashboardWidgetID = objGridPos[i].id.substring(5);
         sqlLib.executeUpdate("UPDATE metric2.m2_dashboard_widget SET row_pos =" + objGridPos[i].row + ", col_pos =" + objGridPos[i].col + " WHERE dashboard_widget_id =" + intDashboardWidgetID);
     }
-} 
+}
+
+
+
+function upsertMetricParams(){
+    for (var i = 0; i <= 400; i++) {
+        try {
+            var value= $.request.parameters.get('pid' + i);
+            if (value !== 'NaN' && value !== 'Undefined' && value !== '' && value !== 'undefined' && typeof value != 'undefined'){
+                if (service === "EditMetric"){
+                    sqlLib.executeUpdate("UPDATE metric2.m2_dashboard_widget_params SET value = '" + value + "' WHERE dashboard_widget_id =" + dashboardwidgetid + " AND param_id =" + i );
+                } else {
+                    sqlLib.executeUpdate("Insert into metric2.m2_dashboard_widget_params (dashboard_widget_param_id, dashboard_widget_id, param_id, value, widget_id, dt_added) VALUES (metric2.dashboard_widget_param_id.NEXTVAL, (SELECT TOP 1 dashboard_widget_id FROM metric2.m2_dashboard_widget ORDER BY dashboard_widget_id desc)," + i + ", '" + value + "'," + widgetid + ", current_utcdate)");
+                }
+            }
+        } catch (err) {
+            
+        }
+    }
+    return "{'response':'Metric Params Updated'}";
+}
+
+function createMetric() {
+    try {
+        sqlLib.executeInputQuery("Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + dashboardid + ", " + widgetid + ",'" + $.request.parameters.get('widgettitle') + "'," + $.request.parameters.get('widgetwidth') + "," + $.request.parameters.get('widgetheight') + ",1,1," + $.request.parameters.get('refreshrate') + ")");
+        return widgetLib.upsertMetricParams();
+    } catch (err) {
+        return err.message;
+    }
+}
+
+function editMetric() {
+    try {
+        sqlLib.executeInputQuery("UPDATE metric2.m2_dashboard_widget SET width =" + $.request.parameters.get('widgetwidth') + ", height =" + $.request.parameters.get('widgetheight') + ", refresh_rate = " + $.request.parameters.get('refreshrate') + ", title = '" + $.request.parameters.get('widgettitle') + "' WHERE dashboard_widget_id =" + dashboardwidgetid);
+        return widgetLib.upsertMetricParams();
+    } catch (err) {
+        return err.message;
+    }
+}
 
 function cloneMetric(){
     //Pass in the dashboard widget id to clone and the dashboard to clone to (not function yet = 0)
@@ -191,11 +229,21 @@ function cloneMetric(){
 }
 
 function deleteWidget(){
-    executeQuery("DELETE FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id =" + dashboardwidgetid);
-    executeQuery("DELETE FROM metric2.m2_dwp_history where metric2.m2_dwp_history.dashboard_widget_param_id IN (SELECT dashboard_widget_param_id FROM metric2.m2_dashboard_widget_params WHERE metric2.m2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid + ")");
-    executeQuery("DELETE FROM metric2.m2_dashboard_widget_params WHERE dashboard_widget_id =" + dashboardwidgetid);
-	executeUpdate("DELETE FROM metric2.m2_alert WHERE dashboard_widget_id =" + dashboardwidgetid);
-    strContent += 'Deleted';
+    try {
+        sqlLib.executeStoredProc("CALL METRIC2.M2_P_DELETE_WIDGET(" + dashboardwidgetid + ")");
+	} catch (err) {
+		return err.message;
+	}
+    return 'Deleted';
+}
+
+function deleteMetricHistory() {
+    try {
+        sqlLib.executeStoredProc("CALL METRIC2.M2_P_DELETE_WIDGET_HISTORY(" + dashboardwidgetid + ")");
+	} catch (err) {
+		return err.message;
+	}
+    return 'Deleted';
 }
 
 
