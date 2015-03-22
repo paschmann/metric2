@@ -1,29 +1,29 @@
 function addAlert(){
     getDataSet({
-        strService: 'AddAlert'
+        service: 'AddAlert'
     });
 }
             
 function setAlert(alertID, strStatus){
     getDataSet({
-        strService: 'SetAlert',
-        strAlertID: alertID,
-        intAlertStatus: strStatus
+        service: 'SetAlert',
+        alertid: alertID,
+        alertstatus: strStatus
     });
 }
 		
-function editAlert(alertID){
+function editAlertDialog(alertID){
     getDataSet({
-        strService: 'EditAlert',
-        strAlertID: alertID
+        service: 'EditAlertDialog',
+        alertid: alertID
     });
 }
 			
 function clearAlert(alertID){
     $('#myModal').modal('hide');
     getDataSet({
-        strService: 'ClearAlert',
-        strAlertID: alertID
+        service: 'ClearAlert',
+        alertid: alertID
     });
 }
 
@@ -56,7 +56,7 @@ function loadAlerts(objData){
                         var notify = userAlerts[key].NOTIFY === '' ? 'Display' : userAlerts[key].NOTIFY;
                         var lasttriggered = userAlerts[key].LASTTRIGGERED === 'null' ? '-' : userAlerts[key].LASTTRIGGERED;
                         var nextcheck = ''; //Timeago function
-                        strHTML += "<tr><td>" + userAlerts[key].DASHBOARDTITLE + "</td><td><a href='#' onclick='editAlert(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].TITLE + "</a></td><td>" + userAlerts[key].OPERATOR + " " + userAlerts[key].VALUE + "</td><td><a href='#' title='Click this link to stop, or start, this alert from being triggered' onclick='setAlert(" + userAlerts[key].ALERTID + ", " + intStatus + ");'>" + strStatus + "</a></td><td>" + notify + "</td><td><a href='#' id='alertID" + userAlerts[key].ALERTID + "' onclick='alertHistory(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].ALERTCOUNT + "</a></td><td>" + lasttriggered + "</td><td>" + nextcheck + "</td></tr>";
+                        strHTML += "<tr><td>" + userAlerts[key].DASHBOARDTITLE + "</td><td><a href='#' onclick='editAlertDialog(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].TITLE + "</a></td><td>" + userAlerts[key].OPERATOR + " " + userAlerts[key].VALUE + "</td><td><a href='#' title='Click this link to stop, or start, this alert from being triggered' onclick='setAlert(" + userAlerts[key].ALERTID + ", " + intStatus + ");'>" + strStatus + "</a></td><td>" + notify + "</td><td><a href='#' id='alertID" + userAlerts[key].ALERTID + "' onclick='alertHistory(" + userAlerts[key].ALERTID + ");'>" + userAlerts[key].ALERTCOUNT + "</a></td><td>" + lasttriggered + "</td><td>" + nextcheck + "</td></tr>";
                         var arrTmp = [];
                         arrTmp.push(userAlerts[key].TITLE);
                         arrTmp.push(parseInt(userAlerts[key].ALERTCOUNT));
