@@ -1,14 +1,21 @@
 // --------------------------------------- Alerts ----------------------------------------------------- //
 
-function createAlert(sql) {
+function createAlert() {
     try {
-        sqlLib.executeInputQuery(sql);
-        sqlLib.executeInputQuery("UPDATE metric2.m2_alert SET user_id = " + userid + " WHERE user_id = 999");
+        sqlLib.executeInputQuery("Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + widgetid + ", '" + $.request.parameters.get('value') + "', '" + $.request.parameters.get('operator') + "','" + $.request.parameters.get('value') + "', '" + $.request.parameters.get('notify') + "', current_timestamp, " + userid + ")");
         return 1;
     } catch (err) {
         return err.message;
     }
+}
 
+function editAlert () {
+    try {
+        sqlLib.executeInputQuery("Update metric2.m2_alert SET cond = '" + $.request.parameters.get('condition') + "', operator = '" + $.request.parameters.get('operator') + "', value = '" + $.request.parameters.get('value') + "', notify = '" + $.request.parameters.get('notify') + "' WHERE alert_id = " + alertid);
+        return 1;
+    } catch (err) {
+        return err.message;
+    }
 }
 
 function createAlertHist(alertid, dashboardwidgetid) {
