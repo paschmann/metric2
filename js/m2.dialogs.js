@@ -463,7 +463,7 @@ function showDashboardDialog(objData, edit){
     
     
     if (edit){
-        dialogConstructor("Edit Dashboard", true, true, output, 1, true, false);
+        dialogConstructor("Edit Dashboard", true, true, output, 1, true, true);
     } else {
         dialogConstructor("Add Dashboard", false, true, output, 1, true, false);
     }
@@ -593,11 +593,18 @@ function checkParamValidation(){
     }
 }
 
-function cloneMetric(){
+function cloneMetric(dashboardid){
     getDataSet({
         service: "CloneMetric",
-        dashboardwidgetid: document.getElementById('dashboardwidgetid').value,
-        reload: "dashboard"
+        dashboardid: dashboardid,
+        dashboardwidgetid: document.getElementById('dashboardwidgetid').value
+    });
+}
+
+function cloneDashboard(dashboardid){
+    getDataSet({
+        service: "CloneDashboard",
+        dashboardid: dashboardid
     });
 }
 
@@ -613,7 +620,6 @@ function saveDialog(strFunction) {
             params.widgetheight = document.getElementById('widgetheight').value;
             params.widgetwidth = document.getElementById('widgetwidth').value;
             params.refreshrate = (document.getElementById('refreshrate').value === '') ? 0 : document.getElementById('refreshrate').value;
-            params.reload = "dashboard";
             
             $("[id^=pid_]").each(function() {
                 params["pid" + this.id.substring(4)] = this.value;
@@ -627,13 +633,13 @@ function saveDialog(strFunction) {
             var params = {};
             
             params.service = "EditMetric";
+            params.dashboardid = intCurrentDashboardID;
             params.dashboardwidgetid = document.getElementById('dashboardwidgetid').value;
             params.widgettitle = document.getElementById('widgettitle').value;
             params.widgetheight = document.getElementById('widgetheight').value;
             params.widgetwidth = document.getElementById('widgetwidth').value;
             params.refreshrate = refreshrate;
-            params.reload = "dashboard";
-
+            
             $("[id^=pid_]").each(function() {
                 params["pid" + this.id.substring(4)] = this.value;
             });
@@ -644,16 +650,14 @@ function saveDialog(strFunction) {
             getDataSet({
                 service: "CreateDashboard",
                 dashboardtitle: document.getElementById('dashboardtitle').value,
-                dashboardbgurl: document.getElementById('dashboardbgurl').value,
-                reload: "dashboards"
+                dashboardbgurl: document.getElementById('dashboardbgurl').value
             });
         } else if (strFunction == 'Edit Dashboard') {
             getDataSet({
                 service: "UpdateDashboard",
                 dashboardid: document.getElementById('dashboardid').value,
                 dashboardtitle: document.getElementById('dashboardtitle').value,
-                dashboardbgurl: document.getElementById('dashboardbgurl').value,
-                reload: "dashboards"
+                dashboardbgurl: document.getElementById('dashboardbgurl').value
             });
         } else if (strFunction == 'Add Alert') {
             getDataSet({
@@ -662,8 +666,7 @@ function saveDialog(strFunction) {
                 condition: document.getElementById('condition').value,
                 operator: document.getElementById('operator').value,
                 value: document.getElementById('value').value,
-                notify: document.getElementById('notify').value,
-                reload: "alerts"
+                notify: document.getElementById('notify').value
             });
         } else if (strFunction == 'Edit Alert') {
             getDataSet({
@@ -673,8 +676,7 @@ function saveDialog(strFunction) {
                 operator: document.getElementById('operator').value,
                 value: document.getElementById('value').value,
                 notify: document.getElementById('notify').value,
-                alertid: document.getElementById('alertid').value,
-                reload: "alerts"
+                alertid: document.getElementById('alertid').value
             });
         } else if (strFunction == 'Edit Profile') {
             getDataSet({
@@ -701,14 +703,13 @@ function deleteDialog(strFunction) {
     if (strFunction == 'Edit Dashboard') {
         getDataSet({
             service: "DeleteDashboard",
-            dashboardid: intCurrentDashboardID,
-            strReload: 'true'
+            dashboardid: intCurrentDashboardID
         });
     } else if (strFunction == 'Edit Metric') {
        getDataSet({
-            service: 'DeleteWidget', 
-            dashboardwidgetid: document.getElementById('dashboardwidgetid').value,
-            reload: 'dashboard'
+            service: 'DeleteWidget',
+            dashboardid: intCurrentDashboardID,
+            dashboardwidgetid: document.getElementById('dashboardwidgetid').value
         });
     } else if (strFunction == 'Edit Alert') {
         getDataSet({
