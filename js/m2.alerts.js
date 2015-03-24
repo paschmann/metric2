@@ -1,6 +1,6 @@
-function addAlert(){
+function addAlertDialog(){
     getDataSet({
-        service: 'AddAlert'
+        service: 'AddAlertDialog'
     });
 }
             
@@ -198,7 +198,7 @@ function addNotification(strMsg, i, display) {
             break;
     }
     
-    if (display) {
+    if (display && strMsg.length > 0) {
         $.bootstrapGrowl(strMsg, {
               ele: 'body', // which element to append to
               type: type, // (null, 'info', 'danger', 'success')
