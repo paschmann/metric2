@@ -3,7 +3,7 @@
 function createAlert() {
     try {
         sqlLib.executeInputQuery("Insert into metric2.m2_alert (alert_id, dashboard_widget_id, cond, operator, value, notify, created_on, user_id) VALUES (metric2.alert_id.NEXTVAL, " + widgetid + ", '" + $.request.parameters.get('value') + "', '" + $.request.parameters.get('operator') + "','" + $.request.parameters.get('value') + "', '" + $.request.parameters.get('notify') + "', current_timestamp, " + userid + ")");
-        return 1;
+        return "Alert Created";
     } catch (err) {
         return err.message;
     }
@@ -12,7 +12,7 @@ function createAlert() {
 function editAlert () {
     try {
         sqlLib.executeInputQuery("Update metric2.m2_alert SET cond = '" + $.request.parameters.get('condition') + "', operator = '" + $.request.parameters.get('operator') + "', value = '" + $.request.parameters.get('value') + "', notify = '" + $.request.parameters.get('notify') + "' WHERE alert_id = " + alertid);
-        return 1;
+        return "Alert Edited";
     } catch (err) {
         return err.message;
     }
@@ -20,21 +20,23 @@ function editAlert () {
 
 function createAlertHist(alertid, dashboardwidgetid) {
     //This creates some random alert history entries for demo purposes
-    var hour = 0;
     var maxentries = Math.floor(Math.random() * (20 - 1 + 1)) + 1;
-
-    for (var day = 0; day < 7; day++) {
+    var day = 0;
+    var num = 0;
+    var sql = "";
+    
+    for (day = 0; day < 7; day++) {
         for (var i = 0; i <= maxentries; i++) {
-            var num = Math.floor(Math.random() * 98) + 80;
-            var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual,added) VALUES (metric2.alert_history_id.NEXTVAL, " + alertid + ", " + dashboardwidgetid + ", 'value', '>', 80, 'dba@metric2.com'," + num + ", ADD_DAYS(ADD_SECONDS(CURRENT_TIMESTAMP, 0)),-" + day + ")";
-            sqlLib.executeQuery(SQL);
+            num = Math.floor(Math.random() * 98) + 80;
+            sql = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual,added) VALUES (metric2.alert_history_id.NEXTVAL, " + alertid + ", " + dashboardwidgetid + ", 'value', '>', 80, 'dba@metric2.com'," + num + ", ADD_DAYS(ADD_SECONDS(CURRENT_TIMESTAMP, 0)),-" + day + ")";
+            sqlLib.executeQuery(sql);
         }
     }
 
-    for (var day = 1; day <= 400; day++) {
-        var num = Math.floor(Math.random() * 98) + 80;
-        var SQL = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual,added) VALUES (metric2.alert_history_id.NEXTVAL, " + alertid + ", " + dashboardwidgetid + ", 'value', '>', 80, 'dba@metric2.com'," + num + ", ADD_SECONDS(CURRENT_TIMESTAMP, 0))";
-        sqlLib.executeQuery(SQL);
+    for (day = 1; day <= 400; day++) {
+        num = Math.floor(Math.random() * 98) + 80;
+        sql = "INSERT INTO metric2.M2_ALERT_HISTORY (alert_hist_id, alert_id, dashboard_widget_id, cond, operator, value, notify, actual,added) VALUES (metric2.alert_history_id.NEXTVAL, " + alertid + ", " + dashboardwidgetid + ", 'value', '>', 80, 'dba@metric2.com'," + num + ", ADD_SECONDS(CURRENT_TIMESTAMP, 0))";
+        sqlLib.executeQuery(sql);
     }
 }
 
@@ -50,6 +52,7 @@ function showAlerts() {
 function deleteAlert(alertid) {
     var SQL = "DELETE FROM metric2.m2_alert WHERE alert_id = " + alertid;
     sqlLib.executeUpdate(SQL);
+    return "Alert Deleted";
 }
 
 
@@ -87,13 +90,14 @@ function checkWidgetAlert(dashboardwidgetid, value) {
     //check if widget has an alert - if yes, check against the specified value and send an alert if needed
     try {
         var source = "Web"; //Default
+        var rs;
         if (dashboardwidgetid === ""){
-            var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title, m2_dashboard_widget.dashboard_widget_id FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1");
+            rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title, m2_dashboard_widget.dashboard_widget_id FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1");
             source = "XSJob";
         } else {
-            var rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1 AND metric2.m2_alert.dashboard_widget_id = " + dashboardwidgetid);
+            rs = sqlLib.executeReader("SELECT alert_id, operator, value, notify, cond, title FROM metric2.m2_alert INNER JOIN metric2.M2_DASHBOARD_WIDGET ON metric2.m2_alert.dashboard_widget_id = metric2.m2_dashboard_widget.dashboard_widget_id WHERE status = 1 AND metric2.m2_alert.dashboard_widget_id = " + dashboardwidgetid);
         }
-        var strContent = '';
+        var strContent = "";
 
         while (rs.next()) {
             var intAlertID = rs.getString(1);
@@ -107,7 +111,7 @@ function checkWidgetAlert(dashboardwidgetid, value) {
             
             if (dashboardwidgetid === ""){
                 dashboardwidgetid = rs.getString(7);
-                value = sqlLib.executeScalar(widgetLib.getWidgetParamValueFromParamName('SQL1', rs.getString(7)));
+                value = sqlLib.executeScalar(widgetLib.getWidgetParamValueFromParamName("SQL1", rs.getString(7)));
             }
 
             if (checkValueInsert(strOperator, intCheckValue, value) === 1) {
@@ -115,7 +119,7 @@ function checkWidgetAlert(dashboardwidgetid, value) {
                 sqlLib.executeUpdate(SQL);
                 
                 strContent += msg;
-                if (strNotify !== '') {
+                if (strNotify !== "") {
                     sendAlertEmail(rs.getString(4), msg);
                 }
             }
@@ -138,23 +142,23 @@ function getWidgetParamValueFromParamName(paramname, dashboardwidgetid){
 
 function checkValueInsert(strOperator, intCheckValue, value) {
     var doInsert = 0;
-    if (strOperator === '=') {
+    if (strOperator === "=") {
         if (value === intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator === '>') {
+    } else if (strOperator === ">") {
         if (value > intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator === '<') {
+    } else if (strOperator === "<") {
         if (value < intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator === '<=') {
+    } else if (strOperator === "<=") {
         if (value <= intCheckValue) {
             doInsert = 1;
         }
-    } else if (strOperator === '>=') {
+    } else if (strOperator === ">=") {
         if (value >= intCheckValue) {
             doInsert = 1;
         }
