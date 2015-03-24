@@ -2,7 +2,7 @@
 
 function getRandomSHA1(token)
 {
-    //Handles changes to $.util in SPS09
+    // Handles changes to $.util in SPS09
     // Calculate HMACSHA1-Value (160 Bits) which is returned as a Buffer of 20 Bytes
     // Encode ByteBuffer to Base64-String
     var hmacSha1ByteBuffer;
@@ -14,13 +14,21 @@ function getRandomSHA1(token)
     return  $.util.codec.encodeBase64(hmacSha1ByteBuffer);
 }
 
+function getDBInfo(){
+    return sqlLib.executeRecordSetObj("SELECT * FROM SYS.M_SYSTEM_OVERVIEW");
+}
+
+function getUserInfo(){
+    return sqlLib.executeRecordSetObj("SELECT LNAME, NAME, ACCT_TYPE, EMAIL, EMAIL_DOMAIN FROM METRIC2.m2_Users WHERE user_id = " + userid);
+}
+
 function getUserSessionToken() {
     // Get the salt from the useraccount, apply it, and test the password
     var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY(DT_ADDED)) from METRIC2.M2_Users where email = '" + email + "'");
     var userID = sqlLib.executeScalar("SELECT user_id FROM metric2.m2_users WHERE email = '" + email + "' AND password = '" + hash + "'");
     var userInitialToken = getRandomSHA1(userID);
     
-    //if the userID and password are correct, we will return a hashed user token otherwise the 999 number
+    // If the userID and password are correct, we will return a hashed user token otherwise the 999 number
     if (!userID){
         userInitialToken = 999;
     } else {
@@ -46,9 +54,7 @@ function updateUserPassword(password){
 function updateUser(){
     var email = $.request.parameters.get('email');
     var lname = $.request.parameters.get('lname');
-    var company = $.request.parameters.get('company');
     var name = $.request.parameters.get('name');
-    //var userid = $.request.parameters.get('userid');
     
     var SQL = "UPDATE METRIC2.M2_USERS SET name =  '" + name + "', lname = '" + lname + "', email = '" + email + "' WHERE user_id = " + userid;
     sqlLib.executeUpdate(SQL);
@@ -65,8 +71,7 @@ function updateUser(){
 }
 
 function hash(password, dt){
-    var hash = sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY('" + dt + "')) from DUMMY");
-    return hash;
+    return sqlLib.executeScalar("SELECT HASH_SHA256 (TO_BINARY('" + password + "'), to_BINARY('" + dt + "')) from DUMMY");
 }
 
 function createUser(){
