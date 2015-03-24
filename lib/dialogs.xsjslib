@@ -10,7 +10,8 @@ function showProfileDialog(){
 
 function editSettings() {
     try {
-        return sqlLib.executeInputQuery("Update metric2.m2_users SET email_domain = '" + $.request.parameters.get('domain') + "' WHERE user_id =" + userid);
+        sqlLib.executeInputQuery("Update metric2.m2_users SET email_domain = '" + $.request.parameters.get('domain') + "' WHERE user_id =" + userid);
+        return 'Settings Updated';
     } catch (err) {
         return err.message;
     }
