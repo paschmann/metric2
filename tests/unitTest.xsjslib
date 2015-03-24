@@ -32,18 +32,18 @@ describe("metric2 Test Suite", function() {
         sessiontoken = response;
     });
     
+    it("API: UserInfo should return User Info", function() {
+        var requestQuery = '?service=UserInfo';
+        var response = callAPI(requestQuery);
+        expect(response).not.toMatch(/dberror/);
+        expect(response).toContain("LNAME");
+    });
+    
     it("API: DBInfo should return DB Info", function() {
         var requestQuery = '?service=DBInfo';
         var response = callAPI(requestQuery);
         expect(response).not.toMatch(/dberror/);
         expect(response).toContain("System");
-    });
-    
-    it("API: UserInfo should return User Info", function() {
-        var requestQuery = '?service=UserInfo&view=false';
-        var response = callAPI(requestQuery);
-        expect(response).not.toMatch(/dberror/);
-        expect(response).toContain("LNAME");
     });
     
     it("API: Dashboards should return a list of dashboards", function() {
