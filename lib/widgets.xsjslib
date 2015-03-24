@@ -27,7 +27,7 @@ function getWidgetCode(dashboardwidgetid){
 function getWidgetHeight(dashboardwidgetid){
 	return sqlLib.executeScalar("SELECT height FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id =" + dashboardwidgetid);
 }
-
+ 
 function getWidgetWidth(dashboardwidgetid){
 	return sqlLib.executeScalar("SELECT width FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id =" + dashboardwidgetid);
 }
@@ -93,14 +93,14 @@ function getListOfWidgets(dashboardid){
 function getWidgetTypes(widgetGroup){
     try{
     var SQL = "";
-        if (widgetGroup === '0'){
+        if (widgetGroup === "0"){
             SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget ORDER BY widget_id";
         } else {
             SQL = "Select widget_id, name, icon_url, type, code, code_type, description, widget_group FROM metric2.m2_widget WHERE widget_group = " + widgetGroup + " ORDER BY widget_id";
         }
         return sqlLib.executeRecordSetObj(SQL);
     } catch (err) {
-        return 'Error getting widget types (getWidgetTypes:getDataSet.xsjs)';
+        return "Error getting widget types (getWidgetTypes:getDataSet.xsjs)";
     }
 }
 
@@ -144,22 +144,22 @@ function showWidgetDiv(intDashboardWidgetID){
             data.rowpos = rs.getString(10);
             data.type = rs.getString(12);
             data.histEnabled =  rs.getString(11);
-            var datapoint = '';
-            if (rs.getString(1).indexOf('SQL') >= 0){
-                if (rs.getString(4).indexOf('RANGE') >= 0){
-                    var reclimit = getWidgetParamValueFromParamName('RECLIMIT', intDashboardWidgetID);
-                    data[paramname + '_Hist'] = getWidgetParamRangePastValueFromParamName('SQL1', intDashboardWidgetID, reclimit);
+            var datapoint = "";
+            if (rs.getString(1).indexOf("SQL") >= 0){
+                if (rs.getString(4).indexOf("RANGE") >= 0){
+                    var reclimit = getWidgetParamValueFromParamName("RECLIMIT", intDashboardWidgetID);
+                    data[paramname + "_Hist"] = getWidgetParamRangePastValueFromParamName("SQL1", intDashboardWidgetID, reclimit);
                 }
                 datapoint = sqlLib.executeRecordSetObj(getWidgetParamValueFromParamName(paramname, intDashboardWidgetID));
             } else {
-                if (rs.getString(4).indexOf('HIST') >= 0){
+                if (rs.getString(4).indexOf("HIST") >= 0){
                     datapoint = getWidgetParamSinglePastValueFromParamName(paramname, intDashboardWidgetID);
                 } else {
                     datapoint = getWidgetParamValueFromParamNameObj(paramname, intDashboardWidgetID);
                 }
             }
             data[paramname] = datapoint;
-            if (rs.getString(3) == '1'){
+            if (rs.getString(3) == "1"){
                 if (rs.getString(5) !== null){
                     var val = JSON.parse(datapoint);
                     insertWidgetHistory(intDashboardWidgetID, paramname, val[0][rs.getString(5)]);
@@ -181,6 +181,7 @@ function updateWidgetPositions(objGridPos){
         var intDashboardWidgetID = objGridPos[i].id.substring(5);
         sqlLib.executeUpdate("UPDATE metric2.m2_dashboard_widget SET row_pos =" + objGridPos[i].row + ", col_pos =" + objGridPos[i].col + " WHERE dashboard_widget_id =" + intDashboardWidgetID);
     }
+    return "Metric positions Updated";
 }
 
 
@@ -188,8 +189,8 @@ function updateWidgetPositions(objGridPos){
 function upsertMetricParams(){
     for (var i = 0; i <= 400; i++) {
         try {
-            var value= $.request.parameters.get('pid' + i);
-            if (value !== 'NaN' && value !== 'Undefined' && value !== '' && value !== 'undefined' && typeof value != 'undefined'){
+            var value= $.request.parameters.get("pid" + i);
+            if (value !== "NaN" && value !== "Undefined" && value !== "" && value !== "undefined" && typeof value != "undefined"){
                 if (service === "EditMetric"){
                     sqlLib.executeUpdate("UPDATE metric2.m2_dashboard_widget_params SET value = '" + value + "' WHERE dashboard_widget_id =" + dashboardwidgetid + " AND param_id =" + i );
                 } else {
@@ -200,41 +201,45 @@ function upsertMetricParams(){
             
         }
     }
-    return "{'response':'Metric Params Updated'}";
 }
 
 function createMetric() {
     try {
         sqlLib.executeInputQuery("Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + dashboardid + ", " + widgetid + ",'" + $.request.parameters.get('widgettitle') + "'," + $.request.parameters.get('widgetwidth') + "," + $.request.parameters.get('widgetheight') + ",1,1," + $.request.parameters.get('refreshrate') + ")");
-        return widgetLib.upsertMetricParams();
+        widgetLib.upsertMetricParams();
     } catch (err) {
         return err.message;
     }
+    return "Metric Created";
 }
 
 function editMetric() {
     try {
         sqlLib.executeInputQuery("UPDATE metric2.m2_dashboard_widget SET width =" + $.request.parameters.get('widgetwidth') + ", height =" + $.request.parameters.get('widgetheight') + ", refresh_rate = " + $.request.parameters.get('refreshrate') + ", title = '" + $.request.parameters.get('widgettitle') + "' WHERE dashboard_widget_id =" + dashboardwidgetid);
-        return widgetLib.upsertMetricParams();
+        widgetLib.upsertMetricParams();
     } catch (err) {
         return err.message;
     }
+    return "Metric Edited";
 }
 
 function cloneMetric(){
     //Pass in the dashboard widget id to clone and the dashboard to clone to (not function yet = 0)
-    var strSQL = "CALL METRIC2.M2_P_CLONEMETRIC(" + dashboardwidgetid + ", 0)";
-    var msg = sqlLib.executeUpdate(strSQL);
-    return msg;
+    try {
+        sqlLib.executeUpdate("CALL METRIC2.M2_P_CLONEMETRIC(" + dashboardwidgetid + ", " + dashboardid + ")");
+	} catch (err) {
+		return err.message;
+	}
+    return "Metric Cloned";
 }
 
-function deleteWidget(){
+function deleteMetric(){
     try {
         sqlLib.executeStoredProc("CALL METRIC2.M2_P_DELETE_WIDGET(" + dashboardwidgetid + ")");
 	} catch (err) {
 		return err.message;
 	}
-    return 'Deleted';
+    return "Metric Deleted";
 }
 
 function deleteMetricHistory() {
@@ -243,7 +248,7 @@ function deleteMetricHistory() {
 	} catch (err) {
 		return err.message;
 	}
-    return 'Deleted';
+    return "Metric History Deleted";
 }
 
 
@@ -252,11 +257,11 @@ function insertWidgetHistory(dashboardwidgetid, paramname, value, dashboardwidge
 		if (!dashboardwidgetparamid){
 				dashboardwidgetparamid = sqlLib.executeScalar("SELECT DASHBOARD_WIDGET_PARAM_ID FROM metric2.M2_dashboard_widget_params INNER JOIN metric2.M2_WIDGET_PARAM ON metric2.M2_WIDGET_PARAM.param_id = metric2.m2_dashboard_widget_params.param_id WHERE metric2.m2_widget_param.name = '" + paramname + "' AND metric2.M2_dashboard_widget_params.dashboard_widget_id =" + dashboardwidgetid);
 		}
-		if (value !== 'NaN' && value !== 'Undefined' && value !== '' && value !== 'undefined' && typeof value != 'undefined'){
+		if (value !== "NaN" && value !== "Undefined" && value !== "" && value !== "undefined" && typeof value !== "undefined"){
             sqlLib.executeUpdate("INSERT INTO metric2.M2_DWP_HISTORY (dwp_hist_id, dashboard_widget_param_id, value) VALUES (metric2.dwp_history_id.NEXTVAL, " + dashboardwidgetparamid + ", '" + value + "')");
-            return '{"RESULT": "Accepted"}';
+            return "Accepted";
 		} else {
-            return '{"RESULT": "Not accepted due to missing value"}';
+            return "Not accepted due to missing value";
 		}
 	} catch (err) {
 		return err.message;
