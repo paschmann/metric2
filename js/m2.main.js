@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = 'Version 2.4.5';
+var m2version = "Version 2.4.5";
 var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
@@ -7,25 +7,28 @@ var arrActiveTimersIDList = [];
 var alertlist = [];
 var timers = [];
 var gridsterloaded = 0;
-var strNotificationTable = '';
-var strCarousel = '';
-var strHistoryTable = '';
+var strNotificationTable = "";
+var strCarousel = "";
+var strHistoryTable = "";
 var chart = nv.models.lineChart();
-var navMenu = '';
-var useremail = '';
+var navMenu = "";
+var useremail = "";
 var showTour = true;
 var viewmode = false;
 var tour;
-var debugmode = 'hidden'; /*display*/
+var debugmode = "hidden"; /*display*/
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-tachometer fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
-var strInputControl = '';
+var strInputControl = "";
 
 var objWidgets = {};
 var objWidgetList = {};
 
 $(document).ready(function() {
-    if (parseParams('did').length > 0) {
+    
+    $('[data-toggle="popover"]').popover();
+    
+    if (parseParams("did").length > 0) {
         viewmode = true;
         sessionToken = "temp";
         //Show single, read only dashboard
@@ -34,7 +37,7 @@ $(document).ready(function() {
         getSessionToken();
     }
     
-    if (sessionToken === '' || sessionToken === 0 || !sessionToken) {
+    if (sessionToken === "" || sessionToken === 0 || !sessionToken) {
         doLogout();
     }
     
@@ -42,15 +45,15 @@ $(document).ready(function() {
     init();
     
     if (viewmode){
-        $(".navbar-right").html('<li><a>View Mode</a></li>');
+        $(".navbar-right").html("<li><a>View Mode</a></li>");
     } else {
         dashboardActive(true);
         configureClickEvents();
     }
     
     
-    $('[data-toggle="tooltip"]').tooltip({
-        'placement': 'bottom'
+    $("[data-toggle='tooltip']").tooltip({
+        "placement": "bottom"
     });
     
     if (showTour == true) {
@@ -60,14 +63,8 @@ $(document).ready(function() {
 
 function init() {
     getDataSet({
-        service: 'Dashboards',
-        dashboardid: parseParams('did')
-    });
-    getDataSet({
-        service: 'DBInfo'
-    });
-    getDataSet({
-        service: 'UserInfo'
+        service: "Init",
+        dashboardid: parseParams("did")
     });
 }
 
@@ -87,167 +84,191 @@ function enableShareMode(){
 
 function configureClickEvents() {
     
-    $(document).on('click','#chkShareDashboard',function(){
-        if ($(this).is(':checked')){
-            getDataSet({service: 'SetSharingURL', dashboardid: $("li.active").data('id')});
+    $(document).on("click","#chkShareDashboard",function(){
+        if ($(this).is(":checked")){
+            getDataSet({service: "SetSharingURL", dashboardid: $("li.active").data("id")});
         } else {
-            getDataSet({service: 'DisableSharingURL', dashboardid: $("li.active").data('id')});
+            getDataSet({service: "DisableSharingURL", dashboardid: $("li.active").data("id")});
         }
     })
     
-    $('#btnShowAlertList').click(function() {
+    $("#btnShowAlertList").click(function() {
         loadAlertList();
     });
     
-    $(document).on('click','#btnChangePassword',function(e){
+    $(document).on("click","#btnChangePassword",function(e){
         var output = "<div class='form-group'><label for='password1' class='col-sm-3 control-label'>New Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Password' name='password'  id='password' /></div></div>";
         output += "<div class='form-group'><label for='password2' class='col-sm-3 control-label'>Repeat Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Repeat Password' name='password1'  id='password1' /></div></div>";
         $(".form-horizontal").append(output);
     });
     
-    $('#btnAddWidget, #mnuAddWidget').click(function() {
-        getDataSet({ service: 'GetWidgetTypes', widgetgroup: 0});
+    $("#btnAddWidget, #mnuAddWidget").click(function() {
+        getDataSet({ service: "GetWidgetTypes", widgetgroup: 0});
     });
     
-    $('#btnAddAlert').click(function() {
-        addAlert();
+    $("#btnAddAlert").click(function() {
+        addAlertDialog();
     });
     
-     $(document).on('keypress','#searchmetrics',function(e){
-        loadNewWidgetList(0, $('#searchmetrics').val());
+     $(document).on("keypress","#searchmetrics",function(e){
+        loadNewWidgetList(0, $("#searchmetrics").val());
     });
     
-    $(document).on('click','.btnAddMetricThumbnail',function(){
-        getDataSet({service: 'NewWidgetDialog', widgetid: $(this).data("id")});
+    $(document).on("click",".btnAddMetricThumbnail",function(){
+        getDataSet({service: "NewWidgetDialog", widgetid: $(this).data("id")});
     });
     
     
-    $(document).on('click','.list-group-item',function(e){
+    $(document).on("click",".list-group-item",function(e){
         var previous = $(this).closest(".list-group").children(".active");
-        previous.removeClass('active'); // previous list-item
-        $(e.target).addClass('active'); // activated list-item
-        loadNewWidgetList($(this).data("id"), '');
+        previous.removeClass("active"); // previous list-item
+        $(e.target).addClass("active"); // activated list-item
+        loadNewWidgetList($(this).data("id"), "");
     });
 
-    $(document).on('click','#btnExecuteSQL',function(){
-        getDataSet({ service: "Select", sql: document.getElementById('txtSQL').value })
+    $(document).on("click","#btnExecuteSQL",function(){
+        getDataSet({ service: "Select", sql: document.getElementById("txtSQL").value })
     });
     
-    $(document).on('click','#btnExecuteOData',function(){
+    $(document).on("click","#btnExecuteOData",function(){
         executeODataRequest();
     });
     
-    $(document).on('click','#btnExecuteWS',function(){
+    $(document).on("click","#btnExecuteWS",function(){
         executeWSRequest();
     });
     
-    $(document).on('click','#btnShowSQLBuilder',function(){
+    $(document).on("click","#btnShowSQLBuilder",function(){
         var sql = $(this).offsetParent()[0].firstChild.value;
         strInputControl = $(this).offsetParent()[0].firstChild;
-        showSQLBuilder(sql, 'Single Value','','');
+        showSQLBuilder(sql, "Single Value","","");
     });
     
-    $(document).on('click','#btnShowODataBuilder',function(){
+    $(document).on("click","#btnShowODataBuilder",function(){
         var odata = $(this).offsetParent()[0].firstChild.value;
         strInputControl = $(this).offsetParent()[0].firstChild;
-        showSQLBuilder('', 'Single Value', odata, '');
+        showSQLBuilder("", "Single Value", odata, "");
     });
     
-    $(document).on('click','#btnShowWSBuilder',function(){
+    $(document).on("click","#btnShowWSBuilder",function(){
         var ws = $(this).offsetParent()[0].firstChild.value;
         strInputControl = $(this).offsetParent()[0].firstChild;
-        showSQLBuilder('', 'Single Value', '', ws);
+        showSQLBuilder("", "Single Value", "", ws);
     });
     
-    $('#btnModalSQLSave').click(function(e) {
-        var $tab = $('#tabs'), $active = $tab.find('.active > a');
-        if ($active.text() === 'SQL'){
-            $("#" + strInputControl.id).val($('#txtSQL').val());
-        } else if ($active.text() === 'OData'){
-            $("#" + strInputControl.id).val($('#txtOData').val());
-        } else if ($active.text() === 'Web Service'){
-            $("#" + strInputControl.id).val($('#txtWS').val());
+    $("#btnModalSQLSave").click(function(e) {
+        var $tab = $("#tabs"), $active = $tab.find(".active > a");
+        if ($active.text() === "SQL"){
+            $("#" + strInputControl.id).val($("#txtSQL").val());
+        } else if ($active.text() === "OData"){
+            $("#" + strInputControl.id).val($("#txtOData").val());
+        } else if ($active.text() === "Web Service"){
+            $("#" + strInputControl.id).val($("#txtWS").val());
         }
     });
 
-    $('#btnEditDashboard').click(function() {
+    $("#btnEditDashboard").click(function() {
         var objData = {};
-        objData.DASHBOARD_ID = $("li.active").data('id');
-        objData.SHARE_URL = $("li.active").data('shareurl');
-        objData.BG_URL = $("li.active").data('bgurl');
-        objData.TITLE = $("li.active").attr('title');
+        objData.DASHBOARD_ID = $("li.active").data("id");
+        objData.SHARE_URL = $("li.active").data("shareurl");
+        objData.BG_URL = $("li.active").data("bgurl");
+        objData.TITLE = $("li.active").attr("title");
         showDashboardDialog(objData, true);
     });
 
-    $('#mnuProfile, btnProfile').click(function() {
+    $("#mnuProfile, btnProfile").click(function() {
         getDataSet({
-            service: 'EditProfileDialog'
+            service: "EditProfileDialog"
         });
     });
 
-    $('#mnuSettings, btnSettings').click(function() {
+    $("#mnuSettings, btnSettings").click(function() {
         getDataSet({
-            service: 'EditSettingsDialog'
+            service: "EditSettingsDialog"
         });
     });
     
-    $('#btnShowHelp').click(function() {
+    $("#btnShowHelp").click(function() {
         tour.restart();
     });
 
-    $('#mnuLogout').click(function() {
+    $("#mnuLogout").click(function() {
         doLogout();
     });
 
-    $('#mnuShowFullscreen').click(function() {
-        $('#main').toggleFullScreen();
+    $("#mnuShowFullscreen").click(function() {
+        $("#main").toggleFullScreen();
     });
 
-    $('#btnShowAlerts, #mnuShowAlerts').click(function() {
+    $("#btnShowAlerts, #mnuShowAlerts").click(function() {
         loadAlertScreen();
     });
 
-    $('#chkStreaming').click(function() {
+    $("#chkStreaming").click(function() {
         toggleStreaming();
     });
 
-    $('#btnModalDelete').click(function() {
-        deleteDialog($('#modal-header').html());
+    $("#btnModalDelete").click(function() {
+        deleteDialog($("#modal-header").html());
     });
     
-    $('#btnModalDeleteHistory').click(function() {
-        clearAlert($('#alertid').val());
+    $("#btnModalDeleteHistory").click(function() {
+        clearAlert($("#alertid").val());
     });
 
-    $('#btnModalSave').click(function(e) {
-        saveDialog($('#modal-header').html());
+    $("#btnModalSave").click(function(e) {
+        saveDialog($("#modal-header").html());
         e.stopImmediatePropagation();
     });
     
-    $('#btnModalClone').click(function(e) {
-        cloneMetric();
+    $(document).on("click",".cloneMetric",function(){
+        $("#btnModalClone").popover("hide");
+        $("#myModal").modal("hide");
+        cloneMetric($(this).data("id"));
     });
     
-    $('#btnShowSideBar').click(function(e) {
+    $("#btnModalClone").click(function(e) {
+        e.stopImmediatePropagation();
+        if ($('#modal-header').text() === "Edit Dashboard"){
+            $("#btnModalClone").popover("destroy");
+            $("#myModal").modal("hide");
+            cloneDashboard(intCurrentDashboardID);
+        } else {
+            var strHTML = "<ul class='list-group'>";
+            $("#dashboards li").each(function() {
+                if ($(this).text().length > 0){
+                    strHTML += "<li class='list-group-item cloneMetric' data-id='" + $(this).data("id") + "'>" + $(this).text() + "</li>";
+                }
+            });
+            
+            strHTML += "</ul>";
+            
+            $("#btnModalClone").popover({
+                placement : "top",
+                html: "true",
+                content: strHTML
+            }).popover("toggle");
+        }
+    });
+    
+    $("#btnShowSideBar").click(function(e) {
         toggleSideBar();
     });
 
-    $('body').on("click", ".toggle-menu", function(e) {
+    $("body").on("click", ".toggle-menu", function(e) {
         e.stopImmediatePropagation();
         e.preventDefault();
-        $('nav#menu').trigger('open.mm');
+        $("nav#menu").trigger("open.mm");
     });
 }
 
 function toggleSideBar(){
-    if ($('#logoarea').css("display") == "block") {
-        $('#logoarea').css("display", "none");
-        $('#main').css("margin-left", "0");
-        /*$('#header .tools-bar').css("margin-left","0");*/
+    if ($("#logoarea").css("display") == "block") {
+        $("#logoarea").css("display", "none");
+        $("#main").css("margin-left", "0");
     } else {
-        $('#logoarea').css("display", "block");
-        $('#main').css("margin-left", "270px");
-        /*$('#header .tools-bar').css("margin-left","250px");*/
+        $("#logoarea").css("display", "block");
+        $("#main").css("margin-left", "270px");
     }
 }
 
@@ -255,27 +276,27 @@ function configureGristerClickEvents() {
     if (!viewmode){
         $("[id^=tile_]").mouseover(function(e) {
             var tileID = this.id.substring(5);
-            $('#editicon' + tileID).animate({
-                'opacity': 1
+            $("#editicon" + tileID).animate({
+                "opacity": 1
             }, 0);
-            $('#historyicon' + tileID).animate({
-                'opacity': 1
+            $("#historyicon" + tileID).animate({
+                "opacity": 1
             }, 0);
         });
     
         $("[id^=tile_]").mouseout(function(e) {
             var tileID = this.id.substring(5);
-            $('#editicon' + tileID).animate({
-                'opacity': 0
+            $("#editicon" + tileID).animate({
+                "opacity": 0
             }, 0);
-            $('#historyicon' + tileID).animate({
-                'opacity': 0
+            $("#historyicon" + tileID).animate({
+                "opacity": 0
             }, 0);
         });
     
         $("[id^=editicon]").click(function(e) {
             getDataSet({
-                service: 'EditWidgetDialog',
+                service: "EditWidgetDialog",
                 dashboardwidgetid: this.id.substring(8)
             })
             e.stopPropagation();
@@ -283,14 +304,6 @@ function configureGristerClickEvents() {
     
         $("[id^=historyicon]").click(function(e) {
             showHist(this.id.substring(11));
-            e.stopPropagation();
-        });
-    
-        $("[id^=refreshicon]").click(function(e) {
-            getDataSet({
-                service: 'RefreshWidget',
-                dashboardwidgetid: this.id.substring(11)
-            });
             e.stopPropagation();
         });
     
@@ -304,14 +317,14 @@ function configureGristerClickEvents() {
 // -------------------------   Profile ----------------------- //
 
 function configureGravatar() {
-    if (typeof $gravatarEmail != 'undefined') {
+    if (typeof $gravatarEmail != "undefined") {
         if ($gravatarEmail.length > 0) {
             $imgTmp = $.gravatar($gravatarEmail);
             $imgTmp2 = $.gravatar($gravatarEmail);
-            $('#gravSm').empty().append($imgTmp2);
-            $('#gravSm img').addClass('circular-avatar-sm');
-            $('#grav').empty().append($imgTmp);
-            $('#grav img').addClass('circular-avatar-bg');
+            $("#gravSm").empty().append($imgTmp2);
+            $("#gravSm img").addClass("circular-avatar-sm");
+            $("#grav").empty().append($imgTmp);
+            $("#grav img").addClass("circular-avatar-bg");
         }
     }
 }
@@ -330,28 +343,28 @@ function configureLeftMenu() {
             slidingSubmenus: true
         }).on("closing.mm", function() {
             var highest = $(this).find("ul.mm-highest");
-            highest.find(".mm-subclose").trigger('click');
+            highest.find(".mm-subclose").trigger("click");
             setTimeout(function() {
                 closeSub()
             }, 200);
         });
     });
 
-    $("body").append('<div class="toggle-menu"/>');
+    $("body").append("<div class='toggle-menu' />");
 }
 
 
 function dashboardActive(boolState) {
     if (boolState) {
-        $('#btnAddWidget').show();
-        $('#btnEditDashboard').show();
-        $('#btnAddDashboard').addClass('h-seperate');
-        $('#btnAddAlert').hide();
+        $("#btnAddWidget").show();
+        $("#btnEditDashboard").show();
+        $("#btnAddDashboard").addClass("h-seperate");
+        $("#btnAddAlert").hide();
     } else {
-        $('#btnAddAlert').show();
-        $('#btnAddWidget').hide();
-        $('#btnEditDashboard').hide();
-        $('#btnAddDashboard').removeClass('h-seperate');
+        $("#btnAddAlert").show();
+        $("#btnAddWidget").hide();
+        $("#btnEditDashboard").hide();
+        $("#btnAddDashboard").removeClass("h-seperate");
         $("li.active").removeClass("active");
         clearTimers();
     }
@@ -363,10 +376,10 @@ function closeLeftMenu() {
 
 
 function loadAlertScreen(){
-    $('#myAlertModal').modal('hide');
+    $("#myAlertModal").modal("hide");
     dashboardActive(false);
     getDataSet({
-        service: 'Alerts'
+        service: "Alerts"
     });
 }
 
@@ -393,7 +406,7 @@ function closeSub() {
 }
 
 function toggleStreaming() {
-    if ($('#chkStreaming').is(':checked')) {
+    if ($("#chkStreaming").is(":checked")) {
         //Switch streaming on
         loadTimers();
     } else {
@@ -408,7 +421,7 @@ function loadTimers(){
             arrActiveTimersIDList.push(objWidgets[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
-                    service: 'RefreshWidget',
+                    service: "RefreshWidget",
                     dashboardwidgetid: objWidgets[key].dwid
                 });
             }, objWidgets[key].refresh));
@@ -419,20 +432,20 @@ function loadTimers(){
 
 
 function loadInstanceData(arrData) {
-    var osversion = arrData[4]['VALUE'];
-    var dt = arrData[6]['VALUE'].split(' ');
-    var dbversion = arrData[3]['VALUE'].split(' ')[0];
-    osversion = osversion.replace('SUSE Linux Enterprise Server', 'SLES');
+    var osversion = arrData[4]["VALUE"];
+    var dt = arrData[6]["VALUE"].split(" ");
+    var dbversion = arrData[3]["VALUE"].split(" ")[0];
+    osversion = osversion.replace("SUSE Linux Enterprise Server", "SLES");
 
-    $("#serverinfo").append('<li><div class="pull-right">' + arrData[0]['VALUE'] + '</div><label>Instance ID</label></li>');
-    $('#instanceid').html('on ' + arrData[0]['VALUE']);
-    $("#serverinfo").append('<li><div class="pull-right">' + arrData[1]['VALUE'] + '</div><label>Instance No</label></li>');
-    $("#serverinfo").append('<li>&nbsp;</li>');
-    $("#serverinfo").append('<li><div class="pull-right">' + dbversion + '</div><label>DB Version</label></li>');
-    $("#serverinfo").append('<li><div class="pull-right">' + osversion + '</div><label>OS Version</label></li>');
-    $("#serverinfo").append('<li>&nbsp;</li>');
-    $("#serverinfo").append('<li><div class="pull-right">' + dt[0] + '</div><label>Start Date</label></li>');
-    $("#serverinfo").append('<li><div class="pull-right">' + dt[1].split('.')[0] + '</div><label>Start Time</label></li>');
+    $("#serverinfo").append("<li><div class='pull-right'>" + arrData[0]["VALUE"] + "</div><label>Instance ID</label></li>");
+    $('#instanceid').html("on " + arrData[0]['VALUE']);
+    $("#serverinfo").append("<li><div class='pull-right'>" + arrData[1]["VALUE"] + "</div><label>Instance No</label></li>");
+    $("#serverinfo").append("<li>&nbsp;</li>");
+    $("#serverinfo").append("<li><div class='pull-right'>" + dbversion + "</div><label>DB Version</label></li>");
+    $("#serverinfo").append("<li><div class='pull-right'>" + osversion + "</div><label>OS Version</label></li>");
+    $("#serverinfo").append("<li>&nbsp;</li>");
+    $("#serverinfo").append("<li><div class='pull-right'>" + dt[0] + "</div><label>Start Date</label></li>");
+    $("#serverinfo").append("<li><div class='pull-right'>" + dt[1].split(".")[0] + "</div><label>Start Time</label></li>");
 }
 
 
@@ -440,21 +453,21 @@ function loadInstanceData(arrData) {
 
 
 function doLogout() {
-    sessionToken = '';
-    $.removeCookie('sessionToken');
-    window.location = "login.html";
+    sessionToken = "";
+    $.removeCookie("sessionToken");
+    window.location = "./login";
 }
 
 function getSessionToken() {
-    sessionToken = $.cookie('sessionToken');
-    $gravatarEmail = $.cookie('tmpEmail');
+    sessionToken = $.cookie("sessionToken");
+    $gravatarEmail = $.cookie("tmpEmail");
 }
 
 function loadUserData(arrData) {
-    $gravatarEmail = arrData[0]['EMAIL'];
+    $gravatarEmail = arrData[0]["EMAIL"];
     configureGravatar();
-    $('#usersname em').html(arrData[0]['NAME'] + ' ' + arrData[0]['LNAME']);
-    $('#gravUsersname').html(arrData[0]['NAME'] + ' ' + arrData[0]['LNAME']);
+    $("#usersname em").html(arrData[0]["NAME"] + " " + arrData[0]["LNAME"]);
+    $("#gravUsersname").html(arrData[0]["NAME"] + " " + arrData[0]["LNAME"]);
 }
 
 
@@ -476,48 +489,53 @@ function loadDashboards(objDashboards) {
             //Load top menu bar with dashboards
             $("#dashboards").append("<li id='dashboard" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' data-bgurl='" + bgurl + "'><a href='#'>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboard" + dashboardid).click(function() {
-                getContent($(this).data('id'));
-                intDashboardID = $(this).data('id');
+                getContent($(this).data("id"));
+                intDashboardID = $(this).data("id");
                 return false;
             });
             //Load left menu with dashboards
             $("ul:eq( 1 )").append("<li id='dashboardmenu" + dashboardid + "' data-id='" + dashboardid + "' data-shareurl='" + shareurl + "' data-bgurl='" + bgurl + "' title='" + objDashboards[i].TITLE + "'><a href='#' ><i class='icon fa fa-th'></i>" + objDashboards[i].TITLE + "</a></li>");
             $("#dashboardmenu" + dashboardid).click(function() {
-                getContent($(this).data('id'));
-                intDashboardID = $(this).data('id');
+                getContent($(this).data("id"));
+                intDashboardID = $(this).data("id");
                 closeLeftMenu();
                 return false;
             });
         }
     }
     
-    $('#btnSideBar').click(function(e) {
+    $("#btnSideBar").click(function(e) {
         toggleSideBar();
     });
     
-    $('#mnuAddDashboard, #btnAddDashboardTab').click(function() {
+    $("#mnuAddDashboard, #btnAddDashboardTab").click(function() {
         showDashboardDialog(null, false);
     });
     
     if (intCurrentDashboardID == 1) {
         getContent($("#dashboards li:eq(1)").data("id"));
-    } else if (intCurrentDashboardID !== '') {
-        $("li[data-id='" + intCurrentDashboardID +"']").addClass('active');
+    } else if (intCurrentDashboardID !== "") {
+        $("li[data-id='" + intCurrentDashboardID +"']").addClass("active");
     }
+    
+    if ($("#grid").html().indexOf("looks like") > 0) {
+        $("#grid").html(strNoWidgetMsg);
+    }
+    
     loadImg();
     loadDashboardSortable();
 }
 
 function loadDashboardSortable(){
     $( "#dashboards" ).sortable({
-        helper : 'clone'
+        helper : "clone"
     });
     $( "#dashboards" ).disableSelection();
     $( "#dashboards" ).sortable({
         stop: function( ) {
             var order = JSON.stringify($("#dashboards").sortable("toArray"));
             getDataSet({
-                service: 'SaveDashboardPositions', 
+                service: "SaveDashboardPositions", 
                 dashboardpos: order
             });
         }
@@ -525,14 +543,14 @@ function loadDashboardSortable(){
 }
 
 function loadImg(){
-    if ($("li.active").data('bgurl') !== ''){
-        $('#content').css('background', 'url(' + $("li.active").data('bgurl') + ')  no-repeat center center fixed');
-        $('#content').addClass('dashboardbackground');
-        $('.t1-widget-div').addClass('metricopacity');
+    if ($("li.active").data("bgurl") !== ""){
+        $("#content").css("background", "url(" + $("li.active").data("bgurl") + ")  no-repeat center center fixed");
+        $("#content").addClass("dashboardbackground");
+        $(".t1-widget-div").addClass("metricopacity");
     } else {
-        $('#content').css('background', 'none');
-        $('#content').removeClass('dashboardbackground');
-        $('.t1-widget-div').removeClass('metricopacity');
+        $("#content").css("background", "none");
+        $("#content").removeClass("dashboardbackground");
+        $(".t1-widget-div").removeClass("metricopacity");
     }
 }
 
@@ -540,11 +558,11 @@ function getContent(sId) {
     intCurrentDashboardID = sId;
     
     $("li.active").removeClass("active");
-    $("li[data-id='" + sId +"']").addClass('active');
+    $("li[data-id='" + sId +"']").addClass("active");
     
-    if (typeof sId != 'undefined') {
+    if (typeof sId != "undefined") {
         getDataSet({
-            service: 'Widgets',
+            service: "Widgets",
             dashboardid: intCurrentDashboardID
         });
     } else {
@@ -561,7 +579,7 @@ function clearTimers() {
 }
 
 function loadClientMetrics(objData) {
-    showLoadingSpinner(true, 'Loading metrics');
+    showLoadingSpinner(true, "Loading metrics");
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
         if (objData.widgetData[key].Alert) {
@@ -578,28 +596,28 @@ function loadClientMetrics(objData) {
             arrActiveTimersIDList.push(objData.widgetData[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
-                    service: 'RefreshWidget',
+                    service: "RefreshWidget",
                     dashboardwidgetid: objData.widgetData[key].dwid
                 });
             }, objData.widgetData[key].refresh));
         }
     });
     objWidgets = objData.widgetData;
-    showLoadingSpinner(false, '');
+    showLoadingSpinner(false, "");
 }
 
 function loadMetrics(objData) {
     var strContent = "<div class='gridster' id='gridster'><ul id='gridtiles'>";
-    showLoadingSpinner(true, 'Loading metrics');
+    showLoadingSpinner(true, "Loading metrics");
     $.each(objData.widgetData, function(key, value) {
         var intDashboardWidgetID = objData.widgetData[key].dwid;
         var title = objData.widgetData[key].title;
 
         if (typeof title === undefined) {
-            title = '';
+            title = "";
         }
         
-        if (objData.widgetData[key].type == 'Label') {
+        if (objData.widgetData[key].type == "Label") {
             strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + objData.widgetData[key].height + "'>";
                 strContent += "<i class='fa fa-edit t1-modify-icon-label' id='editicon" + intDashboardWidgetID + "'></i>";
                 strContent += "<div id='t1-widget-container" + intDashboardWidgetID + "' class='t1-metric-label'></div>";
@@ -608,7 +626,7 @@ function loadMetrics(objData) {
             strContent += "<li  id='tile_" + intDashboardWidgetID + "' data-row='" + objData.widgetData[key].rowpos + "' data-col='" + objData.widgetData[key].colpos + "' data-sizex='" + objData.widgetData[key].width + "' data-sizey='" + parseInt(objData.widgetData[key].height) * 2 + "'>";
                 strContent += "<div class='t1-widget-div'><div class='t1-widget-header-div'>";
                     strContent += "<header class='t1-widget-header' id='widget-header" + intDashboardWidgetID + "'>" + title;
-                        if (objData.widgetData[key].histEnabled == '1') {
+                        if (objData.widgetData[key].histEnabled === "1") {
                             strContent += "<i class='fa fa-history t1-modify-icon' id='historyicon" + intDashboardWidgetID + "'></i>";
                         }
                         strContent += "<i class='fa fa-edit t1-modify-icon' id='editicon" + intDashboardWidgetID + "'></i>";
@@ -621,53 +639,58 @@ function loadMetrics(objData) {
     strContent += "</ul></div>";
     $("#grid").html(strContent);
     loadImg();
-    showLoadingSpinner(false, '');
+    showLoadingSpinner(false, "");
 }
 
 function showLoadingSpinner(visible, strText){
     if (visible){
-        $(".loading").css('display', 'block');
-        if (debugmode !== 'hidden'){
+        $(".loading").css("display", "block");
+        if (debugmode !== "hidden"){
             $("#loading-text").html(strText);
         }
     } else {
-        $(".loading").css('display', 'none');
+        $(".loading").css("display", "none");
     }
 }
 
 function getShareURL(id){
-    return location.href.replace('#', '') + "?did=" + id;
+    return location.href.replace("#", "") + "?did=" + id;
 }
 
 
 // -------------------------   Server side processesing ----------------------- //
 
 function getDataSet(options) {
-    showLoadingSpinner(true, 'Loading ' + options.service);
-    var html = '';
-    var jURL = 'lib/api.xsjs';
+    showLoadingSpinner(true, "Loading " + options.service);
+    var html = "";
+    var jURL = "lib/api.xsjs";
     options.viewmode = viewmode;
 
     $.ajax({
         url: jURL,
-        type: 'GET',
+        type: "GET",
         headers: {
             "SessionToken": sessionToken
         },
         data: options,
         success: function(data) {
-            if (options.service == 'DBInfo') {
+            
+            var objData = jQuery.parseJSON(data);
+            
+            if (options.service === "Init") {
                 var objData = jQuery.parseJSON(data);
                 var arrData = JSON.parse(objData.dbinfo);
                 loadInstanceData(arrData);
-            } else if (options.service == 'UserInfo') {
-                var objData = jQuery.parseJSON(data);
-                var arrData = JSON.parse(objData.userinfo);
-                loadUserData(arrData);
-            } else if (options.service == 'Dashboards') {
+            
+                var arrUserData = JSON.parse(objData.userinfo);
+                loadUserData(arrUserData);
+                
+                loadDashboards(JSON.parse(objData.dashboards));
+            } else if (options.service === "Dashboards" || options.service === "CloneDashboard" || options.service === "CreateDashboard" || options.service === "UpdateDashboard" || options.service === "DeleteDashboard") {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
-            } else if (options.service == 'Widgets') {
+                addNotification(objData.result, 0, true);
+            } else if (options.service === "Widgets" || options.service === "CloneMetric" || options.service === "CreateMetric" || options.service === "EditMetric" || options.service === "DeleteWidget") {
                 var objData = jQuery.parseJSON(data);
                 clearTimers();
                 if (objData.widgetCount === 0) {
@@ -678,98 +701,73 @@ function getDataSet(options) {
                     loadGridster();
                 }
                 dashboardActive(true);
-            } else if (options.service == 'RefreshWidget') {
+                addNotification(objData.result, 0, true);
+            } else if (options.service === "RefreshWidget") {
                 var elemID = "t1-widget-container" + options.strDashboardWidgetID;
                 var objData = jQuery.parseJSON(data);
-                if (objData.widgets != '') {
+                if (objData.widgets !== "") {
                     $(elemID).html(objData.widgets);
                 }
                 loadClientMetrics(objData);
-            } else if (options.service == 'EditWidgetDialog') {
+            } else if (options.service === "EditWidgetDialog") {
                 showWidgetDialog(jQuery.parseJSON(data), true);
-            } else if (options.service == 'NewWidgetDialog') {
+            } else if (options.service === "NewWidgetDialog") {
                 showWidgetDialog(jQuery.parseJSON(data), false);
-            } else if (options.service == 'WidgetHistoryDialog') {
-                widgetHistoryChart(data, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
-            } else if (options.service == 'WidgetForecastDialog') {
-                widgetForecastChart(data, options.strDashboardWidgetID);
-            } else if (options.service == 'AlertHistoryDialog') {
+            } else if (options.service === "WidgetHistoryDialog") {
+                var objData = jQuery.parseJSON(data);
+                widgetHistoryChart(objData.metricHistory, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
+            } else if (options.service === "WidgetForecastDialog") {
+                var objData = jQuery.parseJSON(data);
+                widgetForecastChart(objData.metricForecast, options.strDashboardWidgetID);
+            } else if (options.service === "AlertHistoryDialog") {
                 showAlertHistoryDialog(jQuery.parseJSON(data));
-            } else if (options.service == 'DeleteWidget') {
-                addNotification('Metric Deleted', 3, true);
-            } else if (options.service == 'CloneMetric') {
-                addNotification('Metric Cloned', 0, true);
-            } else if (options.service == 'DeleteMetricHistory') {
+            } else if (options.service === "DeleteMetricHistory") {
                 addNotification("History deleted", 3, true);
-            } else if (options.service == 'EditProfileDialog') {
+            } else if (options.service === "EditProfileDialog") {
                 showProfileDialog(jQuery.parseJSON(data));
-            } else if (options.service == 'EditSettingsDialog') {
+            } else if (options.service === "EditSettingsDialog") {
                 showSettingsDialog(jQuery.parseJSON(data));
-            } else if (options.service == 'GetWidgetTypes') {
+            } else if (options.service === "GetWidgetTypes") {
                 objWidgetList = JSON.parse(data);
                 showNewWidgetDialog(0);
-            } else if (options.service == 'Alerts') {
-                loadAlerts(jQuery.parseJSON(data));
-            } else if (options.service == 'AddAlert') {
+            } else if (options.service === "Alerts" || options.service === "CreateAlert" || options.service === "EditAlert" || options.service === "DeleteAlert") {
+                var objData = jQuery.parseJSON(data);
+                loadAlerts(objData);
+                addNotification(objData.result, 0, true);
+            } else if (options.service === "AddAlertDialog") {
                 showAlertDialog(jQuery.parseJSON(data), false);
-            } else if (options.service == 'EditAlertDialog') {
+            } else if (options.service === "EditAlertDialog") {
                 showAlertDialog(jQuery.parseJSON(data), true);
-            } else if (options.service == 'DeleteAlert') {
+            } else if (options.service === "SetAlert") {
                 loadAlerts(jQuery.parseJSON(data));
-                addNotification('Alert Deleted', 0, false);
-            } else if (options.service == 'SetAlert') {
+                addNotification("Alert Status Set", 0, false);
+            } else if (options.service === "ClearAlert") {
                 loadAlerts(jQuery.parseJSON(data));
-                addNotification('Alert Status Set', 0, false);
-            } else if (options.service == 'ClearAlert') {
-                loadAlerts(jQuery.parseJSON(data));
-                addNotification('Alert History Cleared', 0, true);
-            } else if (options.service == 'SaveDashboardPositions') {
-                addNotification('Dashboard Order Saved', 0, false);
-            } else if (options.service == 'CreateDashboard') {
-                addNotification("Dashboard created", 0);
-                if ($("#grid").html().indexOf('looks like') > 0) {
-                    $("#grid").html(strNoWidgetMsg);
-                }
-            } else if (options.service == 'UpdateDashboard') {
-                addNotification("Dashboard updated", 0, false);
-            } else if (options.service == 'Select') {
+                addNotification("Alert History Cleared", 0, true);
+            } else if (options.service === "SaveDashboardPositions") {
+                addNotification("Dashboard Order Saved", 0, false);
+            } else if (options.service === "Select") {
                 showSQLResults(data);
-            } else if (options.service == 'SetSharingURL'){
-                $("#dashboardshareurl").prop('disabled', false);
-                $('#dashboardshareurl').val(getShareURL(data));
-            } else if (options.service == 'DisableSharingURL'){
-                $("#dashboardshareurl").prop('disabled', true);
-                $('#dashboardshareurl').val('');
-            } else if (options.service == 'UpdateUser'){
-                addNotification('User Account Updated', 0);
-                getDataSet({
-                    service: 'UserInfo'
-                });
+            } else if (options.service === "SetSharingURL"){
+                var objData = jQuery.parseJSON(data);
+                $("#dashboardshareurl").prop("disabled", false);
+                $("#dashboardshareurl").val(getShareURL(objData.shareURL));
+            } else if (options.service === "DisableSharingURL"){
+                $("#dashboardshareurl").prop("disabled", true);
+                $("#dashboardshareurl").val("");
+            } else if (options.service === "UpdateUser"){
+                addNotification("User Account Updated", 0);
+                var objData = jQuery.parseJSON(data);
+                var arrUserData = JSON.parse(objData.userinfo);
+                loadUserData(arrUserData);
             }
             
-            
-
-            if (options.reload == 'true') {
-                location.reload();
-            } else if (options.reload == 'alerts') {
-                getDataSet({
-                    service: 'Alerts'
-                });
-            } else if (options.reload == 'dashboard') {
-                getContent(intCurrentDashboardID);
-            } else if (options.reload == 'dashboards') {
-                getDataSet({
-                    service: 'Dashboards'
-                });
-                
-            }
-
-            showLoadingSpinner(false, '');
+            showLoadingSpinner(false, "");
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            addNotification('Error', 3, true);
+            addNotification("Error", 3, true);
             console.log(textStatus);
-            showLoadingSpinner(false, '');
+            showLoadingSpinner(false, "");
         }
     });
 }
