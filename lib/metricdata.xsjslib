@@ -6,5 +6,11 @@ function getDataPoint(){
 
 
 function updateWigetValue(){
-    return widgetLib.insertWidgetHistory(dashboardwidgetid, 'SQL1', datapoint, dashboardwidgetparamid);
+    if (datapoint){
+        //Accept just the single data point from the request parameter
+        return widgetLib.insertWidgetHistory(dashboardwidgetid, 'SQL1', datapoint, dashboardwidgetparamid);
+    } else {
+        //Ingest JSON body payload, needs the dashboardwidgetid and datapoint
+        return $.request.body.asString();
+    }
 }
