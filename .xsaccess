@@ -7,6 +7,10 @@
 			"target": "/index.html?did=$1"
 		},
 		{
+			"source": "/login",
+			"target": "/login.html"
+		},
+		{
 			"source": "/API/V1/DATA/(.*)",
 			"target": "lib/api.xsjs?service=API&dashboardwidgetparamid=$1"
 		},
