@@ -1,5 +1,5 @@
 function loadGridster(){
-    var gridster = $(".gridster ul").gridster({
+    var gridster = $("#gridtiles").gridster({
         widget_margins: [10, 10],
         widget_selector: '[id^=tile_]',
         widget_base_dimensions: [230, 105],
@@ -23,11 +23,11 @@ function loadGridster(){
 }
             
 function saveGridPosition() {
-    var gridster = $(".gridster ul").gridster().data('gridster');
+    var gridster = $("#gridtiles").gridster().data('gridster');
 	var strGridPos = JSON.stringify(gridster.serialize());
 	getDataSet({
-        strService: 'Position', 
-        strDashboardID: intCurrentDashboardID,
-        strGridPos: strGridPos
+        service: 'Position', 
+        dashboardid: intCurrentDashboardID,
+        gridpos: strGridPos
     });
 }
