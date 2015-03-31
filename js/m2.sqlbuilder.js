@@ -131,7 +131,7 @@ function showSQLResults(data){
         
         $('#output').html(html);
         $('#dialogSQLMsg').html('');
-        $('#datatable').DataTable({bFilter: false, deferRender:    true, dom: "C<'clear'>frtiS", scrollY: 570, scrollCollapse: true, stateSave: true,  paginate: false, scrollCollapse: true});
+        $('#datatable').DataTable({bFilter: false, deferRender:    true, order: [[ 1, "desc" ]], dom: "C<'clear'>frtiS", scrollY: 570, scrollCollapse: true, stateSave: true,  paginate: false, scrollCollapse: true});
     } catch (e) {
         $('#dialogSQLMsg').html("<div class='alert alert-warning' role='alert'>" + data + "</div>");
     }
