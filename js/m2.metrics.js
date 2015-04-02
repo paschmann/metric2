@@ -3,11 +3,63 @@ function getScalarVal(sql, obj, property) {
     return resp[0][property];
 }
 
-
-
 // --------------------------------------- Common metrics UI ----------------------------------------------------- //
 
-function widgetJSONServiceTable(data) {
+function oauthJSONService (data) {
+    var url = data.URL;
+    if (url.indexOf(" ") > -1) {
+        url = data.URL.split(" ")[0];
+    }
+    
+    $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            async: false,
+            error: function(e) {
+                if (data.api === "GoogleAPI"){
+                    refreshGoogleAPIToken(data);
+                }
+            },
+            beforeSend: function(xhr) {
+                if (data.accesstoken.length >= 0){
+                    xhr.setRequestHeader("Authorization", "Bearer " + data.accesstoken);
+                }
+            },
+            success: function(resp) {
+                window[data.callback](data, resp);
+            }
+    });
+}
+
+function metricGooglePlusProfile(data, resp) {
+    try {
+        data.OBJKEY = data.URL.split(" ")[1];
+        data.TEXT1 = "Google+";
+    
+        var value = resp[data.OBJKEY];
+        var html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+        $('#t1-widget-container' + data.dwid).html(html);
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html("Error");
+    }
+}
+
+function metricGithubProfile(data, resp) {
+    try {
+        data.OBJKEY = data.URL.split(" ")[1];
+        data.TEXT1 = "Github";
+    
+        var value = resp[data.OBJKEY];
+        var html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+        $('#t1-widget-container' + data.dwid).html(html);
+    } catch (err) {
+        $('#t1-widget-container' + data.dwid).html("Error");
+    }
+}
+
+
+function widgetJSONServiceTable(data)  {
     //Requires data.dwid, data.URL
     var value = '';
     authtoken = '';
@@ -135,28 +187,6 @@ function metricClock(data) {
     }, 1000);
 }
 
-function calcTime(offset) {
-
-    // create Date object for current location
-    d = new Date();
-
-    // convert to msec
-    // add local time zone offset 
-    // get UTC time in msec
-    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
-
-    // create new Date object for different city
-    // using supplied offset
-    nd = new Date(utc + (3600000 * offset));
-
-    return nd.toLocaleFormat("%c");
-
-    // return time as a string
-    //return nd.toLocaleString();
-
-}
-
-
 function widgetTextAndFooter(data) {
     //Requires data.dwid, data['Large Text Value'], data['Footer Text Value']
     try {
@@ -183,13 +213,15 @@ function widgetStockPrice(data) {
             var html = '<div id="stock" style="line-height: 1.0;"><div class="t1-widget-text-medium">';
             if (change > 0) {
                 html += '<p style="color: #5BD993; margin-top: 20px;">&#9650<br />';
-            } else if (change == 0) {
+                html += parseFloat(change).toFixed(2) + '';
+            } else if (change === "+0.00" || change === null) {
                 html += '<p style="color: #FFDD72; margin-top: 20px;">&#9668<br />';
+                html += '0.00';
             } else {
                 html += '<p style="color: #F55B4C; margin-top: 20px;">&#9660<br />';
+                html += parseFloat(change).toFixed(2) + '';
             }
 
-            html += parseFloat(change).toFixed(2) + '';
             html += '</p></div>';
             html += '<div class="t1-widget-datetime">$' + parseFloat(price).toFixed(2) + '';
             html += '</div>';
@@ -359,12 +391,7 @@ function widgetJSONService(data) {
     try {
         var value = '';
         $.getJSON(data.URL, function(resp) {
-            var items = [];
-            $.each(resp, function(key, val) {
-                if (key == data.OBJKEY) {
-                    value = val;
-                }
-            });
+            value = resp[data.OBJKEY];
             html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
             $('#t1-widget-container' + data.dwid).html(html);
         });
