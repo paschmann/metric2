@@ -198,23 +198,24 @@ function addNotification(strMsg, i, display) {
             break;
     }
     
-    if (display && strMsg.length > 0) {
-        $.bootstrapGrowl(strMsg, {
-              ele: 'body', // which element to append to
-              type: type, // (null, 'info', 'danger', 'success')
-              offset: {from: 'top', amount: 5}, // 'top', or 'bottom'
-              align: 'center', // ('left', 'right', or 'center')
-              width: 350, // (integer, or 'auto')
-              delay: 2000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
-              allow_dismiss: true, // If true then will display a cross to close the popup.
-              stackup_spacing: 10 // spacing between consecutively stacked growls.
-        });
+    if (typeof strMsg != 'undefined' && strMsg.length > 0) {
+        if (display){
+            $.bootstrapGrowl(strMsg, {
+                  ele: 'body', // which element to append to
+                  type: type, // (null, 'info', 'danger', 'success')
+                  offset: {from: 'top', amount: 5}, // 'top', or 'bottom'
+                  align: 'center', // ('left', 'right', or 'center')
+                  width: 350, // (integer, or 'auto')
+                  delay: 2000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
+                  allow_dismiss: true, // If true then will display a cross to close the popup.
+                  stackup_spacing: 10 // spacing between consecutively stacked growls.
+            });
+        }
+        var objAlert = [];
+        objAlert.msg = strMsg;
+        objAlert.type = i;
+        objAlert.timestamp = Date.now();
+        
+        alertlist.unshift(objAlert);
     }
-    
-    var objAlert = [];
-    objAlert.msg = strMsg;
-    objAlert.type = i;
-    objAlert.timestamp = Date.now();
-    
-    alertlist.unshift(objAlert);
 }
