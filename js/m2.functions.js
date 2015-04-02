@@ -22,6 +22,21 @@ function blendColors(c0, c1, p) {
     return "#"+(0x1000000+(Math.round((R2-R1)*p)+R1)*0x10000+(Math.round((G2-G1)*p)+G1)*0x100+(Math.round((B2-B1)*p)+B1)).toString(16).slice(1);
 }
 
+function calcTime(offset) {
+    // create Date object for current location
+    var d = new Date();
+    // convert to msec
+    // add local time zone offset 
+    // get UTC time in msec
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    // create new Date object for different city
+    // using supplied offset
+    var nd = new Date(utc + (3600000 * offset));
+    //return nd.toLocaleFormat("%c");
+    // return time as a string
+    return nd.toLocaleString();
+}
+
 var dateFormat = function () {
     var	token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
 	timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
