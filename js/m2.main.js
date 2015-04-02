@@ -20,6 +20,8 @@ var debugmode = "hidden"; /*display*/
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-tachometer fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
 var strInputControl = "";
+var intGoogleAPIValidationAttempts = 0;
+var intGithubPIValidationAttempts = 0;
 
 var objWidgets = {};
 var objWidgetList = {};
@@ -82,6 +84,8 @@ function enableShareMode(){
 
 // -------------------------   Client Side click events ----------------------- //
 
+
+
 function configureClickEvents() {
     
     $(document).on("click","#chkShareDashboard",function(){
@@ -94,6 +98,14 @@ function configureClickEvents() {
     
     $("#btnShowAlertList").click(function() {
         loadAlertList();
+    });
+    
+    $(document).on("click",".btnAuthenticateOAuth",function(e){
+        openOAuthWindow($(this).data("id"), $(this).attr("id"), false, false);
+    });
+    
+    $(document).on("click",".btnRevokeOAuth",function(e){
+        openOAuthWindow($(this).data("id"), $(this).attr("id"), false, true);
     });
     
     $(document).on("click","#btnChangePassword",function(e){
@@ -522,7 +534,6 @@ function loadDashboards(objDashboards) {
         $("#grid").html(strNoWidgetMsg);
     }
     
-    loadImg();
     loadDashboardSortable();
 }
 
@@ -542,8 +553,8 @@ function loadDashboardSortable(){
     });
 }
 
-function loadImg(){
-    if ($("li.active").data("bgurl") !== ""){
+function loadBGImg(){
+    if ($("li.active").data("bgurl") !== "" && typeof $("li.active").data("bgurl") !== "undefined"){
         $("#content").css("background", "url(" + $("li.active").data("bgurl") + ")  no-repeat center center fixed");
         $("#content").addClass("dashboardbackground");
         $(".t1-widget-div").addClass("metricopacity");
@@ -561,6 +572,7 @@ function getContent(sId) {
     $("li[data-id='" + sId +"']").addClass("active");
     
     if (typeof sId != "undefined") {
+        clearTimers();
         getDataSet({
             service: "Widgets",
             dashboardid: intCurrentDashboardID
@@ -582,6 +594,7 @@ function loadClientMetrics(objData) {
     showLoadingSpinner(true, "Loading metrics");
     $.each(objData.widgetData, function(key, value) {
         window[objData.widgetData[key].code](objData.widgetData[key]);
+        
         if (objData.widgetData[key].Alert) {
             addNotification(this.Alert, 1, true);
         }
@@ -592,12 +605,13 @@ function loadClientMetrics(objData) {
             arrActiveTimers.splice(itemidx, 1);
         }
         
-        if (objData.widgetData[key].refresh !== 0) {
+        if (objData.widgetData[key].refresh !== 0 && typeof objData.widgetData[key].refresh !== "undefined") {
             arrActiveTimersIDList.push(objData.widgetData[key].dwid);
             arrActiveTimers.push(setTimeout(function() {
                 getDataSet({
                     service: "RefreshWidget",
-                    dashboardwidgetid: objData.widgetData[key].dwid
+                    dashboardwidgetid: objData.widgetData[key].dwid,
+                    refreshrate: objData.widgetData[key].refresh
                 });
             }, objData.widgetData[key].refresh));
         }
@@ -638,7 +652,6 @@ function loadMetrics(objData) {
     });
     strContent += "</ul></div>";
     $("#grid").html(strContent);
-    loadImg();
     showLoadingSpinner(false, "");
 }
 
@@ -689,10 +702,14 @@ function getDataSet(options) {
             } else if (options.service === "Dashboards" || options.service === "CloneDashboard" || options.service === "CreateDashboard" || options.service === "UpdateDashboard" || options.service === "DeleteDashboard") {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
+                if (options.service === "DeleteDashboard") {
+                    getContent($("#dashboards li:eq(1)").data("id"));
+                }
                 addNotification(objData.result, 0, true);
             } else if (options.service === "Widgets" || options.service === "CloneMetric" || options.service === "CreateMetric" || options.service === "EditMetric" || options.service === "DeleteWidget") {
                 var objData = jQuery.parseJSON(data);
                 clearTimers();
+                loadBGImg();
                 if (objData.widgetCount === 0) {
                     $("#grid").html(strNoWidgetMsg);
                 } else {
@@ -731,6 +748,7 @@ function getDataSet(options) {
                 objWidgetList = JSON.parse(data);
                 showNewWidgetDialog(0);
             } else if (options.service === "Alerts" || options.service === "CreateAlert" || options.service === "EditAlert" || options.service === "DeleteAlert") {
+                loadBGImg();
                 var objData = jQuery.parseJSON(data);
                 loadAlerts(objData);
                 addNotification(objData.result, 0, true);
