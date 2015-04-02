@@ -11,6 +11,9 @@ function showProfileDialog(){
 function editSettings() {
     try {
         sqlLib.executeInputQuery("Update metric2.m2_users SET email_domain = '" + $.request.parameters.get('domain') + "' WHERE user_id =" + userid);
+        
+        if ($.request.parameters.get('googleclientid')) sqlLib.executeInputQuery("UPSERT METRIC2.M2_USER_CONNECTIONS VALUES ('GoogleAPI', " + userid + ", '" + $.request.parameters.get('googleclientid') + "', '" + $.request.parameters.get('googleclientsecret') + "', '', '', current_timestamp) WHERE user_id = " + userid + " AND API_NAME = 'GoogleAPI'");
+        if ($.request.parameters.get('githubclientid')) sqlLib.executeInputQuery("UPSERT METRIC2.M2_USER_CONNECTIONS VALUES ('GithubAPI', " + userid + ", '" + $.request.parameters.get('githubclientid') + "', '" + $.request.parameters.get('githubclientsecret') + "', '', '', current_timestamp) WHERE user_id = " + userid + " AND API_NAME = 'GithubAPI'");
         return 'Settings Updated';
     } catch (err) {
         return err.message;
@@ -24,6 +27,8 @@ function showSettingsDialog(){
     if (userid){
 		//This is an edit
 		data.userInfo = sqlLib.executeRecordSetObj("SELECT email_domain, user_id FROM metric2.m2_users WHERE user_id =" + userid);
+		data.googleAPI = sqlLib.executeRecordSetObj("SELECT client_id, client_secret, access_token FROM metric2.m2_user_connections WHERE user_id =" + userid + " AND API_NAME = 'GoogleAPI'");
+		data.githubAPI = sqlLib.executeRecordSetObj("SELECT client_id, client_secret, access_token FROM metric2.m2_user_connections WHERE user_id =" + userid + " AND API_NAME = 'GithubAPI'");
 		data.diskSize = sqlLib.executeRecordSetObj("select ROUND(d.total_size/1024/1024/1024,0) DISKSIZE FROM m_disks as d where d.usage_type = 'DATA'");
 		data.m2Size = sqlLib.executeRecordSetObj("SELECT round(sum(TABLE_SIZE) /1024/1024) M2SIZE FROM M_TABLES WHERE SCHEMA_NAME = 'METRIC2' GROUP BY SCHEMA_NAME");
 	}
@@ -156,6 +161,11 @@ function showWidgetDialog(){
         
         if (rs.getString(3) == 'OPTION'){
             widgetparam.options = showParamOption(rs.getString(10), value)
+        }
+        
+        if (rs.getString(3) == 'OAUTH'){
+            widgetparam.clientid = oauthLib.getAPISetting('GoogleAPI', 'CLIENT_ID');
+            widgetparam.accesstoken = oauthLib.getAPISetting('GoogleAPI', 'ACCESS_TOKEN');
         }
         
 		params.push(widgetparam);
