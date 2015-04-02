@@ -15,6 +15,14 @@
 			"target": "lib/api.xsjs?service=API&dashboardwidgetparamid=$1"
 		},
 		{
+			"source": "/API/V1/GOOGLETOKEN/(.*)",
+			"target": "lib/api.xsjs?service=ProcessGoogleAPIoAuth&sessiontoken=$1&accesstoken=$2"
+		},
+		{
+			"source": "/API/V1/GITHUBTOKEN/(.*)",
+			"target": "lib/api.xsjs?service=ProcessGithubAPIoAuth&sessiontoken=$1&accesstoken=$2"
+		},
+		{
 			"source": "/API/V1/SESSION/(.*)",
 			"target": "lib/api.xsjs?service=Login"
 		}
