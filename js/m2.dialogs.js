@@ -118,6 +118,7 @@ function showNewWidgetDialog(intWidgetGroup){
                 strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="7">Web Services</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="6">IoT and Sensors</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="8">External API\'s</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="3">SAP HANA Cloud</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="4">SAP ERP</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="5">SAP CRM</a>';
@@ -268,15 +269,59 @@ function widgetForecastChart(strData, dashboardwidgetid) {
 }
 
 function showSettingsDialog(objData) {
+    var githubclientid = "";
+    var githubclientsecret = "";
+    var githubaccesstoken = "";
+    var googleclientid = "";
+    var googleclientsecret = "";
+    var googleaccesstoken = "";
+    
+    try {
+            githubclientid = JSON.parse(objData.githubAPI)[0].CLIENT_ID;
+            githubclientsecret = JSON.parse(objData.githubAPI)[0].CLIENT_SECRET;
+            githubaccesstoken = JSON.parse(objData.githubAPI)[0].ACCESS_TOKEN;
+    } catch (e) {
+            
+    }
+    
+    try {
+            googleclientid = JSON.parse(objData.googleAPI)[0].CLIENT_ID;
+            googleclientsecret = JSON.parse(objData.googleAPI)[0].CLIENT_SECRET;
+            googleaccesstoken = JSON.parse(objData.googleAPI)[0].ACCESS_TOKEN;
+    } catch (e) {
+            
+    }
+    
     
     var output = "<form class='form-horizontal'>";
         output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
+        output += "<h2 class='form-group-heading'>App Settings</h2>";
         output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
         output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
         output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB</p></div></div>";
         output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Disk Free</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div></div>";
         output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label><div class='col-sm-9' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
-    
+        output += "<h2 class='form-group-heading'>Google API</h2>";
+        output += "<div class='form-group'><label for='googleclientid' class='col-sm-3 control-label'>Google API Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='googleclientid' value = '" + googleclientid + "' /></div></div>";
+        output += "<div class='form-group'><label for='googleclientsecret' class='col-sm-3 control-label'>Google API Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='googleclientsecret' value = '" + googleclientsecret + "' /></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Google API</label><div class='col-sm-9'>";
+        if (googleaccesstoken.length > 0){
+            output += "Authenticated <button type='button' id='GoogleAPI'  data-id='" + googleaccesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
+        } else {
+            output += "<button type='button' id='GoogleAPI' data-id='" + googleclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GoogleAPI</button>";
+        }
+        output += "</div></div>";
+        output += "<h2 class='form-group-heading'>Github API</h2>";
+        output += "<div class='form-group'><label for='githubclientid' class='col-sm-3 control-label'>Github API Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='githubclientid' value = '" + githubclientid + "' /></div></div>";
+        output += "<div class='form-group'><label for='githubclientsecret' class='col-sm-3 control-label'>Github API Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='githubclientsecret' value = '" + githubclientsecret + "' /></div></div>";
+        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Github API</label><div class='col-sm-9'>";
+        if (githubaccesstoken.length > 0){
+            output += "Authenticated <button type='button' id='GithubAPI'  data-id='" + githubaccesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
+        } else {
+            output += "<button type='button' id='GithubAPI' data-id='" + githubclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GithubAPI</button>";
+        }
+        output += "</div></div>";
+        
     dialogConstructor("Edit Settings", false, true, output, 1, true, false);
     
     $('.usagePeity').peity("pie", {
@@ -323,6 +368,14 @@ function showWidgetDialog(objData, edit){
                 output += "<div class='col-sm-9'>";
                 if (objData.param[i].type == 'OPTION'){
                     output += "<select class='form-control' id='pid_" + objData.param[i].paramid + "'>" + showParamOption('', value, objData.param[i].options) + "</select>";
+                } else if (objData.param[i].type == 'OAUTH'){
+                    //if (objData.param[i].accesstoken.length > 0){
+                        //output += "Authenticated <button type='button' id='" + objData.param[i].name + "'  data-id='" + objData.param[i].accesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
+                        output += "<input class='form-control' type='" + debug + "' id='pid_" + objData.param[i].paramid + "' value='OAUTH'/>";
+                    //} else {
+                        //output += "<button type='button' id='" + objData.param[i].name + "' data-id='" + objData.param[i].clientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate " + objData.param[i].name + "</button>";
+                        //output += "<input class='form-control' type='hidden' id='pid_" + objData.param[i].paramid + "' value='true'/>";
+                    //}
                 } else {
                     var inputcontrol = "<input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
                     if (objData.param[i].displayname.indexOf("QL") > 0){
@@ -688,7 +741,11 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
                 service: "EditSettings",
-                domain: document.getElementById('domain').value
+                domain: document.getElementById('domain').value,
+                googleclientid: document.getElementById('googleclientid').value,
+                googleclientsecret: document.getElementById('googleclientsecret').value,
+                githubclientid: document.getElementById('githubclientid').value,
+                githubclientsecret: document.getElementById('githubclientsecret').value
             });
         } else {
             console.log("No Function Defined Yet");
@@ -705,6 +762,7 @@ function deleteDialog(strFunction) {
             service: "DeleteDashboard",
             dashboardid: intCurrentDashboardID
         });
+        intCurrentDashboardID = 1; /* This will load the first dashboard since the current one is now deleted */
     } else if (strFunction == 'Edit Metric') {
        getDataSet({
             service: 'DeleteWidget',
