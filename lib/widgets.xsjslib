@@ -108,13 +108,14 @@ function showWidgets(){
     
     try{
         // Loop through all our widgets for this dashboard
-        var rs = sqlLib.executeReader("SELECT dashboard_widget_id from metric2.m2_dashboard_widget dw where dashboard_id = " + dashboardid);
+        var rs = sqlLib.executeReader("SELECT dashboard_widget_id, refresh_rate from metric2.m2_dashboard_widget where dashboard_id = " + dashboardid);
         var intWidgetCounter = 0;
         
         while (rs.next()){
             var intDashboardWidgetID = rs.getString(1);
+            var intRefreshRate = parseInt(rs.getString(2)) * 1000;
             intWidgetCounter++;
-            widgetContents.push(showWidgetDiv(intDashboardWidgetID));
+            widgetContents.push(showWidgetDiv(intDashboardWidgetID, intRefreshRate));
         }
         Dataset.widgetCount = intWidgetCounter;
         rs.close();
@@ -125,14 +126,14 @@ function showWidgets(){
 }
 
 
-function showWidgetDiv(intDashboardWidgetID){
+function showWidgetDiv(intDashboardWidgetID, intRefreshRate){
     try {
         var data = {};
         var code = getWidgetCode(intDashboardWidgetID);
         var rs = sqlLib.executeReader("SELECT WP.name, WP.param_id, WP.hist_enabled, WP.type, WP.HIST_DATAPOINT, DW.title, DW.width, DW.height, DW.col_pos, DW.row_pos, W.hist_enabled, W.type FROM metric2.m2_widget_param as WP INNER JOIN metric2.m2_dashboard_widget_params as DWP ON WP.param_id = DWP.param_id INNER JOIN metric2.m2_dashboard_widget DW ON DWP.dashboard_widget_id = DW.dashboard_widget_id INNER JOIN metric2.m2_widget W ON W.widget_id = DW.widget_id WHERE DWP.dashboard_widget_id =" + intDashboardWidgetID);
         data.dwid = intDashboardWidgetID;
+        data.refresh = intRefreshRate;
         data.code = code;
-        data.refresh = parseInt(getWidgetRefreshRate(intDashboardWidgetID));
         
         while (rs.next()){
             data.paramid = rs.getString(2);
@@ -151,6 +152,14 @@ function showWidgetDiv(intDashboardWidgetID){
                     data[paramname + "_Hist"] = getWidgetParamRangePastValueFromParamName("SQL1", intDashboardWidgetID, reclimit);
                 }
                 datapoint = sqlLib.executeRecordSetObj(getWidgetParamValueFromParamName(paramname, intDashboardWidgetID));
+            } else if (rs.getString(4).indexOf("OAUTH") >= 0){
+                data.accesstoken = oauthLib.getAPISetting(paramname, "ACCESS_TOKEN");
+                data.refreshtoken = oauthLib.getAPISetting(paramname, "REFRESH_TOKEN");
+                data.clientid = oauthLib.getAPISetting(paramname, "CLIENT_ID");
+                data.clientsecret = oauthLib.getAPISetting(paramname, "CLIENT_SECRET");
+                data.api = paramname;
+                data.callback = code;
+                data.code = "oauthJSONService";
             } else {
                 if (rs.getString(4).indexOf("HIST") >= 0){
                     datapoint = getWidgetParamSinglePastValueFromParamName(paramname, intDashboardWidgetID);
@@ -170,6 +179,7 @@ function showWidgetDiv(intDashboardWidgetID){
             }
         }
         rs.close();
+        
         } catch (err) {
             data.error = err.description;
         }
@@ -207,6 +217,7 @@ function createMetric() {
     try {
         sqlLib.executeInputQuery("Insert into metric2.m2_dashboard_widget (dashboard_widget_id, dashboard_id, widget_id, title, width, height, row_pos, col_pos, refresh_rate) VALUES (metric2.dashboard_widget_id.NEXTVAL, " + dashboardid + ", " + widgetid + ",'" + $.request.parameters.get('widgettitle') + "'," + $.request.parameters.get('widgetwidth') + "," + $.request.parameters.get('widgetheight') + ",1,1," + $.request.parameters.get('refreshrate') + ")");
         widgetLib.upsertMetricParams();
+        widgetLib.showWidgets();
     } catch (err) {
         return err.message;
     }
