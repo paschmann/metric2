@@ -1,0 +1,10 @@
+description = "github api httpS connection";
+host = "github.com";
+port = 443;
+proxyType = none;
+proxyHost = "";
+authType = none;
+useSSL = true;
+timeout = 0;
+sslHostCheck = true;
+sslAuth = anonymous;
