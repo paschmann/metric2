@@ -38,7 +38,7 @@ function metricGooglePlusProfile(data, resp) {
         data.TEXT1 = "Google+";
     
         var value = resp[data.OBJKEY];
-        var html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+        var html = "<div class='t1-widget-text-big'>" + value + "</div><br /><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-google-plus'></i></div></div>";
         $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html("Error");
@@ -51,7 +51,7 @@ function metricGithubProfile(data, resp) {
         data.TEXT1 = "Github";
     
         var value = resp[data.OBJKEY];
-        var html = "<div class='t1-widget-text-small' style='margin-top: 30%; font-size: 26px;'>" + value + "</div><div class='t1-widget-footer' style='width: 90%; font-size: 20px;'>" + data.TEXT1 + "</div>";
+        var html = "<div class='t1-widget-text-big'>" + value + "</div><br /><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-github'></i></div></div>";
         $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html("Error");
