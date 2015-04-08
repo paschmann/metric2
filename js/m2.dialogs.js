@@ -1,61 +1,63 @@
+/*global window browser:true */
+
 // -------------------------   Dialog Functions ----------------------- //
 	
 function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, intSize, boolDisplay, boolCloneBtn, boolDeleteHistoryBtn){
     if (boolDeleteBtn){
-        $('#btnModalDelete').show();
+        $("#btnModalDelete").show();
     } else {
-        $('#btnModalDelete').hide();
+        $("#btnModalDelete").hide();
     }
 
     if (boolSaveBtn){
-        $('#btnModalSave').show();
+        $("#btnModalSave").show();
     } else {
-        $('#btnModalSave').hide();
+        $("#btnModalSave").hide();
     }
     
     if (boolCloneBtn){
-        $('#btnModalClone').show();
+        $("#btnModalClone").show();
     } else {
-        $('#btnModalClone').hide();
+        $("#btnModalClone").hide();
     }
     
     if (boolDeleteHistoryBtn){
-        $('#btnModalDeleteHistory').show();
+        $("#btnModalDeleteHistory").show();
     } else {
-        $('#btnModalDeleteHistory').hide();
+        $("#btnModalDeleteHistory").hide();
     }
 
-    $('#modal-header').html(strDialogTitle);
-    $('#dialogHTML1').html(strData);
-    $('#dialogMsg1').html('');
+    $("#modal-header").html(strDialogTitle);
+    $("#dialogHTML1").html(strData);
+    $("#dialogMsg1").html("");
             
     switch (intSize){
         case 1:
             //Small
-            $('#modaldlg').css('height','auto');
-            $('#modaldlg').css('width','600px');
-            $('#dialogHTML1').css('height','auto');
+            $("#modaldlg").css("height","auto");
+            $("#modaldlg").css("width","600px");
+            $("#dialogHTML1").css("height","auto");
             break;
         case 2:
             //Large
-            $('#dialogHTML1').css('height','84%');
-            $('#modaldlg').css('height','900px');
-            $('#modaldlg').css('width','80%');
+            $("#dialogHTML1").css("height","84%");
+            $("#modaldlg").css("height","900px");
+            $("#modaldlg").css("width","80%");
             break;
         case 3:
             //Wide
-            $('#dialogHTML1').css('height','auto');
-            $('#modaldlg').css('height','auto');
-            $('#modaldlg').css('width','820px');
+            $("#dialogHTML1").css("height","auto");
+            $("#modaldlg").css("height","auto");
+            $("#modaldlg").css("width","820px");
             break;
     }
             
     if (boolDisplay){
-        $('#myModal').appendTo("body").modal('show');
-        $('#dialogMsg1').html('');
+        $("#myModal").appendTo("body").modal("show");
+        $("#dialogMsg1").html("");
     }
     
-    $('#myModal').on('shown.bs.modal', function (e) {
+    $("#myModal").on("shown.bs.modal", function (e) {
         if (strDialogTitle == "Widget History"){
             chart.update();
         }
@@ -63,8 +65,8 @@ function dialogConstructor(strDialogTitle, boolDeleteBtn, boolSaveBtn, strData, 
 }
 
 function loadAlertList(){
-    $('#myAlertModal').appendTo('body').modal('show');
-    $('#alertdialoglist').html('');
+    $("#myAlertModal").appendTo("body").modal("show");
+    $("#alertdialoglist").html("");
     
     var maxlist = 0;
     if (alertlist.length > 5){
@@ -73,25 +75,25 @@ function loadAlertList(){
         maxlist = alertlist.length;
     }
     
-    for (i = 0; i <= maxlist - 1; i++){
+    for (var i = 0; i <= maxlist - 1; i++){
         var objAlert = alertlist[i];
-        var type = '';
+        var type = "";
         switch (objAlert.type) {
             case 0:
-                note = 'Success';
-                type = 'fa-check';
+                note = "Success";
+                type = "fa-check";
                 break;
             case 1:
-                note = 'Information';
-                type = 'fa-exclamation-triangle';
+                note = "Information";
+                type = "fa-exclamation-triangle";
                 break;
             case 2:
-                note = 'Error';
-                type = 'fa-times';
+                note = "Error";
+                type = "fa-times";
                 break;
             case 3:
-                note = 'Error';
-                type = 'fa-times';
+                note = "Error";
+                type = "fa-times";
                 break;
             default:
                 type = null;
@@ -294,33 +296,45 @@ function showSettingsDialog(objData) {
     
     
     var output = "<form class='form-horizontal'>";
-        output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
-        output += "<h2 class='form-group-heading'>App Settings</h2>";
-        output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB</p></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Disk Free</label><div class='col-sm-9'><p class='form-control-static'>" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label><div class='col-sm-9' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
-        output += "<h2 class='form-group-heading'>Google API</h2>";
-        output += "<div class='form-group'><label for='googleclientid' class='col-sm-3 control-label'>Google API Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='googleclientid' value = '" + googleclientid + "' /></div></div>";
-        output += "<div class='form-group'><label for='googleclientsecret' class='col-sm-3 control-label'>Google API Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='googleclientsecret' value = '" + googleclientsecret + "' /></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Google API</label><div class='col-sm-9'>";
-        if (googleaccesstoken.length > 0){
-            output += "Authenticated <button type='button' id='GoogleAPI'  data-id='" + googleaccesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
-        } else {
-            output += "<button type='button' id='GoogleAPI' data-id='" + googleclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GoogleAPI</button>";
-        }
-        output += "</div></div>";
-        output += "<h2 class='form-group-heading'>Github API</h2>";
-        output += "<div class='form-group'><label for='githubclientid' class='col-sm-3 control-label'>Github API Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='githubclientid' value = '" + githubclientid + "' /></div></div>";
-        output += "<div class='form-group'><label for='githubclientsecret' class='col-sm-3 control-label'>Github API Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='githubclientsecret' value = '" + githubclientsecret + "' /></div></div>";
-        output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Github API</label><div class='col-sm-9'>";
-        if (githubaccesstoken.length > 0){
-            output += "Authenticated <button type='button' id='GithubAPI'  data-id='" + githubaccesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
-        } else {
-            output += "<button type='button' id='GithubAPI' data-id='" + githubclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GithubAPI</button>";
-        }
-        output += "</div></div>";
+        output += "<h4><i class='fa fa-wrench'></i>  App Settings<i class='fa fa-chevron-down pull-right' data-toggle='collapse' data-target='#appsettings' aria-expanded='true'></i></h2>";
+        output += "<div id='appsettings'>";
+            output += "<hr />";
+            output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
+            output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-4'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB <br /><br />" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div><div class='col-sm-4' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label></div>";
+        output += "</div>";
+        
+        
+        output += "<br /><h4><i class='fa fa-google-plus'></i>  Google API<i class='fa fa-chevron-down pull-right' data-toggle='collapse' data-target='#googleapi'></i></h2>";
+        output += "<div id='googleapi' class='collapse'>";
+            output += "<hr />";
+            output += "<div class='form-group'><label for='googleclientid' class='col-sm-3 control-label'>Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='googleclientid' value = '" + googleclientid + "' /></div></div>";
+            output += "<div class='form-group'><label for='googleclientsecret' class='col-sm-3 control-label'>Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='googleclientsecret' value = '" + googleclientsecret + "' /></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Status</label><div class='col-sm-9'>";
+            if (googleaccesstoken.length > 0){
+                output += "Authenticated <button type='button' id='GoogleAPI'  data-id='" + googleaccesstoken + "' class='btn btn-default btnRevokeOAuth pull-right'><i class='fa fa-times'></i></button>";
+            } else {
+                output += "<button type='button' id='GoogleAPI' data-id='" + googleclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GoogleAPI</button>";
+            }
+            output += "</div></div>";
+        output += "</div>";
+        
+        
+        output += "<br /><h4><i class='fa fa-github'></i>  Github API <i class='fa fa-chevron-down pull-right' data-toggle='collapse' data-target='#githubapi'></i></h2>";
+        output += "<div id='githubapi' class='collapse'>";
+            output += "<hr />";
+            output += "<div class='form-group'><label for='githubclientid' class='col-sm-3 control-label'>Client ID</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client ID' id='githubclientid' value = '" + githubclientid + "' /></div></div>";
+            output += "<div class='form-group'><label for='githubclientsecret' class='col-sm-3 control-label'>Client Secret</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Client Secret' id='githubclientsecret' value = '" + githubclientsecret + "' /></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Status</label><div class='col-sm-9'>";
+            if (githubaccesstoken.length > 0){
+                output += "Authenticated <button type='button' id='GithubAPI'  data-id='" + githubaccesstoken + "' class='btn btn-default btnRevokeOAuth pull-right'><i class='fa fa-times'></i></button>";
+            } else {
+                output += "<button type='button' id='GithubAPI' data-id='" + githubclientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate GithubAPI</button>";
+            }
+            output += "</div></div>";
+        output += "</div>";
         
     dialogConstructor("Edit Settings", false, true, output, 1, true, false);
     
@@ -489,16 +503,18 @@ function showProfileDialog(objData){
 
 
 function showDashboardDialog(objData, edit){
-    var dashboardid = '';
-    var dashboardtitle = '';
-    var shareurl = '';
-    var bgurl = '';
+    var dashboardid = "";
+    var dashboardtitle = "";
+    var shareurl = "";
+    var bgurl = "";
+    var dashboardtimezone = "";
     
     if (edit){
         dashboardid = objData.DASHBOARD_ID;
         dashboardtitle = objData.TITLE;
         shareurl = objData.SHARE_URL;
         bgurl = objData.BG_URL;
+        dashboardtimezone = objData.TIME_ZONE;
     }
     
     var output = "<form class='form-horizontal' role='form'>";
@@ -512,6 +528,7 @@ function showDashboardDialog(objData, edit){
 	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard'></label></div></div>";
 	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '' disabled/></div></div>";
 	}
+	output += "<div class='form-group'><label for='dashboardtimezone' class='col-sm-3 col-sm-3 control-label'>Timezone</label><div class='col-sm-9'><input class='form-control' required='false' type='text' placeholder='Title' id='dashboardtimezone' value = '" + dashboardtimezone + "' /></div></div>";
     output += "</form>";
     
     
@@ -521,6 +538,19 @@ function showDashboardDialog(objData, edit){
         dialogConstructor("Add Dashboard", false, true, output, 1, true, false);
     }
 }
+
+/*
+function showTimezoneDropdown(selected){
+    var output = '';
+	
+	output += selected == '>' ? "<option selected>></option>" : "<option>></option>";
+	output += selected == '<' ? "<option selected><</option>" : "<option><</option>";
+	output += selected == '<=' ? "<option selected><=</option>" : "<option><=</option>";
+	output += selected == '>=' ? "<option selected>>=</option>" : "<option>>=</option>";
+		
+	return output;
+}
+*/
 
 
 function showAlertOperatorDropdown(selected){
