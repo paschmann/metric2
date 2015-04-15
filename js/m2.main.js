@@ -14,7 +14,7 @@ var chart = nv.models.lineChart();
 var navMenu = "";
 var useremail = "";
 var showTour = true;
-var viewmode = false;
+var viewmode = "";
 var tour;
 var debugmode = "hidden"; /*display*/
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
@@ -31,11 +31,20 @@ $(document).ready(function() {
     $('[data-toggle="popover"]').popover();
     
     if (parseParams("did").length > 0) {
-        viewmode = true;
+        viewmode = "dashboard";
         sessionToken = "temp";
+        showTour = false;
         //Show single, read only dashboard
         // 1. Check if token valid -> otherwise logout
+    } else if (parseParams("mid").length > 0) {
+        //This is metric view mode, only server up iframe of single metric
+        $("#body").css("background-color", "rgba(247,247,247,0.0)");
+        $("#body").html("<div id='grid'></div>");
+        viewmode = "metric";
+        sessionToken = "temp";
+        showTour = false;
     } else {
+        viewmode = "";
         getSessionToken();
     }
     
@@ -46,7 +55,7 @@ $(document).ready(function() {
     configureLeftMenu();
     init();
     
-    if (viewmode){
+    if (viewmode === "dashboard" || viewmode === "metric"){
         $(".navbar-right").html("<li><a>View Mode</a></li>");
     } else {
         dashboardActive(true);
@@ -58,21 +67,23 @@ $(document).ready(function() {
         "placement": "bottom"
     });
     
-    if (showTour == true) {
+    if (showTour === true) {
         configureTour();
     }
 });
 
 function init() {
-    getDataSet({
-        service: "Init",
-        dashboardid: parseParams("did")
-    });
-}
-
-function enableShareMode(){
-    //Hide and disable all buttons
-    
+    if (viewmode === "metric"){
+        getDataSet({
+            service: "InitViewMetric",
+            dashboardwidgetid: parseParams("mid")
+        });
+    } else {
+        getDataSet({
+            service: "Init",
+            dashboardid: parseParams("did")
+        });
+    }
 }
 
 // -------------------------   Demo/Tutorial Walk Through Tour ----------------------- //
@@ -90,9 +101,17 @@ function configureClickEvents() {
     
     $(document).on("click","#chkShareDashboard",function(){
         if ($(this).is(":checked")){
-            getDataSet({service: "SetSharingURL", dashboardid: $("li.active").data("id")});
+            getDataSet({service: "SetDashboardSharingURL", dashboardid: $("li.active").data("id")});
         } else {
-            getDataSet({service: "DisableSharingURL", dashboardid: $("li.active").data("id")});
+            getDataSet({service: "DisableDashboardSharingURL", dashboardid: $("li.active").data("id")});
+        }
+    });
+    
+    $(document).on("click","#chkShareMetric",function(){
+        if ($(this).is(":checked")){
+            getDataSet({service: "SetMetricSharingURL", dashboardwidgetid: $(this).data("id")});
+        } else {
+            getDataSet({service: "DisableMetricSharingURL", dashboardwidgetid: $(this).data("id")});
         }
     })
     
@@ -285,7 +304,7 @@ function toggleSideBar(){
 }
 
 function configureGristerClickEvents() {
-    if (!viewmode){
+    if (!viewmode.length > 0){
         $("[id^=tile_]").mouseover(function(e) {
             var tileID = this.id.substring(5);
             $("#editicon" + tileID).animate({
@@ -666,8 +685,12 @@ function showLoadingSpinner(visible, strText){
     }
 }
 
-function getShareURL(id){
+function getDashboardShareURL(id){
     return location.href.replace("#", "") + "?did=" + id;
+}
+
+function getMetricShareURL(id){
+    return location.href.replace("#", "") + "?mid=" + id;
 }
 
 
@@ -694,11 +717,18 @@ function getDataSet(options) {
                 var objData = jQuery.parseJSON(data);
                 var arrData = JSON.parse(objData.dbinfo);
                 loadInstanceData(arrData);
-            
-                var arrUserData = JSON.parse(objData.userinfo);
-                loadUserData(arrUserData);
+                
+                if (viewmode !== "dashboard") {
+                    var arrUserData = JSON.parse(objData.userinfo);
+                    loadUserData(arrUserData);
+                }
                 
                 loadDashboards(JSON.parse(objData.dashboards));
+            } else if (options.service === "InitViewMetric") {
+                var objData = jQuery.parseJSON(data);
+                clearTimers();
+                loadMetrics(objData);
+                loadClientMetrics(objData);
             } else if (options.service === "Dashboards" || options.service === "CloneDashboard" || options.service === "CreateDashboard" || options.service === "UpdateDashboard" || options.service === "DeleteDashboard") {
                 var objData = jQuery.parseJSON(data);
                 loadDashboards(JSON.parse(objData.dashboards));
@@ -715,7 +745,7 @@ function getDataSet(options) {
                 } else {
                     loadMetrics(objData);
                     loadClientMetrics(objData);
-                    loadGridster();
+                    loadGridster(true);
                 }
                 dashboardActive(true);
                 addNotification(objData.result, 0, true);
@@ -766,13 +796,20 @@ function getDataSet(options) {
                 addNotification("Dashboard Order Saved", 0, false);
             } else if (options.service === "Select") {
                 showSQLResults(data);
-            } else if (options.service === "SetSharingURL"){
+            } else if (options.service === "SetDashboardSharingURL"){
                 var objData = jQuery.parseJSON(data);
                 $("#dashboardshareurl").prop("disabled", false);
-                $("#dashboardshareurl").val(getShareURL(objData.shareURL));
-            } else if (options.service === "DisableSharingURL"){
+                $("#dashboardshareurl").val(getDashboardShareURL(objData.shareURL));
+            } else if (options.service === "DisableDashboardSharingURL"){
                 $("#dashboardshareurl").prop("disabled", true);
                 $("#dashboardshareurl").val("");
+            } else if (options.service === "SetMetricSharingURL"){
+                var objData = jQuery.parseJSON(data);
+                $("#metricshareurl").prop("disabled", false);
+                $("#metricshareurl").val(getMetricShareURL(objData.shareURL));
+            } else if (options.service === "DisableMetricSharingURL"){
+                $("#metricshareurl").prop("disabled", true);
+                $("#metricshareurl").val("");
             } else if (options.service === "UpdateUser"){
                 addNotification("User Account Updated", 0);
                 var objData = jQuery.parseJSON(data);
