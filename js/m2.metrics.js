@@ -1082,8 +1082,9 @@ function widgetFunnel(data) {
         var itemmin = Math.round((datapoints[2].STATUS / itemmax) * 100);
         var permax = (100 - (itemmid + itemmin));
 
-        html += "<tr><td style='background-color: #f55b4c; width: 50px;'></td><td class='t1-widget-text-table' style='width: 50px; text-align:left; width: 70px; color: #f55b4c;padding-left: 10px; height: " + permax + "%;'>" + datapoints[0].STATUS + " Connections</td>";
-        html += "<td rowspan='3' style='width: 200px;'><img src='img/funnel-summary.png' /><font style='font-size: 40px; color: #CCC;'>&nbsp;&nbsp;" + (parseInt(datapoints[0].STATUS) + parseInt(datapoints[1].STATUS) + parseInt(datapoints[2].STATUS)) + "</font></td><td rowspan='3'></td></tr>";
+        html += "<tr><td style='background-color: #f55b4c; width: 50px;'></td><td class='t1-widget-text-table' style='width: 50px; text-align:left; width: 70px; color: #f55b4c;padding-left: 10px; padding-right: 30px; height: " + permax + "%;'>" + datapoints[0].STATUS + " Connections</td>";
+        html += "<td rowspan='3' style='width: 10px; border-right: 1px solid #EDEBEB; border-top: 1px solid #EDEBEB; border-bottom: 1px solid #EDEBEB;'></td>";
+        html += "<td rowspan='3' style='width: 200px;'><font style='font-size: 40px; color: #CCC;'>&nbsp;&nbsp;" + (parseInt(datapoints[0].STATUS) + parseInt(datapoints[1].STATUS) + parseInt(datapoints[2].STATUS)) + "</font></td><td rowspan='3'></td></tr>";
         html += "<tr><td style='background-color: #FFDD72; width: 50px;'></td><td class='t1-widget-text-table' style='text-align:left; padding-left: 10px; color: #FFDD72; height: " + itemmid + "%'>" + datapoints[1].STATUS + " Idle</td></tr>";
         html += "<tr><td style='background-color: #5BD993; width: 50px;'></td></td><td class='t1-widget-text-table' style='text-align:left; padding-left: 10px; color: #5BD993; height: " + itemmin + "%'>" + datapoints[2].STATUS + " Running</td></tr>";
 
