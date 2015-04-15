@@ -25,6 +25,10 @@
 		{
 			"source": "/API/V1/SESSION/(.*)",
 			"target": "lib/api.xsjs?service=Login"
+		},
+		{
+			"source": "/metric/(.*)",
+			"target": "/index.html?mid=$1"
 		}
 	]
 }
