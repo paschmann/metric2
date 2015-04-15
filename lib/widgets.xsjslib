@@ -104,11 +104,32 @@ function getWidgetTypes(widgetGroup){
     }
 }
 
+function setShareURL(strURL){
+    try {
+        sqlLib.executeUpdate("UPDATE metric2.m2_dashboard_widget SET share_url = '" + strURL + "' WHERE dashboard_widget_id = " + dashboardwidgetid);
+        return strURL;
+	} catch (err) {
+		return err.message;
+	}
+}
+
+function getShareURL(strURL){
+    try {
+        return sqlLib.executeScalar("SELECT share_url FROM metric2.m2_dashboard_widget WHERE dashboard_widget_id = " + dashboardwidgetid);
+	} catch (err) {
+		return err.message;
+	}
+}
+
 function showWidgets(){
-    
+    var rs;
     try{
         // Loop through all our widgets for this dashboard
-        var rs = sqlLib.executeReader("SELECT dashboard_widget_id, refresh_rate from metric2.m2_dashboard_widget where dashboard_id = " + dashboardid);
+        if (viewmode === "metric") {
+            rs = sqlLib.executeReader("SELECT dashboard_widget_id, refresh_rate from metric2.m2_dashboard_widget where share_url = '" + dashboardwidgetid + "'");
+        } else {
+            rs = sqlLib.executeReader("SELECT dashboard_widget_id, refresh_rate from metric2.m2_dashboard_widget where dashboard_id = " + dashboardid);
+        }
         var intWidgetCounter = 0;
         
         while (rs.next()){
@@ -126,7 +147,7 @@ function showWidgets(){
 }
 
 
-function showWidgetDiv(intDashboardWidgetID, intRefreshRate){
+function showWidgetDiv(intDashboardWidgetID, intRefreshRate, strShareURL){
     try {
         var data = {};
         var code = getWidgetCode(intDashboardWidgetID);
@@ -141,8 +162,8 @@ function showWidgetDiv(intDashboardWidgetID, intRefreshRate){
             data.title = rs.getString(6);
             data.width = rs.getString(7);
             data.height = rs.getString(8);
-            data.colpos = rs.getString(9);
-            data.rowpos = rs.getString(10);
+            data.colpos = viewmode === "metric" ? 1 : rs.getString(9);
+            data.rowpos = viewmode === "metric" ? 1 : rs.getString(10);
             data.type = rs.getString(12);
             data.histEnabled =  rs.getString(11);
             var datapoint = "";
