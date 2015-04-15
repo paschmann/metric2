@@ -412,6 +412,17 @@ function showWidgetDialog(objData, edit){
 		var serviceurl = 'lib/api.xsjs?service=SaveDataPoint&dashboardwidgetparamid=' + objData.dashboardwidgetparamid + '&datapoint=0';
 		output += "<div class='form-group'><label for='pid_serviceurl'  class='col-sm-3 control-label'>API Url</label><div class='col-sm-9'><a href='" + serviceurl + "'>" + serviceurl + "</div></div>";
 	}
+	
+	if (edit) {
+    	output += "<div class='form-group'><label for='chkShareMetric' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-1'>";
+    	if (objData.shareurl){
+    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric' checked></label></div><div class='col-sm-8'><input class='form-control' type='text' placeholder='URL' id='metricshareurl' value = '" + getMetricShareURL(objData.shareurl) + "'/>";
+    	} else {
+    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric'></label></div><div class='col-sm-8'><input class='form-control' type='text' placeholder='URL' id='metricshareurl' value = '' disabled/>";
+    	}
+    	output += "</div></div>";
+	}
+	
     output += "</form>";
     
     if (edit){
@@ -523,7 +534,7 @@ function showDashboardDialog(objData, edit){
 	output += "<div class='form-group'><label for='dashboardbgurl' class='col-sm-3 col-sm-3 control-label'>Background Image</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='Background Image URL' id='dashboardbgurl' value = '" + bgurl + "' /></div></div>";
 	if (shareurl){
 	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard' checked></label></div></div>";
-	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '" + getShareURL(shareurl) + "'/></div></div>";
+	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '" + getDashboardShareURL(shareurl) + "'/></div></div>";
 	} else if (edit) {
 	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard'></label></div></div>";
 	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '' disabled/></div></div>";
@@ -705,7 +716,9 @@ function saveDialog(strFunction) {
             params.refreshrate = (document.getElementById('refreshrate').value === '') ? 0 : document.getElementById('refreshrate').value;
             
             $("[id^=pid_]").each(function() {
-                params["pid" + this.id.substring(4)] = this.value;
+                var val = this.value.replace(/'/g, "MET2");
+                val = val.replace(/'/g, "MET3");
+                params["pid" + this.id.substring(4)] = val;
             });
             
             getDataSet(params);
@@ -724,7 +737,9 @@ function saveDialog(strFunction) {
             params.refreshrate = refreshrate;
             
             $("[id^=pid_]").each(function() {
-                params["pid" + this.id.substring(4)] = this.value;
+                var val = this.value.replace(/'/g, "MET2");
+                val = val.replace(/'/g, "MET3");
+                params["pid" + this.id.substring(4)] = val;
             });
             
             getDataSet(params);
