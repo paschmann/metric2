@@ -1,4 +1,4 @@
-function loadGridster(){
+function loadGridster(boolEnabled){
     var gridster = $("#gridtiles").gridster({
         widget_margins: [10, 10],
         widget_selector: '[id^=tile_]',
@@ -18,7 +18,6 @@ function loadGridster(){
         },
         shift_larger_widgets_down: true
     });
-    
     configureGristerClickEvents();
 }
             
