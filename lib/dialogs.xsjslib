@@ -124,6 +124,7 @@ function showWidgetDialog(){
             widget.widgetheight = rsdetails.getString(6);
             widget.widgettitle = rsdetails.getString(4);
 			widget.widgetrefresh = rsdetails.getString(9);
+			widget.shareurl = rsdetails.getString(10);
         }
 		rsdetails.close();
     }
@@ -145,7 +146,7 @@ function showWidgetDialog(){
 		var required = '';
 		
 		value = replaceAll("MET2", "&#039;", value);
-		value = replaceAll("MET3", "&#037;", value);
+		value = replaceAll("MET3", "%", value);
         
         widgetparam.setvalue = value;
         widgetparam.paramid = rs.getString(1);
