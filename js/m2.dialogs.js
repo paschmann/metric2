@@ -185,7 +185,7 @@ function widgetHistoryChart(strData, dashboardwidgetid, startdt, enddt) {
         
         startdt = startdt !== '' ? startdt : getDate();
         enddt = enddt !== '' ? enddt : getDate();
-    
+        
         var vals = [];
         for (var i = 0; i < arrData.length; ++i) {
             var date = new Date(arrData[i].YEAR, arrData[i].MONTH - 1, arrData[i].DAY, arrData[i].HOUR, arrData[i].MIN, arrData[i].SECS, 1);
