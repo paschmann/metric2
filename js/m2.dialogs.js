@@ -509,6 +509,7 @@ function showProfileDialog(objData){
 	output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='col-sm-9'><input type='text' class='form-control' required='true' placeholder='Email Address' name='email' id='email' value = '" + objData[0].EMAIL + "' /></div></div>";
 	//output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
     output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-9'>*********<button type='button' class='btn btn-default btn-med pull-right' id='btnChangePassword'>Change Password</button></div></div>";
+    output += "<div id='divChangePassword'></div>";
     dialogConstructor("Edit Profile", false, true, output, 1, true, false);
 }
 
