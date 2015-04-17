@@ -539,7 +539,7 @@ function showDashboardDialog(objData, edit){
 	    output += "<div class='form-group'><label for='sharingenabled' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-9'><input type='checkbox' id='chkShareDashboard'></label></div></div>";
 	    output += "<div class='form-group'><label for='dashboardtitle' class='col-sm-3 col-sm-3 control-label'>Share URL</label><div class='col-sm-9'><input class='form-control' type='text' placeholder='URL' id='dashboardshareurl' value = '' disabled/></div></div>";
 	}
-	output += "<div class='form-group'><label for='dashboardtimezone' class='col-sm-3 col-sm-3 control-label'>Timezone</label><div class='col-sm-9'><input class='form-control' required='false' type='text' placeholder='Title' id='dashboardtimezone' value = '" + dashboardtimezone + "' /></div></div>";
+	output += "<div class='form-group'><label for='dashboardtimezone' class='col-sm-3 col-sm-3 control-label'>Timezone</label><div class='col-sm-9'><input class='form-control' required='false' type='text' placeholder='Timezone' id='dashboardtimezone' value = '" + dashboardtimezone + "' /></div></div>";
     output += "</form>";
     
     
