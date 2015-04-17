@@ -130,7 +130,7 @@ function configureClickEvents() {
     $(document).on("click","#btnChangePassword",function(e){
         var output = "<div class='form-group'><label for='password1' class='col-sm-3 control-label'>New Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Password' name='password'  id='password' /></div></div>";
         output += "<div class='form-group'><label for='password2' class='col-sm-3 control-label'>Repeat Password:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Repeat Password' name='password1'  id='password1' /></div></div>";
-        $(".form-horizontal").append(output);
+        $("#divChangePassword").html(output);
     });
     
     $("#btnAddWidget, #mnuAddWidget").click(function() {
