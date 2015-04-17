@@ -1,6 +1,6 @@
 ![metric2-bg.png](http://www.metric2.com/wp-content/uploads/2014/10/metric2-bg.png)
 
-### Features
+### Features 
 
 Check out the metric² Website here [www.metric2.com](http://www.metric2.com "www.metric2.com") and you can test drive the demo version here [metric² demo](http://metric2.com/#screenshots "http://metric2.com/#screenshots")
 
@@ -9,8 +9,7 @@ Check out the metric² Website here [www.metric2.com](http://www.metric2.com "ww
 The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
 
 ## Download
-* [Version 2.0](https://github.com/paschmann/metric2/archive/master.zip)
-* [Version 1.0](http://www.metric2.com/download.html) (requires signup and is the HANA Delivery unit file)
+* [Version 2.5.*](http://www.metric2.com/download.html)
 
 ## Installation
 
@@ -26,10 +25,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 #####Otion 1: **Delivery Unit** (SAP HANA Package)
 
 - Download the delivery unit package [here](http://www.metric2.com/download.html) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
-
-#####Option 2: **Github** Install Directions
-
-- Moves all files into a new project in eclipse and commit them from there
+- Please follow the instructures [here](http://www.metric2.com/web-documentation-2/) on how to install.
 
 ####Step 2 – Schema creation
 Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. You can do this by opening and running the install\install script.sql file directly on your HANA instance. Currently the schema defaults to the name metric2 (and is not changeable).
