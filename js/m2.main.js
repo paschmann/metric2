@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = "Version 2.5.0";
+var m2version = "Version 2.5.2";
 var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
@@ -762,10 +762,10 @@ function getDataSet(options) {
                 showWidgetDialog(jQuery.parseJSON(data), false);
             } else if (options.service === "WidgetHistoryDialog") {
                 var objData = jQuery.parseJSON(data);
-                widgetHistoryChart(objData.metricHistory, options.strDashboardWidgetID, options.strStartDt, options.strEndDt);
+                widgetHistoryChart(objData.metricHistory, objData.dashboardwidgetid, objData.startdt, objData.enddt);
             } else if (options.service === "WidgetForecastDialog") {
                 var objData = jQuery.parseJSON(data);
-                widgetForecastChart(objData.metricForecast, options.strDashboardWidgetID);
+                widgetForecastChart(objData.metricForecast, objData.dashboardwidgetid);
             } else if (options.service === "AlertHistoryDialog") {
                 showAlertHistoryDialog(jQuery.parseJSON(data));
             } else if (options.service === "DeleteMetricHistory") {
