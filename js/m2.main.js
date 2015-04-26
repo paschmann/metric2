@@ -27,6 +27,10 @@ var objWidgets = {};
 var objWidgetList = {};
 
 $(document).ready(function() {
+    init();
+});
+
+function init() {
     
     $('[data-toggle="popover"]').popover();
     
@@ -53,7 +57,18 @@ $(document).ready(function() {
     }
     
     configureLeftMenu();
-    init();
+    
+    if (viewmode === "metric"){
+        getDataSet({
+            service: "InitViewMetric",
+            dashboardwidgetid: parseParams("mid")
+        });
+    } else {
+        getDataSet({
+            service: "Init",
+            dashboardid: parseParams("did")
+        });
+    }
     
     if (viewmode === "dashboard" || viewmode === "metric"){
         $(".navbar-right").html("<li><a>View Mode</a></li>");
@@ -69,20 +84,6 @@ $(document).ready(function() {
     
     if (showTour === true) {
         configureTour();
-    }
-});
-
-function init() {
-    if (viewmode === "metric"){
-        getDataSet({
-            service: "InitViewMetric",
-            dashboardwidgetid: parseParams("mid")
-        });
-    } else {
-        getDataSet({
-            service: "Init",
-            dashboardid: parseParams("did")
-        });
     }
 }
 
