@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<html class="no-js">
+<html class="no-js"> 
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <title>metric&#178; | for SAP HANA</title>
         <meta name="description" content="metric&#178; is a realtime operational intelligence platform for enterprises running SAP HANA">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="icon" type="image/png" href="img/favicon.png">  
 
-        <!-- Vendor Stylesheets -->
+        <!-- Vendor Stylesheets --> 
         <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
         <link rel="stylesheet" href="css/vendor/font-awesome.min.css">
         <link rel="stylesheet" href="css/vendor/jquery.mmenu.all.css" />
-        <link rel="stylesheet" href="css/vendor/jquery.gridster2.css">
+        <link rel="stylesheet" href="css/vendor/jquery.gridster-0-5-6.min.css">
         <link rel="stylesheet" href="css/vendor/nv.d3.min.css">
         <link rel="stylesheet" href="css/vendor/datepicker.css">
         <link rel="stylesheet" href="css/vendor/bootstrap-tour.css">
@@ -24,15 +24,13 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/media.css"> <!-- Important its last! -->
         
-        <!-- JS CDN -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
-        <script src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
-        <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script src="js/vendor/jquery-1-11-0.min.js"></script>
+        <script src="js/vendor/highcharts-4-1-4.min.js"></script>
+        <script src="js/vendor/twitterwidget.min.js"></script>
         
         <!-- Local JS Required for metrics-->
-        <script src="js/vendor/jquery.mmenu.min.all.js" type="text/javascript"></script>
-        <script src="js/vendor/jquery.fullscreen-min.js" type="text/javascript" ></script>
+        <script src="js/vendor/jquery.mmenu.min.all.js"></script>
+        <script src="js/vendor/jquery.fullscreen-min.js"></script>
 		<script src="js/vendor/bootstrap.min.js"></script>
 		<script src="js/vendor/jquery.bootstrap-growl.min.js"></script>
         <script src="js/vendor/jquery.cookie.js"></script>
@@ -44,11 +42,11 @@
         <script src="js/vendor/bootstrap-datepicker.js"></script>
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
         <script src="js/vendor/bootstrap-tour.min.js"></script>
-        <script src="js/vendor/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="js/vendor/jquery.dataTables.min.js"></script>
         <script src="js/vendor/momentlocale.min.js"></script>
         
         <!-- gridster plugins-->
-        <script src="js/vendor/jquery.gridster2.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/vendor/jquery.gridster-0-5-6.min.js"></script>
         <script src="js/m2.gridster.js"></script>
         
         <!--  Vendor plugins for Metrics -->
@@ -73,10 +71,11 @@
         <script src="js/m2.metrics.js"></script>
         <script src="js/m2.main.js"></script>
         <script src="js/m2.sqlbuilder.js"></script>
+        <script src="js/m2.oauth.js"></script>
         
     </head>
     
-    <body>
+    <body id="body">
         <div id="wrapper">
             <div id="header" class="hidden-xs hidden-sm">
                 <div id="logoarea" class="logo-area clearfix">
@@ -105,6 +104,7 @@
                             </a>
                         
                             <ul class="dropdown-menu pull-right icon-right arrow">
+                                <li><a href="#" id="mnuHome"><i class="fa fa-home"></i> Overview</a></li>
                                 <li><a href="#" id="mnuProfile"><i class="fa fa-user"></i> Profile</a></li>
                                 <li><a href="#" id="mnuSettings"><i class="fa fa-cog"></i> Settings </a></li>
                                 <li class="divider"></li>
@@ -121,8 +121,6 @@
                 </div> <!-- //tools-bar-->
     	    </div> <!-- //header-->
             
-            
-            
             <div id="nav" class="hidden-xs hidden-sm">
                 <div id="nav-scroll">
                     <div class="avatar-slide">
@@ -131,7 +129,7 @@
                                 <img src="img/avatar.png" class="circular-avatar-bg">
                             </div>
                             
-                            <p id="gravUsersname"></p>
+                            <p id="gravUsersname">Viewer</p>
                             <p><a id="instanceid" href="#"></a></p>
                         </div>
                         <div class="avatar-link btn-group btn-group-justified">
@@ -174,6 +172,25 @@
             
             
             <div id="main">
+                <!-- WIP  
+                <div class="row" style="padding-left: 10px; border-bottom: 5px solid #2a89c1; font-color: #fff">
+                    <div class="col-md-6 text-left" style="height: 600px; background-color: #80BCE0;  font-color: #fff">
+                        <i class="fa fa-area-chart fa-5x vertical-align: middle; text-align: left;" style="margin-top: 250px; margin-left: 60px; " ></i>
+                        <h1>Dashboards</h1>
+                        <p>A great way to show how your business is performing.</p>
+                    </div>
+                    <div  class="col-md-3" style="height: 600px; background-color: #0E547D; text-align: center;">
+                        <i class="fa fa-connectdevelop fa-5x" style="margin-top: 20px" ></i>
+                        <h1 class="text-center">Predict</h1>
+                        <p class="text-center" >Track metrics overtime and find trending patterns and predict the future.</p>
+                    </div>
+                    <div  class="col-md-3" style="height: 600px; background-color: #5DAFE0;">
+                        <i class="fa fa-bullseye fa-5x vertical-align: bottom; text-align: left;" style="margin-top: 430px; margin-left: 12px"></i>
+                        <h1>Alerts</h1>
+                        <p>Get alerts when targets are met and ensure your operations stay on track.</p>
+                    </div>
+                </div>
+                -->
                 <div id="content">
                     <div id="grid" class="row"></div>
     	        </div> <!-- //content-->
@@ -210,7 +227,7 @@
                         <div class="modal-footer">
                             <button id="btnModalDelete" type="button" class="btn btn-danger pull-left" data-dismiss="modal" >Delete</button>
                             <button id="btnModalDeleteHistory" type="button" class="btn btn-danger pull-left" data-dismiss="modal" >Delete History Data</button>
-                            <button id="btnModalClone" type="button" class="btn btn-default pull-left" data-dismiss="modal" >Clone</button>
+                            <button id="btnModalClone" type="button" class="btn btn-default pull-left">Clone</button>
                             <button id="btnModalClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <button id="btnModalSave" type="button" class="btn btn-primary" data-dismiss="modal" >Save</button>
                         </div>
