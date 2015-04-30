@@ -117,12 +117,12 @@ function showNewWidgetDialog(intWidgetGroup){
                 strHTML += '<a href="#" class="list-group-item" data-id="0"><input type="text" class="form-control" id="searchmetrics" placeholder="Filter"></a>';
                 strHTML += '<a href="#" class="list-group-item active" data-id="0">All Metrics</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="1">SAP HANA</a>';
+                strHTML += '<a href="#" class="list-group-item" data-id="4">SAP ERP</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="2">Custom</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="7">Web Services</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="6">IoT and Sensors</a>';
                 strHTML += '<a href="#" class="list-group-item" data-id="8">External API\'s</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="3">SAP HANA Cloud</a>';
-                strHTML += '<a href="#" class="list-group-item disabled" data-id="4">SAP ERP</a>';
                 strHTML += '<a href="#" class="list-group-item disabled" data-id="5">SAP CRM</a>';
             strHTML += '</div>';
             strHTML += '<span id="metriccount" class="pull-right">0 Metrics Shown</span>'
@@ -372,26 +372,21 @@ function showWidgetDialog(objData, edit){
 	for (var i = 0; i <= objData.param.length - 1; i++){
         var required = '';
         var value = objData.param[i].setvalue;
-        if (objData.param[i].required == '1'){
+        if (objData.param[i].required === '1'){
             required = 'required="true"';
         }
         
-        if (objData.param[i].visible == 'true'){
+        if (objData.param[i].visible === 'true'){
 			output += "<div class='form-group'>";
             output += "<label for='pid_" + objData.param[i].paramid + "' class='col-sm-3 control-label'>" + objData.param[i].displayname + "</label>";
                 output += "<div class='col-sm-9'>";
-                if (objData.param[i].type == 'OPTION'){
+                if (objData.param[i].type === 'OPTION'){
                     output += "<select class='form-control' id='pid_" + objData.param[i].paramid + "'>" + showParamOption('', value, objData.param[i].options) + "</select>";
-                } else if (objData.param[i].type == 'OAUTH'){
-                    //if (objData.param[i].accesstoken.length > 0){
-                        //output += "Authenticated <button type='button' id='" + objData.param[i].name + "'  data-id='" + objData.param[i].accesstoken + "' class='btn btn-warning btnRevokeOAuth pull-right'>Revoke</button>";
-                        output += "<input class='form-control' type='" + debug + "' id='pid_" + objData.param[i].paramid + "' value='OAUTH'/>";
-                    //} else {
-                        //output += "<button type='button' id='" + objData.param[i].name + "' data-id='" + objData.param[i].clientid + "' class='btn btn-danger btnAuthenticateOAuth'>Authenticate " + objData.param[i].name + "</button>";
-                        //output += "<input class='form-control' type='hidden' id='pid_" + objData.param[i].paramid + "' value='true'/>";
-                    //}
+                } else if (objData.param[i].type === 'OAUTH'){
+                    output += "<input class='form-control' type='" + debug + "' id='pid_" + objData.param[i].paramid + "' value='OAUTH'/>";
                 } else {
-                    var inputcontrol = "<input class='form-control' type='text' " + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
+                    var inputtype = objData.param[i].displayname.toLowerCase().indexOf("password") >= 0 ? "password" : "text";
+                    var inputcontrol = "<input class='form-control' type='" + inputtype + "'" + required + "  value='" + value + "' placeholder='" + objData.param[i].placeholder + "' id='pid_" + objData.param[i].paramid + "' />";
                     if (objData.param[i].displayname.indexOf("QL") > 0){
                         output += "<div class='input-group'>" + inputcontrol + " <span class='input-group-addon' id='btnShowSQLBuilder'><i class='fa fa-table'></i></span></div>";
                     } else if (objData.param[i].displayname.indexOf("RL") > 0){
@@ -507,8 +502,7 @@ function showProfileDialog(objData){
 	output += "<div class='form-group'><label for='name' class='col-sm-3 control-label'>Name:</label><div class='col-sm-5'><input type='text' class='form-control' placeholder='First name' id='name' name='name' value = '" + objData[0].NAME + "' /></div></div>";
 	output += "<div class='form-group'><label for='lname' class='col-sm-3 control-label'>Last Name:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Last name' name='lname'  id='lname' value = '" + objData[0].LNAME + "' /></div></div>";
 	output += "<div class='form-group'><label for='email' class='col-sm-3 control-label'>Email:</label><div class='col-sm-9'><input type='text' class='form-control' required='true' placeholder='Email Address' name='email' id='email' value = '" + objData[0].EMAIL + "' /></div></div>";
-	//output += "<div class='form-group'><label for='company' class='col-sm-3 control-label'>Company:</label><div class='col-sm-5'><input type='text' class='form-control' required='true' placeholder='Company' name='company' id='company' value = '" + objData[0].EMAIL_DOMAIN + "' /></div></div>";
-    output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-9'>*********<button type='button' class='btn btn-default btn-med pull-right' id='btnChangePassword'>Change Password</button></div></div>";
+	output += "<div class='form-group'><label for='password' class='col-sm-3 control-label'>Password:</label><div class='col-sm-9'>*********<button type='button' class='btn btn-default btn-med pull-right' id='btnChangePassword'>Change Password</button></div></div>";
     output += "<div id='divChangePassword'></div>";
     dialogConstructor("Edit Profile", false, true, output, 1, true, false);
 }
