@@ -30,3 +30,45 @@ function saveGridPosition() {
         gridpos: strGridPos
     });
 }
+
+
+function configureGristerClickEvents() {
+    if (!viewmode.length > 0){
+        $("[id^=tile_]").mouseover(function(e) {
+            var tileID = this.id.substring(5);
+            $("#editicon" + tileID).animate({
+                "opacity": 1
+            }, 0);
+            $("#historyicon" + tileID).animate({
+                "opacity": 1
+            }, 0);
+        });
+    
+        $("[id^=tile_]").mouseout(function(e) {
+            var tileID = this.id.substring(5);
+            $("#editicon" + tileID).animate({
+                "opacity": 0
+            }, 0);
+            $("#historyicon" + tileID).animate({
+                "opacity": 0
+            }, 0);
+        });
+    
+        $("[id^=editicon]").click(function(e) {
+            getDataSet({
+                service: "EditWidgetDialog",
+                dashboardwidgetid: this.id.substring(8)
+            })
+            e.stopPropagation();
+        });
+    
+        $("[id^=historyicon]").click(function(e) {
+            showHist(this.id.substring(11));
+            e.stopPropagation();
+        });
+    
+        $("[id^=tile_]").click(function(e) {
+            saveGridPosition();
+        });
+    }
+}
