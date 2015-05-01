@@ -58,6 +58,49 @@ function metricGithubProfile(data, resp) {
     }
 }
 
+function widgetGatewayList(data)  {
+    //Requires data.dwid, data.URL
+    var value = '';
+    authtoken = '';
+    var html = '';
+
+    try {
+        $.ajax({
+            type: "GET",
+            url: data.SERVER + data.SERVICE,
+            dataType: 'json',
+            async: false,
+            error: function() {
+                $('#t1-widget-container' + data.dwid).html('Error');
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(authtoken);
+            },
+            success: function(resp) {
+                var items = [];
+                html = "<table style='text-align: left; margin: 10px; width: inherit;' class='table table-striped'>";
+                $.each(resp, function(key, val) {
+                    try {
+                        if (typeof val === 'object') {
+                            $.each(val, function(key1, val1) {
+                                html += "<tr><td>" + key1 + "</td><td>" + val1 + "</td></tr>";
+                            });
+                        } else {
+                            html += "<tr><td>" + key + "</td><td>" + val + "</td></tr>";
+                        }
+                    } catch (err) {
+
+                    }
+                });
+                html += "</table>";
+            }
+        });
+    } catch (err) {
+        html = 'Error';
+    }
+    $('#t1-widget-container' + data.dwid).html(html);
+}
+
 
 function widgetJSONServiceTable(data)  {
     //Requires data.dwid, data.URL
@@ -715,8 +758,13 @@ function widgetHistChart(data) {
         strHistData = JSON.parse(data.SQL1_Hist);
         var strChartType = data.CHARTTYPE;
         var strData = '';
+        var strSparkColor = '#FFF';
 
         strHistData.reverse();
+        
+        if (theme === 'dark') {
+            strSparkColor = '#2A89C1';
+        }
 
         for (var i = 0; i < strHistData.length; i++) {
             strData += parseFloat(strHistData[i].VALUE, 10) + ',';
@@ -731,7 +779,9 @@ function widgetHistChart(data) {
         $('.peity' + data.dwid).peity(strChartType, {
             width: parseInt(data.width) * 200,
             height: '75%',
-            fill: ["#C6D9FD"]
+            fill: ["#444444"],
+            stroke: strSparkColor,
+            strokeWidth: 3
         });
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html('Error');
@@ -770,14 +820,19 @@ function widgetHistorySmall(data) {
     } catch (err) {
         html = 'Error';
     }
+    
+    if (theme === 'dark') {
+        strSparkColor = '#2A89C1';
+    }
 
     $('#t1-widget-container' + data.dwid).html(html);
 
     $('.peity' + data.dwid).peity('line', {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
-        strokeColor: strSparkColor,
-        fill: ["#FFFFFF"]
+        stroke: strSparkColor,
+        strokeWidth: 3,
+        fill: ["#444444"]
     });
 }
 
@@ -1024,8 +1079,8 @@ function widgetTableSizes(data) {
         html += "<tr><td><div class='t1-widget-text-medium'>" + datapoints[0].rows + "<sup>GB</sup></div></td>";
         html += "<td class='w-misc-td'><div class='t1-widget-text-medium'>" + datapoints[0].cols + "<sup>GB</sup></div></td>";
 
-        html += "<tr><td class='t1-widget-text-table'><img src='img/row-tables.png' />&nbsp;&nbsp;Rows</td>";
-        html += "<td class='t1-widget-text-table'><img src='img/col-tables.png' />&nbsp;&nbsp;Columns</td>";
+        html += "<tr><td class='t1-widget-text-table'><i class='fa fa-th'></i>&nbsp;&nbsp;Rows</td>";
+        html += "<td class='t1-widget-text-table'><i class='fa fa-th-large'></i>&nbsp;&nbsp;Columns</td>";
 
         html += "</table>";
     } catch (err) {
