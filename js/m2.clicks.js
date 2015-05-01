@@ -144,6 +144,10 @@ function configureClickEvents() {
     $("#chkStreaming").click(function() {
         toggleStreaming();
     });
+    
+    $("#chkTheme").click(function() {
+        toggleTheme();
+    });
 
     $("#btnModalDelete").click(function() {
         deleteDialog($("#modal-header").html());
