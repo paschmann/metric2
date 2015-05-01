@@ -22,6 +22,7 @@ var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard wo
 var strInputControl = "";
 var intGoogleAPIValidationAttempts = 0;
 var intGithubPIValidationAttempts = 0;
+var theme = "light";
 
 var objWidgets = {};
 var objWidgetList = {};
@@ -188,6 +189,16 @@ function closeSub() {
                 $(this).removeClass("mm-opened , mm-subopened , mm-current  , mm-highest").addClass("mm-hidden");
             }
         });
+    }
+}
+
+function toggleTheme() {
+    if ($("#chkTheme").is(":checked")) {
+        theme = "light";
+        document.getElementById('dark-theme').setAttribute('href', 'css/style-dark.css');
+    } else {
+        theme = "dark";
+        document.getElementById('dark-theme').setAttribute('href', 'css/none');
     }
 }
 
