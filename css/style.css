@@ -16,6 +16,45 @@ html {
     width: 50px;
 }
 
+.form-group-heading{
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+[data-sizex="1"] {
+    width: 230px;
+}
+
+[data-sizex="2"] {
+    width: 480px;
+}
+
+[data-sizex="3"] {
+    width: 730px;
+}
+
+[data-sizex="4"] {
+    width: 960px;
+}
+
+[data-sizey="1"] {
+    height: 115px;
+}
+
+[data-sizey="2"] {
+    height: 230px;
+}
+
+[data-sizey="3"] {
+    height: 365px;
+}
+
+[data-sizey="4"] {
+    height: 480px;
+}
+
+
+
 .dashboardbackground {
     /* This class gets added to content when a dashboard background image has been defined */
     min-height: 100%;
@@ -31,11 +70,6 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-}
-
-.metricopacity {
-    background-color: rgb(255,255,255); /* fallback */
-    background-color: rgba(255,255,255,0.9);
 }
 
 body {
@@ -62,15 +96,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin: 0;
 }
 
-.huge {
-    font-size: 36px;
-}
-
-.metriclist{
-    margin: 10px;
-}
-
-
 a {
   color: #2a89c1;
 }
@@ -78,6 +103,7 @@ a:hover {
   color: #0067a8;
   text-decoration: none;
 }
+
 a.toggle-column-hide {
   color: #cccccc !important;
   text-decoration: line-through;
@@ -113,7 +139,7 @@ a.logo {
 }
 
 #wrapper {
-  background: #20242b;
+  /* background: #20242b; */
   height: 100%;
   margin-left: 50px;
   min-width: 320px;
@@ -164,7 +190,7 @@ a.logo {
 }
 
 #header {
-  background: white;
+  background: #fff;
   border-bottom: 5px #2A89C1 solid;
   height: 55px;
   left: 0;
@@ -274,7 +300,7 @@ table.dataTable thead th, table.dataTable thead td {
 }
 
 .modal-content {
-    border-radius: 0; 
+    border-radius: 4px; 
 }
 
 .mm-menu {
@@ -312,6 +338,7 @@ html.mm-opened .toggle-menu {
   -o-transform: translate3d(-100%, 0, 0);
   transform: translate3d(-100%, 0, 0);
 }
+
 html .leftMenu .toggle-menu {
   display: none;
 }
@@ -506,9 +533,6 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
   margin-bottom: -10px;
 }
 
-
-
-
 .mm-search input {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -547,8 +571,6 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
   transform: translateX(0%);
 }
 
-
-
 .widget-collapse {
   border-bottom: 1px rgba(0, 0, 0, 0.025) solid;
   position: relative;
@@ -558,9 +580,11 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
 .widget-collapse header {
   background-color: #23272e;
 }
+
 .widget-collapse header {
   padding: 0 10px;
 }
+
 .widget-collapse header a {
   color: #999;
   display: block;
@@ -569,6 +593,7 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .widget-collapse header a i {
   color: rgba(255, 255, 255, 0.2);
   height: 17px;
@@ -577,24 +602,20 @@ body.leftMenu .mm-menu:not(.mm-right).mm-hassearch .mm-panel {
   text-align: center;
   width: 17px;
 }
+
 .widget-collapse header a i.collapse-caret {
   float: right;
   margin-top: 3px;
 }
+
 .widget-collapse header a .label {
   border-radius: 1px;
   padding: 2px 6px;
 }
+
 .widget-collapse section .collapse-body {
   padding: 15px;
 }
-
-
-
-
-
-
-
 
 .dropdown-menu {
     border-radius: 0;
@@ -773,10 +794,6 @@ a.list-group-item.active {
     color: #000;
 }
 
-
-
-
-
 /* Login Form */
 
 .btn {
@@ -882,10 +899,6 @@ a.list-group-item.active {
 .margin-left-0 {
     margin-left: 0;
 }
-
-
-
-
 
 .widget-im.notification ul li section {
     box-shadow: none;
