@@ -1,0 +1,137 @@
+/* Contains overrides and is loaded last */
+
+body {
+    color: #CCC;
+}
+
+#main {
+    background-color: #373839;
+}
+
+#header {
+    background-color: #373839;
+    border-bottom: 5px solid #58595B;
+}
+
+.logo-area { 
+    background-color: #2C2C2C;
+    border-bottom: 5px solid #58595B;
+}
+
+.avatar-slide .avatar-link a.btn {
+    background: none repeat scroll 0px 0px #333
+}
+
+#nav {
+    background-color: #2C2C2C;
+}
+
+.widget-collapse header {
+    background-color: #333;
+}
+
+#dashboards > li {
+    background-color: #373839;
+    border-right: 1px solid #58595B;
+}
+
+#dashboards > li:first-child {
+    border-left: none;
+}
+
+.table > tbody > tr > td {
+    border-top: 1px solid #444;
+}
+
+#table2 > tbody > tr > td {
+    border-top: 1px solid #DDD;
+}
+
+.table > thead > tr > th {
+    border-bottom: none;
+}
+
+.t1-widget-div {
+    background-color: #2C2C2C;
+}
+
+.t1-widget-header {
+    color: #666;
+}
+
+.t1-widget-container {
+    border-top: 1px solid #3B3B3B ;
+}
+
+.t1-widget-text-big {
+    color: #CCC;    
+}
+
+.t1-widget-text-medium {
+    color: #CCC;     
+}
+
+.iconframe {
+    background-color: transparent;
+}
+
+/* Bullet/disk widget */
+
+.nv-titles {
+    color: #999;
+}
+
+/* Twitter Widget */
+
+.tweet .e-entry-title {
+    color: #888;
+}
+
+.p-name .customisable-highlight {
+    color: #CCC;
+}
+
+.SandboxRoot {
+    color: #CCC;   
+}
+
+.customisable-border {
+    border: none;
+}
+
+.p-author .profile .p-name {
+    color: #CCC;
+}
+
+.t1-metric-clock-top {
+    background-color: #444;
+}
+
+.feedEkList {
+    color: #DDD;    
+}
+
+.panel-primary > .panel-heading  {
+    border-color: #58595B;
+}
+
+#header .tools-bar ul.nav li a:hover {
+    background-color: #2C2C2C;
+    color: #FFF;
+}
+
+#header .tools-bar ul li a {
+    color: #DDD;
+}
+
+#dashboards > li.active {
+    background-color: #2C2C2C;
+    color: #FFF;
+}
+
+/* Alerts */
+
+.table-striped > tbody > tr:nth-child(2n+1) > td {
+    background-color: transparent;
+}
+
