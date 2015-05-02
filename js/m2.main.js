@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = "Version 2.5.2";
+var m2version = "Version 2.5.3";
 var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
