@@ -111,6 +111,15 @@ function loadAlertList(){
 
 function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
+        strHTML += '<div class="col-md-4">';
+            strHTML += '<ul class="nav nav-pills">';
+                strHTML += '<li id="integration" role="presentation" class="active"><a><i id="integrationicon" class="fa fa-circle"></i>  Select Integration</a></li>';
+                strHTML += '<li id="selectmetric" role="presentation"><a><i class="fa fa-circle-thin"></i>  Select Metric</a></li>';
+                strHTML += '<li id="configuremetric" role="presentation"><a><i class="fa fa-circle-thin"></i>  Configure Metric</a></li>';
+            strHTML += '</ul>';
+        strHTML += '</div>';
+    strHTML += '</div>';
+    strHTML += '<div class="row" style="margin-top: 20px;">';
         strHTML += '<div class="col-md-2">';
             strHTML += '<div class="list-group">';
                 strHTML += '<a href="#" class="list-group-item" data-id="0"><b>Integration Groups</b></a>';
@@ -351,7 +360,20 @@ function showWidgetDialog(objData, edit){
     var output = '';
     var webserviceparamid = '';
     
-    output += "<form class='form-horizontal' role='form'>";
+    if (!edit) {
+        var strHTML = '<div class="row">';
+        strHTML += '<div class="col-md-12">';
+            strHTML += '<ul class="nav nav-pills">';
+                strHTML += '<li id="integration" role="presentation"><a><i id="integrationicon" class="fa fa-check-circle"></i>  Select Integration</a></li>';
+                strHTML += '<li id="selectmetric" role="presentation"><a><i class="fa fa fa-check-circle"></i>  Select Metric</a></li>';
+                strHTML += '<li id="configuremetric" role="presentation" class="active"><a><i class="fa fa-circle"></i>  Configure Metric</a></li>';
+            strHTML += '</ul>';
+        strHTML += '</div>';
+        strHTML += '</div>';
+        output += strHTML;
+    }
+    
+    output += "<form class='form-horizontal' role='form' style='margin-top: 20px;'>";
         output += "<input type='" + debugmode + "' value='newwidget' id='action' />";
         output += "<input type='" + debugmode + "' value='" + intCurrentDashboardID + "' id='dashboardid' />";
         output += "<input type='" + debugmode + "' value='" + objData.widgetid + "' id='widgetid' />";

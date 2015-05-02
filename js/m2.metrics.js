@@ -38,7 +38,7 @@ function metricGooglePlusProfile(data, resp) {
         data.TEXT1 = "Google+";
     
         var value = resp[data.OBJKEY];
-        var html = "<div class='t1-widget-text-big'>" + value + "</div><br /><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-google-plus'></i></div></div>";
+        var html = "<div class='t1-widget-text-big'>" + value + "</div><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-google-plus'></i></div></div>";
         $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html("Error");
@@ -51,7 +51,7 @@ function metricGithubProfile(data, resp) {
         data.TEXT1 = "Github";
     
         var value = resp[data.OBJKEY];
-        var html = "<div class='t1-widget-text-big'>" + value + "</div><br /><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-github'></i></div></div>";
+        var html = "<div class='t1-widget-text-big'>" + value + "</div><div class='t1-widget-footer'><div class='t1-widget-percent-medium-grey'><i class='fa fa-github'></i></div></div>";
         $('#t1-widget-container' + data.dwid).html(html);
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html("Error");
@@ -690,7 +690,7 @@ function widgetAllServicesStarted(data) {
     //Requires data.dwid, data.SQL1 (VALUE), data.SQL2 (STATUS)
     var html;
     try {
-        html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div><br />";
+        html = "<div class='t1-widget-text-big'>" + getScalarVal(data, 'SQL1', 'VALUE') + "</div>";
         html += "<div class='t1-widget-footer'>";
         html += "<div class='t1-widget-percent-medium-grey'>" + getScalarVal(data, 'SQL2', 'STATUS') + "</div>";
         html += "</div>";
@@ -730,7 +730,7 @@ function widgetNumberChange(data) {
         fltChangeValue = fltChangeValue.toFixed(intDecPlace);
         var strFooter = "";
 
-        html += "<div class='t1-widget-footer' style='margin-top: 30px;'>";
+        html += "<div class='t1-widget-footer' style='margin-top: 20px;'>";
         if (fltChangeValue > 0) {
             strFooter = "<div class='t1-widget-percent-medium-green'>&#9650 " + fltChangeValue + " " + strUOM + "</div>";
         } else if (fltCurValuedata == fltPrevValue) {
@@ -1264,6 +1264,7 @@ function widgetSensorAPI(data) {
 function metricHANAOverview(data) {
     //Requires data.dwid
     try {
+        var strBarColor = "#E7E7E7";
 
         if (typeof window.m2DiskData === 'undefined') {
             window.m2DiskData = [];
@@ -1390,18 +1391,22 @@ function metricHANAOverview(data) {
         html += "</div>";
 
         $('#t1-widget-container' + data.dwid).html(html);
+        
+        if (theme === "dark"){
+            strBarColor = "#373839";
+        }
 
         //Small background charts
         $('.connections' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: ["#E7E7E7"]
+            fill: [strBarColor]
         });
 
         $('.activeusers' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: ["#E7E7E7"]
+            fill: [strBarColor]
         });
 
 

@@ -120,7 +120,8 @@ function loadEventStatusPie(arrData){
                     enabled: true,
                     format: '<b>{point.name}</b>: {point.y:.0f}',
                     style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        color: theme === 'dark' ? '#FFF' : '#333',
+                        textShadow: false
                     }
                 }
             }
@@ -147,7 +148,12 @@ function loadEventsbyMonth(arrData, arrMonthNames){
             text: null
         },
         xAxis: {
-            categories: arrMonthNames    
+            categories: arrMonthNames,
+            labels: {
+                style: {
+                    color: theme === 'dark' ? '#FFF' : '#333'
+                }
+            }
         },
         yAxis: {
             min: 0,

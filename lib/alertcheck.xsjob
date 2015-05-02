@@ -1,13 +1,13 @@
 {
-	"description": "Check alert values",
-	"action": "lilabs.metric2.lib:alertcheck.xsjs::alertJob",
-	"schedules": [
-		{
-			"description": "Check alert values",
-			"xscron": "* * * * * * 59",
-			"parameter": {
-				"service": "AlertJob"
-			}
-		}
-	]
+    "description": "Check alert values",
+    "action": "lilabs.metric2.lib:alertcheck.xsjs::alertJob",
+    "schedules": [
+        {
+            "description": "Check alert values",
+            "xscron": "* * * * * * 59",
+            "parameter" : {
+                "service" : "AlertJob"
+            }
+        }
+    ]
 }

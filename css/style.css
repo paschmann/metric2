@@ -11,6 +11,10 @@ html {
   min-width: 320px;
 }
 
+.gridster > * {
+    margin: 0px;
+}
+
 #peitysvg>svg{
     height: 50px;
     width: 50px;
@@ -70,6 +74,10 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+
+.loginbackground {
+    background-color: #E5E9EC;
 }
 
 body {

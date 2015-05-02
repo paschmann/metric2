@@ -2,6 +2,47 @@
 // -------------------------   Client Side click events ----------------------- //
 
 
+function configureGristerClickEvents() {
+    if (!viewmode.length > 0){
+        $("[id^=tile_]").mouseover(function(e) {
+            var tileID = this.id.substring(5);
+            $("#editicon" + tileID).animate({
+                "opacity": 1
+            }, 0);
+            $("#historyicon" + tileID).animate({
+                "opacity": 1
+            }, 0);
+        });
+    
+        $("[id^=tile_]").mouseout(function(e) {
+            var tileID = this.id.substring(5);
+            $("#editicon" + tileID).animate({
+                "opacity": 0
+            }, 0);
+            $("#historyicon" + tileID).animate({
+                "opacity": 0
+            }, 0);
+        });
+    
+        $("[id^=editicon]").click(function(e) {
+            getDataSet({
+                service: "EditWidgetDialog",
+                dashboardwidgetid: this.id.substring(8)
+            })
+            e.stopPropagation();
+        });
+    
+        $("[id^=historyicon]").click(function(e) {
+            showHist(this.id.substring(11));
+            e.stopPropagation();
+        });
+    
+        $("[id^=tile_]").click(function(e) {
+            saveGridPosition();
+        });
+    }
+}
+
 
 function configureClickEvents() {
     
@@ -61,6 +102,12 @@ function configureClickEvents() {
         previous.removeClass("active"); // previous list-item
         $(e.target).addClass("active"); // activated list-item
         loadNewWidgetList($(this).data("id"), "");
+        
+        //Update breadcrumb at the top
+        $("#integration").removeClass("active");
+        $("#integrationicon").removeClass("fa-circle");
+        $("#integrationicon").addClass("fa-check-circle");
+        $("#selectmetric").addClass("active");
     });
 
     $(document).on("click","#btnExecuteSQL",function(){

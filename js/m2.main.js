@@ -22,7 +22,7 @@ var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard wo
 var strInputControl = "";
 var intGoogleAPIValidationAttempts = 0;
 var intGithubPIValidationAttempts = 0;
-var theme = "light";
+var theme = "dark";
 
 var objWidgets = {};
 var objWidgetList = {};
@@ -411,7 +411,7 @@ function loadMetrics(objData) {
     $.each(objData.widgetData, function(key, value) {
         var intDashboardWidgetID = objData.widgetData[key].dwid;
         var title = objData.widgetData[key].title;
-
+ 
         if (typeof title === undefined) {
             title = "";
         }

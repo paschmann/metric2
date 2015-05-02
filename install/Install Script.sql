@@ -170,6 +170,7 @@ INSERT INTO "METRIC2"."M2_WIDGET" VALUES (49,'Treemap', '49.png','Query','metric
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (50,'World Map', '50.png','Query','metricDataByCountry','Client','Displays a world map.', 2, 0, 2, 4);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (51,'Google+ API', '51.png','Service','metricGooglePlusProfile','Client','Displays data from your Google + account, Connections, circles and more.', 8, 1, 1, 1);
 INSERT INTO "METRIC2"."M2_WIDGET" VALUES (52,'Github API', '52.png','Service','metricGithubProfile','Client','Displays data from your Github account, followers, following and repositories.', 8, 1, 1, 1);
+INSERT INTO "METRIC2"."M2_WIDGET" VALUES (53,'Gateway List','53.png','Service','widgetGatewayList','Client','A Table of List data from a Gateway Data Source',4,0,null,null);
 
 -- Widget Params
 -- widgetTextAndFooter
@@ -385,6 +386,13 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (196,51,'URL','OPTION',' ',300,0,
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (197,52,'GithubAPI','OAUTH','OAUTH',100,0,'','Github API Access','false',null,0,null);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (198,52,'URL','OPTION',' ',300,0,'Required, Backend API Call to make','Github API','true',6,0, null);
 
+-- 53. Gateway List
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (199,53,'USERNAME','Static','',100,1,'Required, Gateway Username','Gateway Username','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (200,53,'PASSWORD','Static','',200,1,'Required, Gateway Password','Gateway Password','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (201,53,'SERVER','Static','',300,1,'Required, Gateway Server URL','Gateway Server URL','true',null,0,null);
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (202,53,'SERVICE','OPTION',' ',400,0,'Required, Gateway Service','Gateway Data Source','true',7,0, null);
+
+
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (1,'line','Line',1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (2,'bar','Bar',1);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (3,'°F','°F',2);
@@ -420,6 +428,8 @@ INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (33, 'https://www.googlea
 
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (31, 'https://api.github.com/users/followers followers', 'My Profile: Followers', 6);
 INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (32, 'https://api.github.com/users/followers public_repos', 'My Profile: Public Repo Count', 6);
+
+INSERT INTO "METRIC2"."M2_WIDGET_PARAM_OPTIONS" VALUES (34, '/sap/public/ping', 'Gateway Ping', 7);
 
 
 INSERT INTO "METRIC2"."M2_PAL_TS_FIXEDVALS" VALUES (1);

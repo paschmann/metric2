@@ -1,0 +1,11 @@
+host = "www.googleapis.com";
+port = 443;
+pathPrefix = "";
+proxyType = none;
+authType = none;
+useSSL = true;
+timeout = 0;
+oAuthAppConfigPackage = "lilabs.metric2.lib";
+oAuthAppConfig = "";
+sslHostCheck = true;
+sslAuth = anonymous;

@@ -228,7 +228,8 @@ canvas.peity {
 
 
 .t1-widget-text-big {
-	color: #666; 
+	color: #666;
+	margin-top: 20px;
 	/*text-shadow: 1px 1px 1px #3F3F3F, -1px -1px 1px #3F3F3F; */
 	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 	font-size: 80px; 

@@ -4,6 +4,10 @@ body {
     color: #CCC;
 }
 
+.loginbackground {
+    background-color: #555;
+}
+
 #main {
     background-color: #373839;
 }
@@ -13,9 +17,14 @@ body {
     border-bottom: 5px solid #58595B;
 }
 
+/* Bullet Chart */
+svg .title {
+    color: #FFF;
+}
+
 .logo-area { 
     background-color: #2C2C2C;
-    border-bottom: 5px solid #58595B;
+    border-bottom: 5px solid #333333;
 }
 
 .avatar-slide .avatar-link a.btn {
@@ -64,7 +73,8 @@ body {
 }
 
 .t1-widget-text-big {
-    color: #CCC;    
+    color: #CCC;
+    margin-top: 20px;
 }
 
 .t1-widget-text-medium {
@@ -77,8 +87,8 @@ body {
 
 /* Bullet/disk widget */
 
-.nv-titles {
-    color: #999;
+.nv-title, .nv-subtitle {
+    fill: #BBB;
 }
 
 /* Twitter Widget */

@@ -2,7 +2,7 @@
 
 
 function getListOfDashboards () {
-    if (viewmode === "true") { //View only mode
+    if (viewmode === "dashboard") { //View only mode
 	   return sqlLib.executeRecordSetObj("select * from metric2.m2_dashboard WHERE SHARE_URL = '" + dashboardid + "'");
 	} else {
 	   return sqlLib.executeRecordSetObj("select * from metric2.m2_dashboard WHERE user_id = " + userid + " order by vieworder, dashboard_id");
