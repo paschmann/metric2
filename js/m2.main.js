@@ -1,5 +1,5 @@
 // -------------------------   Global Vars and Initialize ----------------------- //
-var m2version = "Version 2.5.3";
+var m2version = "Version 2.5.2";
 var sessionToken = 0;
 var intCurrentDashboardID = 1; //If this equals 1, the first dashboard will be loaded
 var arrActiveTimers = [];
@@ -16,13 +16,13 @@ var useremail = "";
 var showTour = true;
 var viewmode = "";
 var tour;
-var debugmode = "hidden"; /*display*/
+var debugmode = "hidden"; /* display */
 var strNoDashboardMsg = "<p align='center' style='padding: 10px;'>Hmmm, it looks like you dont have any dashboards,<br /> click on the <i class='fa fa-plus fa-2x' style='padding: 0 10px 10px;'></i> icon to get started.</li>";
 var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard would look way better with some data,<br /> click on the <i class='fa fa-tachometer fa-2x' style='padding: 0 10px 10px;'></i> icon to add a few metrics.</li>";
 var strInputControl = "";
 var intGoogleAPIValidationAttempts = 0;
 var intGithubPIValidationAttempts = 0;
-var theme = "dark";
+var theme = "dark"; /* Default */
 
 var objWidgets = {};
 var objWidgetList = {};
@@ -192,8 +192,15 @@ function closeSub() {
     }
 }
 
-function toggleTheme() {
-    if ($("#chkTheme").is(":checked")) {
+function toggleTheme(theme) {
+    if (theme) {
+        theme = theme.toLowerCase();
+        if (theme === 'dark'){
+            document.getElementById('dark-theme').setAttribute('href', 'css/style-dark.css');
+        } else {
+            document.getElementById('dark-theme').setAttribute('href', 'css/none');
+        }
+    } else if ($("#chkTheme").is(":checked")) {
         theme = "light";
         document.getElementById('dark-theme').setAttribute('href', 'css/style-dark.css');
     } else {
@@ -262,6 +269,8 @@ function getSessionToken() {
 
 function loadUserData(arrData) {
     $gravatarEmail = arrData[0]["EMAIL"];
+    theme = arrData[0]["USER_THEME"];
+    toggleTheme(theme);
     configureGravatar();
     $("#usersname em").html(arrData[0]["NAME"] + " " + arrData[0]["LNAME"]);
     $("#gravUsersname").html(arrData[0]["NAME"] + " " + arrData[0]["LNAME"]);
