@@ -19,7 +19,7 @@ function getDBInfo(){
 }
 
 function getUserInfo(){
-    return sqlLib.executeRecordSetObj("SELECT LNAME, NAME, ACCT_TYPE, EMAIL, EMAIL_DOMAIN FROM METRIC2.m2_Users WHERE user_id = " + userid);
+    return sqlLib.executeRecordSetObj("SELECT LNAME, NAME, ACCT_TYPE, EMAIL, EMAIL_DOMAIN, USER_THEME FROM METRIC2.m2_Users WHERE user_id = " + userid);
 }
 
 function getUserSessionToken() {
