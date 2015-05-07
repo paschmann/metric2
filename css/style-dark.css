@@ -5,11 +5,15 @@ body {
 }
 
 .loginbackground {
-    background-color: #555;
+    background-color: #BBB;
 }
 
 #main {
     background-color: #373839;
+}
+
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus, .nav > li > a:hover, .nav > li > a:focus {
+    background-color: #333;
 }
 
 #header {
