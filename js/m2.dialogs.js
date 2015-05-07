@@ -311,6 +311,16 @@ function showSettingsDialog(objData) {
             output += "<input type='" + debugmode + "' value = '" + JSON.parse(objData.userInfo)[0].USER_ID + "' id='userid' />";
             output += "<div class='form-group'><label for='domain' class='col-sm-3 control-label'>User Domain</label><div class='col-sm-9'><input type='text' class='form-control' placeholder='Domain Name' id='domain' value = '" + JSON.parse(objData.userInfo)[0].EMAIL_DOMAIN + "' /></div></div>";
             output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>App Version</label><div class='col-sm-9'><p class='form-control-static'>" + m2version + "</p></div></div>";
+            output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>Default Theme</label><div class='col-sm-9'>";
+                output += "<select id='theme' class='form-control'>";
+                if (JSON.parse(objData.userInfo)[0].USER_THEME === 'Dark'){
+                    output += "<option id='Dark' selected>Dark</option>";
+                    output += "<option id='Light'>Light</option>";
+                } else {
+                    output += "<option id='Dark'>Dark</option>";
+                    output += "<option id='Light' selected>Light</option>";
+                }
+            output += "</select></div></div>";
             output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'>metric² Disk Used</label><div class='col-sm-4'><p class='form-control-static'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "MB <br /><br />" + JSON.parse(objData.diskSize)[0].DISKSIZE + "GB</p></div><div class='col-sm-4' id='peitysvg'><span class='usagePeity'>" + JSON.parse(objData.m2Size)[0].M2SIZE + "/" + JSON.parse(objData.diskSize)[0].DISKSIZE + "</span></div></div>";
             output += "<div class='form-group'><label for='version' class='col-sm-3 control-label'></label></div>";
         output += "</div>";
@@ -803,12 +813,15 @@ function saveDialog(strFunction) {
         } else if (strFunction == 'Edit Settings') {
             getDataSet({
                 service: "EditSettings",
+                theme: document.getElementById('theme').value,
                 domain: document.getElementById('domain').value,
                 googleclientid: document.getElementById('googleclientid').value,
                 googleclientsecret: document.getElementById('googleclientsecret').value,
                 githubclientid: document.getElementById('githubclientid').value,
                 githubclientsecret: document.getElementById('githubclientsecret').value
             });
+            theme = document.getElementById('theme').value;
+            toggleTheme(theme);
         } else {
             console.log("No Function Defined Yet");
         }
