@@ -112,9 +112,11 @@ function loadAlertList(){
 function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
         strHTML += '<div class="col-md-4">';
-            strHTML += '<ul class="nav nav-pills">';
+            strHTML += '<ul class="nav nav-pills metric-step">';
                 strHTML += '<li id="integration" role="presentation" class="active"><a><i id="integrationicon" class="fa fa-circle"></i>  Select Integration</a></li>';
+                strHTML += '<li role="leaseresentation"><a class="metric-step-arrow"><i class="fa fa-chevron-right"></i></a></li>';
                 strHTML += '<li id="selectmetric" role="presentation"><a><i class="fa fa-circle-thin"></i>  Select Metric</a></li>';
+                strHTML += '<li role="presentation"><a class="metric-step-arrow"><i class="fa fa-chevron-right"></i></a></li>';
                 strHTML += '<li id="configuremetric" role="presentation"><a><i class="fa fa-circle-thin"></i>  Configure Metric</a></li>';
             strHTML += '</ul>';
         strHTML += '</div>';
@@ -160,7 +162,7 @@ function loadNewWidgetList(intWidgetGroup, strSearchTerm){
         }
     }
     
-    if (intWidgetGroup === 3 || intWidgetGroup === 4 || intWidgetGroup === 5){
+    if (intWidgetGroup === 3 || intWidgetGroup === 5){
         strMetrics += '<p align="center">Please check <a href="http://www.metric2.com" target="_blank">http://www.metric2.com</a> for new metric packs as we are frequently updating and adding new metrics.</p>';
     }
     
@@ -373,9 +375,11 @@ function showWidgetDialog(objData, edit){
     if (!edit) {
         var strHTML = '<div class="row">';
         strHTML += '<div class="col-md-12">';
-            strHTML += '<ul class="nav nav-pills">';
+            strHTML += '<ul class="nav nav-pills metric-step">';
                 strHTML += '<li id="integration" role="presentation"><a><i id="integrationicon" class="fa fa-check-circle"></i>  Select Integration</a></li>';
+                strHTML += '<li role="leaseresentation"><a class="metric-step-arrow"><i class="fa fa-chevron-right"></i></a></li>';
                 strHTML += '<li id="selectmetric" role="presentation"><a><i class="fa fa fa-check-circle"></i>  Select Metric</a></li>';
+                strHTML += '<li role="leaseresentation"><a class="metric-step-arrow"><i class="fa fa-chevron-right"></i></a></li>';
                 strHTML += '<li id="configuremetric" role="presentation" class="active"><a><i class="fa fa-circle"></i>  Configure Metric</a></li>';
             strHTML += '</ul>';
         strHTML += '</div>';
