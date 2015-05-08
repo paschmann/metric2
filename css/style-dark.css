@@ -16,6 +16,18 @@ body {
     background-color: #333;
 }
 
+.metric-step > li > a:hover  {
+    background-color: #EEE;
+}
+
+.metric-step-arrow:hover{
+    background-color: #FFF;
+}
+
+.metric-step-arrow{
+    color: #DDD;
+}
+
 #header {
     background-color: #373839;
     border-bottom: 5px solid #58595B;
