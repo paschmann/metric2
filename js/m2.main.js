@@ -22,7 +22,7 @@ var strNoWidgetMsg = "<p align='center' style='padding: 10px;'>Your dashboard wo
 var strInputControl = "";
 var intGoogleAPIValidationAttempts = 0;
 var intGithubPIValidationAttempts = 0;
-var theme = "dark"; /* Default */
+var theme = "light"; /* Default */ 
 
 var objWidgets = {};
 var objWidgetList = {};
