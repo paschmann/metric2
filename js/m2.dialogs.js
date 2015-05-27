@@ -111,7 +111,7 @@ function loadAlertList(){
 
 function showNewWidgetDialog(intWidgetGroup){
     var strHTML = '<div class="row">';
-        strHTML += '<div class="col-md-4">';
+        strHTML += '<div class="col-md-12">';
             strHTML += '<ul class="nav nav-pills metric-step">';
                 strHTML += '<li id="integration" role="presentation" class="active"><a><i id="integrationicon" class="fa fa-circle"></i>  Select Integration</a></li>';
                 strHTML += '<li role="leaseresentation"><a class="metric-step-arrow"><i class="fa fa-chevron-right"></i></a></li>';
