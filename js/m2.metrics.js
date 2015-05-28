@@ -816,7 +816,7 @@ function widgetHistorySmall(data) {
             html += "<td><i class='fa fa-" + imgURL + "' style='margin: 15px; color: #ccc;'></i></td>";
         }
         html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
-        html += "<div class='t1-widget-footer' style='text-align:center; margin-top: 0px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
+        html += "<div class='t1-widget-footer' style='text-align:center; margin-top: -10px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
     } catch (err) {
         html = 'Error';
     }
@@ -830,9 +830,9 @@ function widgetHistorySmall(data) {
     $('.peity' + data.dwid).peity('line', {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
-        stroke: strSparkColor,
-        strokeWidth: 3,
-        fill: ["#444444"]
+        stroke: "#C1DDEE",
+        strokeWidth: 2,
+        fill: ["#999"]
     });
 }
 
