@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>metric&#178; | Installer</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- JS -->
+    <script src="../js/vendor/jquery-1-11-0.min.js"></script>
+    <script src="../js/vendor/bootstrap.min.js"></script>
+    <script src="../js/vendor/jquery.bootstrap-growl.min.js"></script>
+    <script src="../js/vendor/jquery.cookie.js"></script>
+    <script src="../js/vendor/jquery.easyWizard.js"></script>
+
+    <script>
+    var jURL = 'install.xsjs';
+    
+        function execute(step) {
+            jQuery.ajax({
+                url: jURL,
+                type: 'GET',
+                data: {
+                    SQL: step
+                },
+                success: function(data) {
+                    $('.results').css('background-color', '#000');
+                    $('.results').append(data);
+                }
+            });
+        }
+
+
+        $(document).ready(function() {
+            
+            $('#myWizard').easyWizard({
+                buttonsClass: 'btn',
+                submitButton: false,
+                after: function(wizardObj, prevStepObj, currentStepObj) {
+                    switch (currentStepObj.selector) {
+                        case '.step[data-step="3"]':
+                            var r = confirm("Are you sure you want to create the metric2 schema? (This will drop any existing metric2 schema if it exists!)");
+                            if (r == true) {
+                                execute('step3');
+                            }
+                            break;
+                        case '.step[data-step="4"]':
+                            var r = confirm("Are you sure you want to create the tables, views and stored procedures?");
+                            if (r == true) {
+                                execute('step4');
+                            }
+                            break;
+                        case '.step[data-step="5"]':
+                            var r = confirm("Are you sure you want to create the demo dashboards?");
+                            if (r == true) {
+                                execute('step5');
+                            }
+                            break;
+                        default:
+                    }
+
+                }
+            });
+        });
+    </script>
+    <style>
+        #myWizard {
+            zwidth: 600px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin: 20px;
+        }
+        
+        .done {
+            color: #00FF00;
+        }
+        
+        .failed {
+            color: #FF0000;
+        }
+        
+        section {
+            padding: 20px;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        .results {
+            padding: 20px;
+            color: #FFF;
+            font-family: courier;
+        }
+        .easyWizardSteps {
+            list-style: none;
+            width: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px
+        }
+        .easyWizardSteps li {
+            font-size: 18px;
+            display: inline-block;
+            padding: 10px;
+            color: #B0B1B3;
+            margin-right: 20px;
+        }
+        .easyWizardSteps li span {
+            font-size: 24px
+        }
+        .easyWizardSteps li.current {
+            color: #000
+        }
+        .easyWizardButtons {
+            overflow: hidden;
+            padding: 20px;
+        }
+        .easyWizardButtons button,
+        .easyWizardButtons .submit {
+            cursor: pointer
+        }
+        .easyWizardButtons .prev {
+            float: left
+        }
+        .easyWizardButtons .next,
+        .easyWizardButtons .submit {
+            float: right
+        }
+        #myWizard3Pager {
+            margin-top: -10px
+        }
+    </style>
+</head>
+
+<body class="full-lg loginbackground">
+    <header id="home">
+        <div class="header-bg"></div>
+        <div class="pattern"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-md-offset-4">
+                    <img class="login-logo" src="../img/logo_grey_small.png" style="margin-top: 30px; margin-bottom: 30px;" alt="" />
+                </div>
+            </div>
+            <div class="row">
+                <form id="myWizard" type="get" action="" class="form-horizontal">
+                    <section class="step" data-step-title="Overview">
+                        Thanks for downloading metric2.<br /><br />Now that you have successfully installed the Delivery Unit, we need to install the schema on your HANA instance. This quick process will create a schema called "metric2" and will be used to store your dashboards, metrics
+                        and the data they collect. Click next to get started.
+                    </section>
+                    <section class="step" data-step-title="Create Schema">
+                        Click Next to drop the exisiting metric2 schema (if it exists).<br /><br />Confirmation will be required.
+                    </section>
+                    <section class="step" data-step-title="Create Database Artifacts">
+                        Create all the tables, views, security and stored procedures needed.<br /><br />Confirmation will be required.
+                    </section>
+                    <section class="step" data-step-title="Demo Dashboards">
+                        If you would like, we can create a few demo dashboards for you. This will include an example HANA and Sales Dashboard. Click Next to get started.<br /><br />Confirmation will be required.
+                    </section>
+                    <section class="step" data-step-title="Post Install">
+                        Because we created a new user with a static/known password, metric2 requires that you change the password. <br /><br />Please click <a href='/sap/hana/xs/formLogin/login.html' target='_blank'>here</a> to open the login screen, and set the password to something unique. Keep in mind you may need to logout.<br /><br />The default username and password is: <br /><br />M2_SVC_ACCOUNT<br />7Ag6w612auiY881 <br /><br />The system should prompt you to reset this once you login for the first time.
+                    </section>
+                    <section class="step" data-step-title="Complete">
+                        All done. We highly recommend that you delete the install folder once you have tested that your instance is working correctly.
+                        <br />
+                        <br />You should be ready to go, click <a href='../login.html'>here</a> to open the login page.
+                    </section>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-12">
+                    <div class="results"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+</body>
+
+</html>
