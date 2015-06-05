@@ -25,7 +25,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 #####Otion 1: **Delivery Unit** (SAP HANA Package)
 
 - Download the delivery unit package [here](http://www.metric2.com/download.html) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
-- Please follow the instructures [here](http://www.metric2.com/web-documentation-2/) on how to install.
+- Please follow the instructures [here](http://www.metric2.com/web-documentation/) on how to install.
 
 ####Step 2 – Schema creation
 Once you have all the asset files uploaded to your HANA instance, you will need to create the schema to support metric2. This is done using a simple wizard which can be found in the install folder (install.html)
