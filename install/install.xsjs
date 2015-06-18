@@ -365,7 +365,7 @@ if (step === 'step3') {
 
 // US State Map Widget
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (177,47,\'Server Connection\',\'OPTION\',\'Local Server\',100,1,\'Local Server\',\'Server Connection\',\'true\',3,0, null)');
-    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,\'SQL1\',\'SQL\',\'SELECT * FROM SALES.STATE_SALES\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (176,47,\'SQL1\',\'SQL\',\'SELECT * FROM METRIC2.TMP_STATE_SALES\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (178,47,\'TEXT1\',\'Static\',\'\',300,1,\'Any form of Static Text\',\'Text\',\'true\',null,0,null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (179,47,\'UOM1\',\'OPTION\',\' \',400,0,\'Optional, Unit of measure for the value\',\'UOM\',\'true\',2,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (192,47,\'HEXCOLOR1\',\'COLOR\',\'#DEEDF6\',500,0,\'Required, color in Hex (e.g #DEEDF6)\',\'Min Color\',\'true\',2,0, null)');
@@ -374,17 +374,17 @@ if (step === 'step3') {
 
 // Donut Chart
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (180,48,\'Server Connection\',\'OPTION\',\'Local Server\',100,1,\'Local Server\',\'Server Connection\',\'true\',3,0, null)');
-    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (181,48,\'SQL1\',\'SQL\',\'SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM SALES.STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC LIMIT 5\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (181,48,\'SQL1\',\'SQL\',\'SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM METRIC2.TMP_STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC LIMIT 5\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (182,48,\'UOM1\',\'OPTION\',\' \',400,0,\'Optional, Unit of measure for the value\',\'UOM\',\'true\',2,0, null)');
 
 // Treemap
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (183,49,\'Server Connection\',\'OPTION\',\'Local Server\',100,1,\'Local Server\',\'Server Connection\',\'true\',3,0, null)');
-    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (184,49,\'SQL1\',\'SQL\',\'SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM SALES.STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (184,49,\'SQL1\',\'SQL\',\'SELECT STATE_NAME as LABEL, SUM(VALUE) as VALUE FROM METRIC2.TMP_STATE_SALES GROUP BY STATE_NAME ORDER BY SUM(VALUE) DESC\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (185,49,\'GROUP\',\'Static\',\'\',300,0,\'Optional, Column name group for Treemap categories, should be returned by SQL\',\'Grouping Column\',\'true\',2,0, null)');
 
 // 50. World Map
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (186,50,\'Server Connection\',\'OPTION\',\'Local Server\',100,1,\'Local Server\',\'Server Connection\',\'true\',3,0, null)');
-    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (187,50,\'SQL1\',\'SQL\',\'SELECT * FROM SALES.COUNTRY_SALES\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (187,50,\'SQL1\',\'SQL\',\'SELECT * FROM METRIC2.TMP_COUNTRY_SALES\',200,0,\'SQL Query for details\',\'SQL Query\',\'true\',null,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (188,50,\'TEXT1\',\'Static\',\'\',300,1,\'Any form of Static Text\',\'Text\',\'true\',null,0,null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (189,50,\'UOM1\',\'OPTION\',\' \',400,0,\'Optional, Unit of measure for the value\',\'UOM\',\'true\',2,0, null)');
     output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_WIDGET_PARAM" VALUES (190,50,\'HEXCOLOR1\',\'COLOR\',\'#DEEDF6\',500,0,\'Required, color in Hex (e.g #DEEDF6)\',\'Min Color\',\'true\',2,0, null)');
@@ -475,6 +475,240 @@ if (step === 'step3') {
     
 } else if (step === "step5") {
     output += "<br /><br /> ===================    Create Demo Dashboards ===================== <br />";
+    
+    //Sales Table
+    output += "<br />" + executeUpdate('CREATE COLUMN TABLE "METRIC2"."TMP_COUNTRY_SALES" ("COUNTRY" VARCHAR(60), "VALUE" REAL CS_FLOAT, "COUNTRY_NAME" NVARCHAR(50) DEFAULT \'NVARCHAR\', "MONTH" INTEGER CS_INT, "YEAR" INTEGER CS_INT)');
+    output += "<br />" + executeUpdate('CREATE COLUMN TABLE "METRIC2"."TMP_STATE_SALES" ("STATE" VARCHAR(60), "VALUE" REAL CS_FLOAT, "STATE_NAME" NVARCHAR(50) DEFAULT \'NVARCHAR\', "MONTH" INTEGER CS_INT, "YEAR" INTEGER CS_INT)');
+    
+    //Add Sales Data
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'AE\',10000,\'Arab Emerits\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'ZA\',202000,\'South Africa\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'AU\',283874,\'Australia\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'CA\',1228830,\'Canada\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'RU\',4552610,\'Russia\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'ZW\',188273,\'Zimbabwe\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_COUNTRY_SALES" VALUES (\'NA\',200000,\'Namibia\',1,2014)');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ga\',865445,\'Georgia\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ga\',625355,\'Georgia\',2,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ga\',188737,\'Georgia\',3,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ar\',593741,\'Arkansas\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ca\',6193740,\'California\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'fl\',193741,\'Florida\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'hi\',293741,\'Hawaii\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'hi\',293741,\'Hawaii\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'id\',343741,\'Idaho\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ia\',393741,\'Iowa\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'in\',23741,\'Indianpolis\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ka\',355462,\'Kansas\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ky\',988767,\'Kentucky\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'me\',266533,\'Maine\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ma\',123223,\'Maryland\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'mi\',121998,\'Michigan\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'mn\',998762,\'Minnesota\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'mt\',547662,\'Montana\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ne\',223492,\'Nebraska\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nv\',665244,\'Nevada\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nh\',182773,\'New Hamshire\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nj\',928837,\'New Jersey\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nm\',192883,\'New Mexico\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ny\',392883,\'New York\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nc\',492883,\'North Carolina\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'nd\',192883,\'North Dakota\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'oh\',123883,\'Ohio\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ok\',223883,\'Oklahoma\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'or\',323883,\'Oregan\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'pa\',823883,\'Pennsylvania\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ri\',723883,\'Rhode Island\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'sc\',923883,\'South Carolina\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'sd\',113883,\'South Dakota\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'tn\',213883,\'Tennessee\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'tx\',113883,\'Texas\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ut\',413883,\'Utah\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'vt\',213883,\'Vermont\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'va\',218773,\'Virginia\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'wa\',418773,\'Washington\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'wv\',518773,\'West Virginia\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'wi\',198773,\'Wisconsin\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'wy\',998773,\'Wyoming\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'co\',199837,\'Colorado\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'az\',569837,\'Arizona\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'al\',989837,\'Alabama\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'ak\',882731,\'Alaska\',1,2014)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."TMP_STATE_SALES" VALUES (\'AE\',10000,\'Arab\',12,2014)');
+
+    
+    //Dashboards
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD" VALUES (22,\'My IT Systems\',\'\',NULL,1,NULL,NULL,NULL,NULL,NULL,1,\'\',NULL,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD" VALUES (23,\'HANA Dashboard\',\'\',NULL,1,NULL,NULL,NULL,NULL,NULL,2,\'\',NULL,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD" VALUES (2,\'Sales Dashboard\',\'\',NULL,1,NULL,NULL,NULL,NULL,NULL,3,\'\',NULL,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD" VALUES (3,\'Internet Of Things\',\'\',NULL,1,NULL,NULL,NULL,NULL,NULL,4,\'\',NULL,NULL)');
+    
+    //Dashboard Metrics
+    //My IT Systems
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (119,22,4,\'All Service Started\',1,1,5,5,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1118,119,7,\'SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE\',4,\'2014-12-05 12:37:59.6740000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1119,119,6,\'localserver\',4,\'2014-12-05 12:37:59.7910000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1120,119,8,\'SELECT STATUS FROM METRIC2.M2_WIDGET_ALLSTARTED\',4,\'2014-12-05 12:37:59.9410000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (120,22,7,\'Instance Details\',1,1,5,6,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1121,120,22,\'SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCEID\',7,\'2014-12-05 12:38:00.1930000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1122,120,21,\'localserver\',7,\'2014-12-05 12:38:00.2950000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1123,120,23,\'SELECT VALUE FROM METRIC2.M2_WIDGET_INSTANCENUMBER\',7,\'2014-12-05 12:38:00.3770000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (121,22,8,\'Current Connections\',1,1,7,7,60,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1124,121,24,\'localserver\',8,\'2014-12-05 12:38:00.5290000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1125,121,27,\'SELECT CNT as VALUE FROM METRIC2.M2_WIDGET_RUNNINGCONNETIONS\',8,\'2014-12-05 12:38:00.5770000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1126,121,30,\'0\',8,\'2014-12-05 12:38:00.6600000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1127,121,26,\'Users\',8,\'2014-12-05 12:38:00.7450000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (122,22,12,\'Component Overview\',3,1,1,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1128,122,44,\'SELECT STATUS FROM METRIC2.M2_WIDGET_SYSOVERVIEW\',12,\'2014-12-05 12:38:00.9110000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1129,122,43,\'localserver\',12,\'2014-12-05 12:38:01.0470000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (123,22,15,\'Local Time\',1,1,5,7,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1130,123,152,\'UTC\',15,\'2014-12-05 12:38:01.1800000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (124,22,21,\'System Overview\',4,1,1,5,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1131,124,75,\'localserver\',21,\'2014-12-05 12:38:01.2970000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1132,124,76,\'SELECT SM FROM METRIC2.M2_WIDGET_TOTAL_CPU\',21,\'2014-12-05 12:38:01.3270000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1133,124,77,\'SELECT SM FROM METRIC2.M2_WIDGET_SYS_MEM\',21,\'2014-12-05 12:38:01.4470000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1134,124,80,\'SELECT VALUE FROM METRIC2.M2_WIDGET_DISTRIBUTED_VALUE\',21,\'2014-12-05 12:38:01.4950000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1135,124,79,\'SELECT VALUE FROM METRIC2.M2_WIDGET_ALLSTARTED_VALUE\',21,\'2014-12-05 12:38:01.5940000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (125,22,35,\'HANA PRD Tables Sizes\',2,1,7,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1136,125,132,\'localserver\',35,\'2014-12-05 12:38:01.7450000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1137,125,134,\'SELECT * FROM METRIC2.M2_WIDGET_ROWCOLSIZES\',35,\'2014-12-05 12:38:01.8300000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (126,22,17,\'Las Vegas Weather\',1,1,3,5,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1138,126,70,\' 89104\',17,\'2014-12-05 12:38:02.0250000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (127,22,30,\'SAP Stock Price\',1,1,7,5,360,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1139,127,122,\'SAP\',30,\'2014-12-05 12:38:02.2440000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (164,22,31,\'@metricsquared\',2,3,3,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1278,164,112,\' @metricsquared\',31,\'2014-12-05 12:38:02.3780000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1279,164,115,\'385571773112012800\',31,\'2014-12-05 12:38:02.4630000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1280,164,113,\'6\',31,\'2014-12-05 12:38:02.5800000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (129,22,27,\'Connections\',2,1,3,6,60,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1143,129,102,\'SELECT STATUS FROM METRIC2.M2_WIDGET_CONNECTIONS\',27,\'2014-12-05 12:38:02.6790000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (130,22,9,\'CPU Usage\',1,1,7,6,60,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1144,130,32,\'localserver\',9,\'2014-12-05 12:38:02.9130000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1145,130,36,\'line\',9,\'2014-12-05 12:38:03.0480000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1146,130,35,\'20\',9,\'2014-12-05 12:38:03.1810000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1147,130,33,\'SELECT CPU as VALUE FROM METRIC2.M2_WIDGET_DB_CPU\',9,\'2014-12-05 12:38:03.2310000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1148,130,157,\'MET3\',9,\'2014-12-05 12:38:03.3250000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (168,22,47,\'Speed by State\',2,2,3,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1294,168,177,\'localserver\',47,\'2015-01-17 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1295,168,176,\'SELECT * FROM METRIC2.TMP_STATE_SALES\',47,\'2015-01-17 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1296,168,178,\'Ping\',47,\'2015-01-17 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1297,168,179,\' \',47,\'2015-01-17 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1298,168,192,\'#DEEDF6\',47,\'2015-01-17 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1299,168,193,\'#2A89C1\',47,\'2015-01-17 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (174,22,3,\'SQL Statement\',1,1,1,4,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1312,174,18,\'localserver\',3,\'2015-04-28 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1313,174,19,\'SELECT 7 as VALUE FROM DUMMY\',3,\'2015-04-28 00:00:00.0000000\')');
+    
+    
+    //Hana Dashboard
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (131,23,45,\'HANA Overview\',6,4,1,1,10,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1149,131,171,\'localserver\',45,\'2014-12-05 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1150,131,170,\'SELECT * FROM METRIC2.M2_WIDGET_HANAOVERVIEW\',45,\'2014-12-05 00:00:00.0000000\')');
+    
+    
+    
+    //Sales Dashboard
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (106,2,46,\'\',7,1,1,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1090,106,174,\'#666\',46,\'2014-12-03 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1091,106,172,\'My Sales Dashboard\',46,\'2014-12-03 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1092,106,175,\'center\',46,\'2014-12-03 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1093,106,173,\'50px\',46,\'2014-12-03 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (52,2,44,\'World Clock\',2,2,4,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (138,52,153,\'\',44,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (139,52,152,\'\',44,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (26,2,34,\'Europe Sales\',2,1,8,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (78,26,124,\'localserver\',34,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (79,26,125,\'SELECT RAND() * 100 as VALUE FROM DUMMY\',34,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (80,26,131,\'$M\',34,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (81,26,126,\'30\',34,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (82,26,128,\'bar-chart\',34,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (83,26,130,\'#F55B4C\',34,\'2014-09-27 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (33,2,34,\'North America Sales\',2,1,2,4,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (94,33,124,\'localserver\',34,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (95,33,125,\'SELECT RAND() * 10 as VALUE FROM DUMMY\',34,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (96,33,131,\'$M\',34,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (97,33,126,\'30\',34,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (98,33,128,\'\',34,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (99,33,130,\'#1fb5ad\',34,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (36,2,30,\'GOOG Stock Price\',1,1,2,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (103,36,122,\'GOOG\',30,\'2014-09-29 00:00:00.0000000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (37,2,31,\'@metricsquared\',2,3,2,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (104,37,112,\'@metricsquared\',31,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (105,37,113,\'6\',31,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (106,37,115,\'385571773112012800\',31,\'2014-09-29 00:00:00.0000000\')');
+
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (175,2,47,\'Sales by State\',2,2,2,6,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1314,175,177,\'localserver\',47,\'2014-12-31 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1315,175,178,\'Net Revenue\',47,\'2014-12-31 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1316,175,179,\'$\',47,\'2014-12-31 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1317,175,176,\'SELECT * FROM METRIC2.TMP_STATE_SALES WHERE MONTH = 1 AND Year = 2014\',47,\'2014-12-31 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1318,175,192,\'#DEEDF6\',47,\'2014-12-31 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (1319,175,193,\'#2A89C1\',47,\'2014-12-31 00:00:00.0000000\')');
+    
+    //IoT
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (7,3,29,\'Temp\',1,1,1,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (23,7,106,\'Temperature\',29,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (24,7,109,\'°C\',29,\'2014-09-27 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (25,7,118,\'\',29,\'2014-09-27 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (54,3,15,\'Date and Time\',1,1,3,2,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (140,54,153,\'\',15,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (63,3,41,\'RSS Data\',2,3,1,6,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (169,63,147,\'http://rss.cnn.com/rss/edition.rss\',41,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (170,63,148,\'8\',41,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (40,3,29,\'Flow Valve 1\',2,1,1,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (116,40,106,\'Warning\',29,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (117,40,109,\'Gal/Day\',29,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (118,40,118,\'\',29,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (42,3,17,\'Weather @ 28012\',1,1,3,4,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (122,42,70,\' 28012\',17,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (43,3,26,\'Server Ping\',1,1,3,3,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (123,43,97,\'192.168.0.1\',26,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (44,3,36,\'JSON Service Data\',1,1,3,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (124,44,135,\'http://ip.jsontest.com/\',36,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (125,44,137,\'ip\',36,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (126,44,138,\'My IP Address\',36,\'2014-09-29 00:00:00.0000000\')');
+    
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (47,3,43,\'Production Line 1\',1,1,7,5,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (130,47,151,\'localserver\',43,\'2014-09-29 00:00:00.0000000\')');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (131,47,150,\'SELECT 1 as min\, 10 as max\, 5 as value\, MET2SpeedMET2 as Label\, MET2Motor 1MET2 as Title FROM DUMMY\',43,\'2014-09-29 00:00:00.0000000\')');
+    
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET" VALUES (49,3,42,\'Web Cam 1\',4,3,5,1,0,NULL)');
+    output += "<br />" + executeUpdate('INSERT INTO "METRIC2"."M2_DASHBOARD_WIDGET_PARAMS" VALUES (134,49,149,\'http://intercepts.wpengine.com/wp-content/uploads/2012/11/P8A-121115-Boeing-trip-179b-1024x7191.jpg\',42,\'2014-09-29 00:00:00.0000000\')');
+    
     output += "<br /> Completed";
 }
 
