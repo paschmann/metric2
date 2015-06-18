@@ -32,7 +32,7 @@
                 },
                 success: function(data) {
                     $('.results').css('background-color', '#000');
-                    $('.results').append(data);
+                    $('.results').prepend(data);
                 }
             });
         }
@@ -162,10 +162,10 @@
                         Create all the tables, views, security and stored procedures needed.<br /><br />Confirmation will be required.
                     </section>
                     <section class="step" data-step-title="Demo Dashboards">
-                        If you would like, we can create a few demo dashboards for you. This will include an example HANA and Sales Dashboard. Click Next to get started.<br /><br />Confirmation will be required.
+                        If you would like, we can create a few demo dashboards for you. This will include an example HANA and Sales Dashboard. Click Next to get started, or click Cancel to skip this step.<br /><br />Confirmation will be required.
                     </section>
                     <section class="step" data-step-title="Post Install">
-                        Because we created a new user with a static/known password, metric2 requires that you change the password. <br /><br />Please click <a href='/sap/hana/xs/formLogin/login.html' target='_blank'>here</a> to open the login screen, and set the password to something unique. Keep in mind you may need to logout.<br /><br />The default username and password is: <br /><br />M2_SVC_ACCOUNT<br />7Ag6w612auiY881 <br /><br />The system should prompt you to reset this once you login for the first time.
+                        Because we created a new user with a static/known password, metric2 requires that you change the password. <br /><br />Please click <a href='/sap/hana/xs/formLogin/login.html' target='_blank'>here</a> to open the login screen, and set the password to something unique. Keep in mind you may need to logout.<br /><br />The default username and password is: <br /><br />M2_SVC_ACCOUNT<br />7Ag6w612auiY881<br /><br />The system should prompt you to reset this once you login for the first time. We also suggest that you logout of the M2_SVC_ACCOUNT once you haved reset the password.
                     </section>
                     <section class="step" data-step-title="Complete">
                         All done. We highly recommend that you delete the install folder once you have tested that your instance is working correctly.
