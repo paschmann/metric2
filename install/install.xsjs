@@ -40,7 +40,7 @@ if (step === 'step3') {
     output += "<br />" + executeUpdate('GRANT EXECUTE ON SYSTEM.AFL_WRAPPER_GENERATOR to M2_SERVICE');
     output += "<br />" + executeUpdate('GRANT EXECUTE ON _SYS_AFL.PAL_TS_S to M2_SERVICE');
 
-    output += "<br />" + executeUpdate('UPDATE "_SYS_XS" ."SQL_CONNECTIONS" SET username = \'M2_SVC_ACCOUNT\' WHERE name = \'lilabs.metric2::metricuser\'');
+    output += "<br />" + executeUpdate('UPDATE "_SYS_XS" ."SQL_CONNECTIONS" SET username = \'M2_SVC_ACCOUNT\' WHERE name = \'lilabs.metric2.lib::metricuser\'');
     output += "<br /><br /> Completed";
     
     
