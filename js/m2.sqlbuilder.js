@@ -1,8 +1,9 @@
-function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
+function showSQLBuilder(sqlquery, datatype, odataquery, wsquery, excelquery){
     var output = '';
     var sqlqueryactive = '';
     var odataqueryactive = '';
     var wsqueryactive = '';
+    var excelactive = '';
     
     if (sqlquery !== ''){
         sqlqueryactive = 'active';
@@ -10,6 +11,8 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
         odataqueryactive = 'active';
     } else if (wsquery !== ''){
         wsqueryactive = 'active';
+    } else if (excelquery !== ''){
+        excelactive = 'active';
     }
     
     output += "<div role='tabpanel'>";
@@ -18,6 +21,7 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
         output += "<li role='presentation' class='" + sqlqueryactive + "'><a href='#SQL' aria-controls='home' role='tab' id='sqltab' data-toggle='tab'>SQL</a></li>";
         output += "<li role='presentation' class='" + odataqueryactive + "'><a href='#OData' aria-controls='OData' id='odatatab'role='tab' data-toggle='tab'>OData</a></li>";
         output += "<li role='presentation' class='" + wsqueryactive + "'><a href='#WS' aria-controls='WS' role='tab' id='wstab' data-toggle='tab'>Web Service</a></li>";
+        output += "<li role='presentation' class='" + excelactive + "'><a href='#Excel' aria-controls='Excel' role='tab' id='exceltab' data-toggle='tab'>Excel</a></li>";
         output += "</ul>";
 
         output += "<div class='tab-content'>";
@@ -25,7 +29,7 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='SQL'>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>SQL Statement: </label>";
-                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtSQL'>" + sqlquery + "</textarea></div>"
+                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtSQL'>" + sqlquery + "</textarea></div>";
                         output += "<div class='col-md-1'><button type='button' id='btnExecuteSQL' class='btn btn-success' style='margin-top: 20px;'>Execute</button></div>";
                     output += "</div>";
                     output += "<div id='dialogSQLMsg' class='col-md-10 col-md-offset-1'></div>";
@@ -36,7 +40,7 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='OData'>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>OData Query: </label>";
-                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtOData'>" + odataquery + "</textarea></div>"
+                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtOData'>" + odataquery + "</textarea></div>";
                         output += "<div class='col-md-1'><button type='button' id='btnExecuteOData' class='btn btn-success' style='margin-top: 20px;'>Execute</button></div>";
                     output += "</div>";
                     output += "<div id='dialogODataMsg' class='col-md-11 col-md-offset-1'></div>";
@@ -47,11 +51,22 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
                 output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='WS'>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
                     output += "<div class='form-group'><label class='col-md-1 control-label'>Web Service Query: </label>";
-                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtWS'>" + wsquery + "</textarea></div>"
+                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtWS'>" + wsquery + "</textarea></div>";
                         output += "<div class='col-md-1'><button type='button' id='btnExecuteWS' class='btn btn-success' style='margin-top: 20px;'>Execute</button></div>";
                     output += "</div>";
                     output += "<div id='dialogWSMsg' class='col-md-11 col-md-offset-1'></div>";
                     output += "<div id='WSoutput' style='overflow: auto; height: 600px;' class='col-md-11 col-md-offset-1'></div>";
+                output += "</form>";
+            output += "</div>";
+            output += "<div role='tabpanel' class='tab-pane " + excelactive + "' id='Excel'>";
+                output += "<form class='form-horizontal' role='form' style='margin-top: 30px;' id='Excel'>";
+                    output += "<div class='form-group'><label class='col-md-1 control-label'>Data Type: </label><label id='datatype' class='col-md-1 control-label'>" + datatype + "</label></div>";
+                    output += "<div class='form-group'><label class='col-md-1 control-label'>Formula: </label>";
+                        output += "<div class='col-md-10'><textarea class='form-control' rows='3' id='txtWS'>" + excelquery + "</textarea></div>";
+                        output += "<div class='col-md-1'><button type='button' id='btnExecuteExcel' class='btn btn-success' style='margin-top: 20px;'>Execute</button></div>";
+                    output += "</div>";
+                    output += "<div id='dialogExcelMsg' class='col-md-11 col-md-offset-1'></div>";
+                    output += "<div id='Exceloutput' style='overflow: auto; height: 600px;' class='col-md-11 col-md-offset-1'></div>";
                 output += "</form>";
             output += "</div>";
         output += "</div>";
@@ -64,6 +79,23 @@ function showSQLBuilder(sqlquery, datatype, odataquery, wsquery){
     $('#modalsqldlg').css('height','auto');
     $('#modalsqldlg').css('width','85%');
     $('#mySQLBuilderModal').appendTo("body").modal('show');
+    
+    //Initialize Excel Data
+    var data = [
+      ["", "Ford", "Volvo", "Toyota", "Honda"],
+      ["2014", 10, 11, 12, 13],
+      ["2015", 20, 11, 14, 13],
+      ["2016", 30, 15, 12, 13]
+    ];
+    
+    var container = document.getElementById('Exceloutput');
+    var hot = new Handsontable(container, {
+      data: data,
+      minSpareRows: 1,
+      rowHeaders: true,
+      colHeaders: true,
+      contextMenu: true
+    });
 }
 
 function executeWSRequest(){
