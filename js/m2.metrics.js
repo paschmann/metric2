@@ -779,9 +779,9 @@ function widgetHistChart(data) {
         $('.peity' + data.dwid).peity(strChartType, {
             width: parseInt(data.width) * 200,
             height: '75%',
-            fill: ["#444444"],
             stroke: strSparkColor,
-            strokeWidth: 3
+            strokeWidth: 2,
+            fill: ["#2A89C1"]
         });
     } catch (err) {
         $('#t1-widget-container' + data.dwid).html('Error');
@@ -796,13 +796,13 @@ function widgetHistorySmall(data) {
     var html;
     try {
         var strHistData = [];
-        var datapoint = getScalarVal(data, 'SQL1', 'VALUE'); //just the last point?
+        var datapoint = getScalarVal(data, "SQL1", "VALUE"); //just the last point?
         var reclimit = data.RECLIMIT;
         var uom = data.UOM1;
         var imgURL = data.ICONURL;
         var strSparkColor = data.LINECOL;
         strHistData = JSON.parse(data.SQL1_Hist); //too many points?
-        var strData = '';
+        var strData = "";
 
         strHistData.reverse();
 
@@ -821,8 +821,8 @@ function widgetHistorySmall(data) {
         html = 'Error';
     }
     
-    if (theme === 'dark') {
-        strSparkColor = '#2A89C1';
+    if (theme === "dark") {
+        strSparkColor = "#2A89C1";
     }
 
     $('#t1-widget-container' + data.dwid).html(html);
@@ -830,9 +830,9 @@ function widgetHistorySmall(data) {
     $('.peity' + data.dwid).peity('line', {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
-        stroke: "#C1DDEE",
-        strokeWidth: 2,
-        fill: ["#999"]
+        stroke: strSparkColor,
+        strokeWidth: 3,
+        fill: ["#2A89C1"]
     });
 }
 
