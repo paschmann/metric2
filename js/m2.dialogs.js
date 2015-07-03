@@ -447,9 +447,9 @@ function showWidgetDialog(objData, edit){
 	if (edit) {
     	output += "<div class='form-group'><label for='chkShareMetric' class='col-sm-3 col-sm-3 control-label'>Sharing Enabled</label><div class='col-sm-1'>";
     	if (objData.shareurl){
-    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric' checked></label></div><div class='col-sm-8'><input class='form-control' type='text' placeholder='URL' id='metricshareurl' value = '" + getMetricShareURL(objData.shareurl) + "'/>";
+    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric' checked></label></div><div class='col-sm-8'><a href='" + getMetricShareURL(objData.shareurl) + "' id='metricshareurl' target='_blank'>Click to open</a>";
     	} else {
-    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric'></label></div><div class='col-sm-8'><input class='form-control' type='text' placeholder='URL' id='metricshareurl' value = '' disabled/>";
+    	    output += "<input type='checkbox' data-id='" + objData.dashboardwidgetid + "' id='chkShareMetric'></label></div><div class='col-sm-8'>";
     	}
     	output += "</div></div>";
 	}
