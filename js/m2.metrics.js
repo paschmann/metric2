@@ -1,6 +1,10 @@
 function getScalarVal(sql, obj, property) {
-    var resp = JSON.parse(sql[obj]);
-    return resp[0][property];
+    try {
+        var resp = JSON.parse(sql[obj]);
+        return resp[0][property];
+    } catch (err) {
+        return "";
+    }
 }
 
 // --------------------------------------- Common metrics UI ----------------------------------------------------- //
@@ -758,20 +762,14 @@ function widgetHistChart(data) {
         strHistData = JSON.parse(data.SQL1_Hist);
         var strChartType = data.CHARTTYPE;
         var strData = '';
-        var strSparkColor = '#FFF';
-
         strHistData.reverse();
         
-        if (theme === 'dark') {
-            strSparkColor = '#2A89C1';
-        }
-
         for (var i = 0; i < strHistData.length; i++) {
             strData += parseFloat(strHistData[i].VALUE, 10) + ',';
         }
         strData = strData.substring(0, strData.length - 1);
 
-        html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
+        html = "<div class='t1-widget-percent-medium-grey w-historychart-datapoint " + (theme === "Dark" ? " hist-chart-dark" : "") + "'>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></div>";
         html += "<span class='peity" + data.dwid + "'>" + strData + "</span>";
 
         $('#t1-widget-container' + data.dwid).html(html);
@@ -779,8 +777,8 @@ function widgetHistChart(data) {
         $('.peity' + data.dwid).peity(strChartType, {
             width: parseInt(data.width) * 200,
             height: '75%',
-            fill: ["#444444"],
-            stroke: strSparkColor,
+            fill: ["#CCCCCC"],
+            stroke: '#EEE',
             strokeWidth: 3
         });
     } catch (err) {
@@ -816,21 +814,21 @@ function widgetHistorySmall(data) {
             html += "<td><i class='fa fa-" + imgURL + "' style='margin: 15px; color: #ccc;'></i></td>";
         }
         html += "<td>" + parseFloat(parseFloat(datapoint).toFixed(2)) + "<sup>" + uom + "</sup></td></tr></table></div>";
-        html += "<div class='t1-widget-footer' style='text-align:center; margin-top: -10px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
+        html += "<div class='t1-widget-footer " + (theme === "Dark" ? " hist-smallchart-dark" : "") + "' style='text-align:center; margin-top: -10px;'><span class='peity" + data.dwid + "'>" + strData + "</span></div>";
     } catch (err) {
         html = 'Error';
     }
     
-    if (theme === 'dark') {
-        strSparkColor = '#2A89C1';
+    if (!strSparkColor.length > 0) {
+        strSparkColor = "#EEE";
     }
-
+    
     $('#t1-widget-container' + data.dwid).html(html);
 
     $('.peity' + data.dwid).peity('line', {
         width: parseInt(data.width) * 185,
         height: parseInt(data.height) * 60,
-        stroke: "#C1DDEE",
+        stroke: strSparkColor,
         strokeWidth: 2,
         fill: ["#999"]
     });
@@ -1264,8 +1262,6 @@ function widgetSensorAPI(data) {
 function metricHANAOverview(data) {
     //Requires data.dwid
     try {
-        var strBarColor = "#E7E7E7";
-
         if (typeof window.m2DiskData === 'undefined') {
             window.m2DiskData = [];
             window.m2RAMData = [];
@@ -1378,35 +1374,31 @@ function metricHANAOverview(data) {
         html += "</div>";
         html += "<div class='row' style='margin-top: 50px;'>";
         html += "<h3 class='pull-left' style='color: #999; z-index: 9992; margin-bottom: 10px;'>CPU</h3><span class='label label-default pull-right' style='z-index: 9993;'>" + window.m2CPUData[window.m2CPUData.length - 1] + "%</span>";
-        html += "<span class='cpu" + data.dwid + "'>" + window.m2CPUData.toString() + "</span>";
+        html += "<span class='cpu" + data.dwid + (theme === "Dark" ? " hanacpu-chart-dark" : "") + "'>" + window.m2CPUData.toString() + "</span>";
         html += "</div>";
         html += "<div class='row' style='margin-top: 50px;'>";
         html += "<h3 class='pull-left' style='color: #999; z-index: 9990; margin-bottom: 10px;'>Memory</h3><span class='label label-default pull-right' style='z-index: 9991;'>" + window.m2RAMData[window.m2RAMData.length - 1] + "GB</span>";
-        html += "<span class='ram" + data.dwid + "'>" + window.m2RAMData.toString() + "</span>";
+        html += "<span class='ram" + data.dwid + (theme === "Dark" ? " hanaram-chart-dark" : "") + "'>" + window.m2RAMData.toString() + "</span>";
         html += "</div>";
         html += "<div class='row' style='margin-top: 50px;'>";
         html += "<h3 class='pull-left' style='color: #999; z-index: 9994; margin-bottom: 10px;'>Data Disk</h3><span class='label label-default pull-right' style='z-index: 9995;'>" + window.m2DiskData[window.m2DiskData.length - 1] + "GB</span>";
-        html += "<span class='disk" + data.dwid + "'>" + window.m2DiskData.toString() + "</span>";
+        html += "<span class='disk" + data.dwid + (theme === "Dark" ? " hanadisk-chart-dark" : "") + "'>" + window.m2DiskData.toString() + "</span>";
         html += "</div>";
         html += "</div>";
 
         $('#t1-widget-container' + data.dwid).html(html);
         
-        if (theme === "dark"){
-            strBarColor = "#373839";
-        }
-
         //Small background charts
         $('.connections' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: [strBarColor]
+            fill: ["#E7E7E7"]
         });
 
         $('.activeusers' + data.dwid).peity('bar', {
             width: $("#connGraph").width(),
             height: 40,
-            fill: [strBarColor]
+            fill: ["#E7E7E7"]
         });
 
 
