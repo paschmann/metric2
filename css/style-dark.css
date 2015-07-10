@@ -38,6 +38,15 @@ svg .title {
     color: #FFF;
 }
 
+/* Peity Conditional Chart CSS */
+.hist-chart-dark ~ .peity polyline {
+    stroke: #2A89C1;
+}
+
+.hist-smallchart-dark ~ .peity polyline {
+    stroke: #2A89C1;
+}
+
 .logo-area { 
     background-color: #2C2C2C;
     border-bottom: 5px solid #333333;
@@ -160,4 +169,3 @@ svg .title {
 .table-striped > tbody > tr:nth-child(2n+1) > td {
     background-color: transparent;
 }
-
