@@ -421,8 +421,8 @@ function loadMetrics(objData) {
         var intDashboardWidgetID = objData.widgetData[key].dwid;
         var title = objData.widgetData[key].title;
  
-        if (typeof title === undefined) {
-            title = "";
+        if (typeof title === "undefined" || typeof objData.widgetData[key].rowpos === "undefined" || typeof objData.widgetData[key].colpos === "undefined" || typeof objData.widgetData[key].colpos === "undefined") {
+            return false;
         }
         
         if (objData.widgetData[key].type == "Label") {
