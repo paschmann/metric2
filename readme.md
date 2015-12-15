@@ -45,6 +45,9 @@ Although not required, please could you register with the metric² mailing list 
 
 ## Version History
 
+####Version 2.5.5
+* Has a wizard based installer (see install instructions)
+
 ####Version 2.4+
 * All versions from 2.4.0 on-wards now support SAP HANA SPS09 and is downward compatible (to SPS07)
 
