@@ -9,7 +9,7 @@ Check out the metric² Website here [www.metric2.com](http://www.metric2.com "ww
 The code is written in Javascript (Bootstrap), HTML5, CSS and uses XSJS (SAP HANA specific) for server side scripting.
 
 ## Download
-* [Version 2.5.*](http://www.metric2.com/download.html)
+* [Version 2.5.*](http://www.metric2.com/metric2-downloads/)
 
 ## Installation
 
@@ -24,7 +24,7 @@ XS Engine running (HTTP Server built into SAP HANA)
 
 #####Otion 1: **Delivery Unit** (SAP HANA Package)
 
-- Download the delivery unit package [here](http://www.metric2.com/download.html) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
+- Download the delivery unit package [here](http://www.metric2.com/metric2-downloads/) and upload using the SAP HANA Web Admin Tool: Lifecycle Manager
 - Please follow the instructures [here](http://www.metric2.com/web-documentation/) on how to install.
 
 ####Step 2 – Schema creation
@@ -35,7 +35,7 @@ Once you have completed sections 1 & 2, you can choose to run some of the includ
 
 
 ## Registration
-Although not required, please could you register with the metric² mailing list here: [Mailing List](http://www.metric2.com/download.html "metric2 mailing list")
+Although not required, please could you register with the metric² mailing list here: [Mailing List](http://www.metric2.com/metric2-downloads/ "metric2 mailing list")
 
 ## Contact
 * Homepage: http://www.metric2.com
